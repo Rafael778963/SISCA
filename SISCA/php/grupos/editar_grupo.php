@@ -8,12 +8,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $generacion = trim($_POST['generacion']);
         $nivel = trim($_POST['nivel']);
         $programa = trim($_POST['programa']);
+        $programa_id = isset($_POST['programa_id']) ? intval($_POST['programa_id']) : null;
+        $periodo_id = isset($_POST['periodo_id']) ? intval($_POST['periodo_id']) : null;
         $grado = trim($_POST['grado']);
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
-        
+
         // Validaciones básicas
         if (empty($id) || empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
+        }
+
+        // Si no se proporciona programa_id, intentar obtenerlo de la nomenclatura
+        if ($programa_id === null) {
+            $stmtPrograma = $conn->prepare("SELECT id FROM programas WHERE nomenclatura = ? AND activo = 1 LIMIT 1");
+            $stmtPrograma->bind_param("s", $programa);
+            $stmtPrograma->execute();
+            $resultPrograma = $stmtPrograma->get_result();
+
+            if ($resultPrograma->num_rows > 0) {
+                $rowPrograma = $resultPrograma->fetch_assoc();
+                $programa_id = $rowPrograma['id'];
+            } else {
+                throw new Exception('Programa educativo no encontrado. Verifique la nomenclatura.');
+            }
+            $stmtPrograma->close();
         }
         
         if (strlen($generacion) !== 2 || !is_numeric($generacion)) {
@@ -100,11 +118,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Actualizar el grupo
         $stmt = $conn->prepare("
-            UPDATE grupos 
-            SET codigo_grupo = ?, generacion = ?, nivel_educativo = ?, programa_educativo = ?, grado = ?, letra_identificacion = ?, turno = ?
+            UPDATE grupos
+            SET codigo_grupo = ?, generacion = ?, nivel_educativo = ?, programa_id = ?, programa_educativo = ?, grado = ?, letra_identificacion = ?, turno = ?, periodo_id = ?
             WHERE id = ?
         ");
-        $stmt->bind_param("sssssssi", $codigoCompleto, $generacion, $nivel, $programa, $grado, $letraIdentificacion, $turno, $id);
+        $stmt->bind_param("sssississii", $codigoCompleto, $generacion, $nivel, $programa_id, $programa, $grado, $letraIdentificacion, $turno, $periodo_id, $id);
         
         if ($stmt->execute()) {
             echo json_encode([

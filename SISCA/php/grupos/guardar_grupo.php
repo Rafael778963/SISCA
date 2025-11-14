@@ -7,12 +7,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $generacion = trim($_POST['generacion']);
         $nivel = trim($_POST['nivel']);
         $programa = trim($_POST['programa']);
+        $programa_id = isset($_POST['programa_id']) ? intval($_POST['programa_id']) : null;
+        $periodo_id = isset($_POST['periodo_id']) ? intval($_POST['periodo_id']) : null;
         $grado = trim($_POST['grado']);
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
-        
+
         // Validaciones básicas
         if (empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
+        }
+
+        // Si no se proporciona programa_id, intentar obtenerlo de la nomenclatura
+        if ($programa_id === null) {
+            $stmtPrograma = $conn->prepare("SELECT id FROM programas WHERE nomenclatura = ? AND activo = 1 LIMIT 1");
+            $stmtPrograma->bind_param("s", $programa);
+            $stmtPrograma->execute();
+            $resultPrograma = $stmtPrograma->get_result();
+
+            if ($resultPrograma->num_rows > 0) {
+                $rowPrograma = $resultPrograma->fetch_assoc();
+                $programa_id = $rowPrograma['id'];
+            } else {
+                throw new Exception('Programa educativo no encontrado. Verifique la nomenclatura.');
+            }
+            $stmtPrograma->close();
+        }
+
+        // Si no se proporciona periodo_id, usar el periodo más reciente activo
+        if ($periodo_id === null) {
+            $stmtPeriodo = $conn->prepare("SELECT id FROM periodos WHERE activo = 1 ORDER BY año DESC, id DESC LIMIT 1");
+            $stmtPeriodo->execute();
+            $resultPeriodo = $stmtPeriodo->get_result();
+
+            if ($resultPeriodo->num_rows > 0) {
+                $rowPeriodo = $resultPeriodo->fetch_assoc();
+                $periodo_id = $rowPeriodo['id'];
+            }
+            $stmtPeriodo->close();
         }
         
         if (strlen($generacion) !== 2 || !is_numeric($generacion)) {
@@ -73,10 +104,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Insertar el nuevo grupo
         $stmt = $conn->prepare("
-            INSERT INTO grupos (codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO grupos (codigo_grupo, generacion, nivel_educativo, programa_id, programa_educativo, grado, letra_identificacion, turno, periodo_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->bind_param("sssssss", $codigoCompleto, $generacion, $nivel, $programa, $grado, $letraIdentificacion, $turno);
+        $stmt->bind_param("sssississi", $codigoCompleto, $generacion, $nivel, $programa_id, $programa, $grado, $letraIdentificacion, $turno, $periodo_id);
         
         if ($stmt->execute()) {
             $idInsertado = $stmt->insert_id;
