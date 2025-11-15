@@ -40,6 +40,117 @@
 }
 
 /* ============================================
+   SELECTOR DE PERÍODO
+   ============================================ */
+.periodo-selector-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 0 1rem 0;
+}
+
+.periodo-selector {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.1),
+              inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.periodo-selector:hover {
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.12),
+              -6px -6px 12px rgba(255, 255, 255, 0.9);
+}
+
+.periodo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--verde-medio), var(--verde-dark));
+  border-radius: 12px;
+  color: white;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.periodo-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.periodo-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.periodo-dropdown {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+  background: #f8f9fb;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.08),
+              inset -3px -3px 6px rgba(255, 255, 255, 0.9);
+}
+
+.periodo-dropdown:hover {
+  background: #ffffff;
+  border-color: var(--verde-medio);
+}
+
+.periodo-dropdown:focus {
+  background: #ffffff;
+  border-color: var(--verde-dark);
+  box-shadow: 0 0 0 3px rgba(120, 181, 67, 0.15);
+}
+
+.periodo-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: #f0f3f7;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.periodo-status.activo {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  color: #2e7d32;
+}
+
+.periodo-status.activo i {
+  color: #4caf50;
+}
+
+.periodo-status i {
+  font-size: 1.1rem;
+}
+
+/* ============================================
    DASHBOARD
    ============================================ */
 .dashboard-container {
@@ -115,6 +226,16 @@
     grid-template-columns: repeat(2, 1fr);
     max-width: 900px;
   }
+
+  .periodo-selector {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .periodo-status {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 720px) {
@@ -122,5 +243,23 @@
     grid-template-columns: 1fr;
     max-width: 520px;
     padding: 1rem 0;
+  }
+
+  .periodo-selector-container {
+    padding: 1rem 0;
+  }
+
+  .periodo-selector {
+    padding: 1rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .periodo-info {
+    width: 100%;
+  }
+
+  .periodo-status {
+    width: 100%;
   }
 }

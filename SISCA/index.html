@@ -104,6 +104,25 @@
                 </div>
             </header>
 
+            <!-- Selector de Período Activo -->
+            <div class="periodo-selector-container">
+                <div class="periodo-selector">
+                    <div class="periodo-icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div class="periodo-info">
+                        <label class="periodo-label">Período Activo:</label>
+                        <select id="periodo-select" class="periodo-dropdown">
+                            <option value="">Seleccione un período...</option>
+                        </select>
+                    </div>
+                    <div class="periodo-status" id="periodo-status">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span id="periodo-status-text">Sin período seleccionado</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="dashboard-container">
                 <a href="./templates/periodos/periodos.html" class="dashboard-card-link">
                     <div class="dashboard-card">
@@ -196,5 +215,6 @@
         <script src="./js/index/menuLateral.js"></script>
         <script src="./fonts/js/all.min.js"></script>
         <script src="./js/session_check.js"></script>
+        <script src="./js/index/periodoSelector.js"></script>
     </body>
 </html>
