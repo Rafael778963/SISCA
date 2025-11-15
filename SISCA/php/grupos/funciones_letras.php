@@ -40,6 +40,7 @@ function reorganizarLetrasGrupos($conn, $grupoId) {
 
     // Obtener todos los grupos ACTIVOS con la misma configuración
     // y con letra mayor a la del grupo que se está dando de baja
+    // IMPORTANTE: Excluir el grupo que se está dando de baja
     $stmt = $conn->prepare("
         SELECT id, letra_identificacion, codigo_grupo
         FROM grupos
@@ -47,19 +48,22 @@ function reorganizarLetrasGrupos($conn, $grupoId) {
         AND programa_educativo = ?
         AND grado = ?
         AND turno = ?
-        AND periodo_id = ?
+        AND (periodo_id = ? OR (periodo_id IS NULL AND ? IS NULL))
         AND estado = 'activo'
+        AND id != ?
         AND letra_identificacion > ?
         ORDER BY letra_identificacion ASC
     ");
 
     $stmt->bind_param(
-        "ssssss",
+        "ssssiiiis",
         $grupoBaja['generacion'],
         $grupoBaja['programa_educativo'],
         $grupoBaja['grado'],
         $grupoBaja['turno'],
         $grupoBaja['periodo_id'],
+        $grupoBaja['periodo_id'],
+        $grupoId,
         $grupoBaja['letra_identificacion']
     );
 
@@ -132,12 +136,12 @@ function encontrarPrimeraLetraDisponible($conn, $generacion, $programa, $grado, 
         AND programa_educativo = ?
         AND grado = ?
         AND turno = ?
-        AND periodo_id = ?
+        AND (periodo_id = ? OR (periodo_id IS NULL AND ? IS NULL))
         AND estado = 'activo'
         ORDER BY letra_identificacion ASC
     ");
 
-    $stmt->bind_param("sssss", $generacion, $programa, $grado, $turno, $periodoId);
+    $stmt->bind_param("ssssii", $generacion, $programa, $grado, $turno, $periodoId, $periodoId);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -158,13 +162,13 @@ function encontrarPrimeraLetraDisponible($conn, $generacion, $programa, $grado, 
             AND programa_educativo = ?
             AND grado = ?
             AND turno = ?
-            AND periodo_id = ?
+            AND (periodo_id = ? OR (periodo_id IS NULL AND ? IS NULL))
             AND estado = 'activo'
             AND letra_identificacion IS NULL
             LIMIT 1
         ");
 
-        $stmtSinLetra->bind_param("sssss", $generacion, $programa, $grado, $turno, $periodoId);
+        $stmtSinLetra->bind_param("ssssii", $generacion, $programa, $grado, $turno, $periodoId, $periodoId);
         $stmtSinLetra->execute();
         $resultSinLetra = $stmtSinLetra->get_result();
 
