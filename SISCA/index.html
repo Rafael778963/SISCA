@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="./img/SISCA I C.png"
+            type="image/x-icon">
+        <link rel="stylesheet" href="./css/index/index.css">
+        <link rel="stylesheet" href="./css/index/menuLateral.css">
+        <title>SISCA - Sistema de Carga Académica</title>
+    </head>
+    <body>
+    <script>
+        (function () {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.sidebar{width:70px!important}.sidebar .logo-full{display:none!important}.sidebar .logo-collapsed{display:block!important}.sidebar .nav-item{justify-content:center;padding:12px;margin:8px auto;width:46px;gap:0!important}.sidebar .nav-item span{display:none!important}.toggle-btn{left:55px!important}.main-content{margin-left:70px!important}.header{left:70px!important;width:calc(100% - 70px)!important}';
+                document.head.appendChild(style);
+            } else {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.main-content{margin-left:240px!important}.header{left:240px!important;width:calc(100% - 240px)!important}';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+        <!-- Barra lateral -->
+        <aside class="sidebar" id="sidebar">
+            <button class="toggle-btn" id="toggleBtn">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="logo-container">
+                <div class="logo">
+                    <a href="./index.html">
+                        <img src="./img/SISCA C.png" alt="Logo completo"
+                            class="logo-full">
+                        <img src="./img/SISCA I C.png" alt="Logo icono"
+                            class="logo-collapsed">
+                    </a>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="./templates/periodos/periodos.html" class="nav-item active">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Períodos</span>
+                </a>
+                <a href="./templates/planEstudios/planEstudios.html" class="nav-item">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Plan de Estudios</span>
+                </a>
+                <a href="./templates/cartaAsignacion/cartaAsignacion.html" class="nav-item">
+                    <i class="fa-solid fa-envelopes-bulk"></i>
+                    <span>Carta Asignación</span>
+                </a>
+                <a href="./templates/grupos/grupos.html" class="nav-item">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span>Grupos</span>
+                </a>
+                <a href="./templates/docentes/docentes.html" class="nav-item">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <span>Docentes</span>
+                </a>
+                <a href="./templates/carga/carga.html" class="nav-item">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Carga</span>
+                </a>
+                <a href="./templates/tutoria/tutoria.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Tutoría</span>
+                </a>
+                <a href="./templates/reportes/reportes.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Reportes</span>
+                </a>
+                <a href="./templates/horarios/horarios.html" class="nav-item">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Horarios</span>
+                </a>
+                <a href="./templates/prefectura/prefectura.html" class="nav-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>Prefectura</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Pagina principal -->
+        <main class="main-content">
+            <!-- Encabezado -->
+            <header class="header">
+                <h1 class="page-title">
+                    Bienvenido <span class="username"><a
+                            id="user-name"></a></span>
+                </h1>
+                <div class="user-menu">
+                    <div class="user-dropdown">
+                        <button class="user-btn" onclick="logout()">
+                            <i class="fa-solid fa-right-from-bracket fa-xl"></i>
+                        </button>
+                    </div>
+                    <button class="user-btn">
+                        <i class="fa-solid fa-circle-user fa-2xl"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Selector de Período Activo -->
+            <div class="periodo-selector-container">
+                <div class="periodo-selector">
+                    <div class="periodo-info">
+                        <label class="periodo-label">Período Activo:</label>
+                        <select id="periodo-select" class="periodo-dropdown">
+                            <option value="">Seleccione un período...</option>
+                        </select>
+                    </div>
+                    <div class="periodo-status" id="periodo-status">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span id="periodo-status-text">Sin período seleccionado</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-container">
+                <a href="./templates/periodos/periodos.html" class="dashboard-card-link">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <h3 class="card-title">Períodos</h3>
+                        <p class="card-info">Períodos activos:<span id="total-periodos">0</span></p>
+                    </div>
+                </a>
+
+                <a href="./templates/grupos/grupos.html" class="dashboard-card-link">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-border-all"></i>
+                        </div>
+                        <h3 class="card-title">Grupos</h3>
+                        <p class="card-info">Grupos Registrados:
+                            <span id="total-grupos">0</span></p>
+                    </div>
+                </a>
+
+                <a href="./templates/tutoria/tutoria.html" class="dashboard-card-link">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <h3 class="card-title">Tutoría</h3>
+                        <p class="card-info">Horas asignadas:
+                            <span>120</span></p>
+                    </div>
+                </a>
+
+                <a href="./templates/planEstudios/planEstudios.html"
+                    class="dashboard-card-link">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                        <h3 class="card-title">Plan de Estudios</h3>
+                        <p class="card-info">Registrados: <span>8</span></p>
+                    </div>
+                </a>
+
+                <a href="./templates/docentes/docentes.html" class="dashboard-card-link">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <h3 class="card-title">Docentes</h3>
+                        <p class="card-info">Docentes Registrados:
+                            <span id="total-docentes">0</span></p>
+                    </div>
+                </a>
+
+                <a href="./templates/reportes/reportes.html" class="dashboard-card-link">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h3 class="card-title">Reportes</h3>
+                        <p class="card-info">Total generados:
+                            <span>14</span></p>
+                    </div>
+                </a>
+
+                <a href="./templates/cartaAsignacion/cartaAsignacion.html"
+                    class="dashboard-card-link">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-envelopes-bulk"></i>
+                        </div>
+                        <h3 class="card-title">Carta de Asignación</h3>
+                        <p class="card-info">Emitidas: <span>25</span></p>
+                    </div>
+                </a>
+
+                <a href="./templates/carga/carga.html" class="dashboard-card-link">
+                    <div class="dashboard-card">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <h3 class="card-title">Carga</h3>
+                        <p class="card-info">Asignaciones: <span>35</span></p>
+                    </div>
+                </a>
+            </div>
+        </main>
+
+        <script src="./js/index/menuLateral.js"></script>
+        <script src="./fonts/js/all.min.js"></script>
+        <script src="./js/session_check.js"></script>
+        <script src="./js/index/periodoSelector.js"></script>
+    </body>
+</html>
