@@ -23,16 +23,10 @@ try {
     }
 
     // ============================================
-    // REORGANIZAR LETRAS SI SE DA DE BAJA
+    // ACTUALIZAR ESTADO PRIMERO
     // ============================================
-    if ($nuevoEstado === 'inactivo') {
-        // Primero reorganizar las letras antes de cambiar el estado
-        reorganizarLetrasGrupos($conn, $id);
-    }
-
-    // ============================================
-    // ACTUALIZAR ESTADO
-    // ============================================
+    // IMPORTANTE: Marcamos como inactivo primero para evitar conflictos
+    // de clave duplicada al reorganizar las letras
     $stmt = $conn->prepare("UPDATE grupos SET estado = ? WHERE id = ?");
     $stmt->bind_param("si", $nuevoEstado, $id);
 
@@ -46,6 +40,15 @@ try {
     }
 
     $stmt->close();
+
+    // ============================================
+    // REORGANIZAR LETRAS DESPUÉS DE DAR DE BAJA
+    // ============================================
+    if ($nuevoEstado === 'inactivo') {
+        // Reorganizar las letras después de marcar como inactivo
+        // Esto evita el error de "Duplicate entry"
+        reorganizarLetrasGrupos($conn, $id);
+    }
 
     // ============================================
     // RESPUESTA EXITOSA

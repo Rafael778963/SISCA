@@ -1,6 +1,7 @@
 <?php
 include '../session_check.php';
 include '../conexion.php';
+include 'funciones_letras.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -50,14 +51,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cambioConfiguracion = (
             $datosActuales['generacion'] !== $generacion ||
             $datosActuales['programa_educativo'] !== $programa ||
-            $datosActuales['grado'] !== $grado
+            $datosActuales['grado'] !== $grado ||
+            $datosActuales['turno'] !== $turno
         );
-        
+
         $codigoBase = $generacion . $programa . $grado;
         $letraIdentificacion = $datosActuales['letra_identificacion'];
         $codigoCompleto = $codigoBase . $turno;
-        
+
+        // ============================================
+        // SI CAMBIÓ LA CONFIGURACIÓN, REORGANIZAR
+        // ============================================
         if ($cambioConfiguracion) {
+            // PASO 1: Marcar temporalmente este grupo como inactivo
+            // Esto evita conflictos de clave duplicada durante la reorganización
+            $stmtTemp = $conn->prepare("UPDATE grupos SET estado = 'inactivo' WHERE id = ?");
+            $stmtTemp->bind_param("i", $id);
+            $stmtTemp->execute();
+            $stmtTemp->close();
+
+            // PASO 2: Reorganizar las letras de la configuración antigua
+            // Los grupos subsecuentes tomarán las letras correspondientes
+            reorganizarLetrasGrupos($conn, $id);
+
+            // PASO 3: Calcular la letra para la nueva configuración
             // Solo si cambió generación, programa o grado, recalcular la letra
             // CRÍTICO: Filtrar solo por el período activo para evitar conflictos entre períodos
             $stmt = $conn->prepare("
@@ -96,20 +113,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             $stmt->close();
+
+            // PASO 4: Reactivar el grupo y actualizar con nueva configuración
+            // El UPDATE más abajo se encargará de esto
         }
         // Si NO cambió la configuración, mantener la letra actual (ya está asignada arriba)
-        
+
         // Construir el código completo con o sin letra
         if ($letraIdentificacion !== null) {
             $codigoCompleto = $codigoBase . $letraIdentificacion . $turno;
         } else {
             $codigoCompleto = $codigoBase . $turno;
         }
-        
-        // Actualizar el grupo
+
+        // Actualizar el grupo (si cambió configuración, también reactivar)
         $stmt = $conn->prepare("
-            UPDATE grupos 
-            SET codigo_grupo = ?, generacion = ?, nivel_educativo = ?, programa_educativo = ?, grado = ?, letra_identificacion = ?, turno = ?
+            UPDATE grupos
+            SET codigo_grupo = ?, generacion = ?, nivel_educativo = ?, programa_educativo = ?, grado = ?, letra_identificacion = ?, turno = ?, estado = 'activo'
             WHERE id = ?
         ");
         $stmt->bind_param("sssssssi", $codigoCompleto, $generacion, $nivel, $programa, $grado, $letraIdentificacion, $turno, $id);
