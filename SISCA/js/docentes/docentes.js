@@ -10,7 +10,8 @@ let totalRegistros = 0;
 // ============================================
 // INICIALIZACIÓN
 // ============================================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await inicializarPeriodoManager();
     cargarDocentes();
     inicializarFormulario();
     inicializarRegimenCheckboxes();
@@ -90,6 +91,11 @@ function establecerRegimenEnFormulario(regimen) {
 // CRUD - CREAR Y ACTUALIZAR
 // ============================================
 async function guardarDocente() {
+    // Validar que hay un periodo activo
+    if (!validarPeriodoActivo('guardar un docente')) {
+        return;
+    }
+
     const nombreDocente = document.getElementById('nombreDocente').value.trim();
     const turno = document.getElementById('turno').value;
     const regimen = obtenerRegimenSeleccionado();
@@ -109,7 +115,12 @@ async function guardarDocente() {
         return;
     }
 
-    const data = { nombre_docente: nombreDocente, turno, regimen };
+    const data = {
+        nombre_docente: nombreDocente,
+        turno,
+        regimen,
+        periodo_id: obtenerPeriodoActivoId()
+    };
 
     let resultado;
     if (docenteEditando !== null) {
