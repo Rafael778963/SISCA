@@ -9,10 +9,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $programa = trim($_POST['programa']);
         $grado = trim($_POST['grado']);
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
-        
+        $periodo_id = isset($_POST['periodo_id']) ? (int)$_POST['periodo_id'] : null;
+
         // Validaciones básicas
         if (empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
+        }
+
+        if (empty($periodo_id)) {
+            throw new Exception('Debe seleccionar un período activo antes de guardar');
         }
         
         if (strlen($generacion) !== 2 || !is_numeric($generacion)) {
@@ -73,10 +78,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Insertar el nuevo grupo
         $stmt = $conn->prepare("
-            INSERT INTO grupos (codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO grupos (codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno, periodo_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->bind_param("sssssss", $codigoCompleto, $generacion, $nivel, $programa, $grado, $letraIdentificacion, $turno);
+        $stmt->bind_param("sssssssi", $codigoCompleto, $generacion, $nivel, $programa, $grado, $letraIdentificacion, $turno, $periodo_id);
         
         if ($stmt->execute()) {
             $idInsertado = $stmt->insert_id;

@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function inicializarApp() {
+    // Inicializar gestor de periodo
+    await inicializarPeriodoManager();
+
     const programas = await cargarProgramasDesdeDB();
     if (programas) {
         programasEducativos = programas;

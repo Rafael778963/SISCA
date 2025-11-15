@@ -53,15 +53,21 @@ function verificarLetraGrupo(generacion, programa, grado, turno, codigoBase) {
 // GUARDAR GRUPO
 // ============================================
 function guardarGrupo() {
+    // Validar que haya periodo activo
+    if (!validarPeriodoActivo('guardar un grupo')) {
+        return;
+    }
+
     const formData = new FormData();
     formData.append('generacion', document.getElementById('generacion').value.trim());
     formData.append('nivel', document.getElementById('nivel').value);
     formData.append('programa', document.getElementById('programa').value);
     formData.append('grado', document.getElementById('grado').value.trim());
-    
+    formData.append('periodo_id', obtenerPeriodoActivoId());
+
     const turnoSeleccionado = document.querySelector('input[name="turno"]:checked');
     formData.append('turno', turnoSeleccionado ? turnoSeleccionado.value : 'M');
-    
+
     fetch('../../php/grupos/guardar_grupo.php', {
         method: 'POST',
         body: formData
@@ -136,16 +142,22 @@ function editarGrupo(id) {
 // ACTUALIZAR GRUPO
 // ============================================
 function actualizarGrupo() {
+    // Validar que haya periodo activo
+    if (!validarPeriodoActivo('actualizar un grupo')) {
+        return;
+    }
+
     const formData = new FormData();
     formData.append('id', idGrupoEditando);
     formData.append('generacion', document.getElementById('generacion').value.trim());
     formData.append('nivel', document.getElementById('nivel').value);
     formData.append('programa', document.getElementById('programa').value);
     formData.append('grado', document.getElementById('grado').value.trim());
-    
+    formData.append('periodo_id', obtenerPeriodoActivoId());
+
     const turnoSeleccionado = document.querySelector('input[name="turno"]:checked');
     formData.append('turno', turnoSeleccionado ? turnoSeleccionado.value : 'M');
-    
+
     fetch('../../php/grupos/editar_grupo.php', {
         method: 'POST',
         body: formData

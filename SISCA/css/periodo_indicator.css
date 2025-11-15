@@ -1,0 +1,67 @@
+/**
+ * PERIODO INDICATOR - Estilos para el indicador de periodo activo
+ * Este CSS debe incluirse en todos los módulos que usen periodo_manager.js
+ */
+
+.periodo-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #f0f3f7;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    margin-right: auto;
+}
+
+.periodo-indicator i {
+    font-size: 1rem;
+    color: #9e9e9e;
+}
+
+.periodo-indicator.activo {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    color: #2e7d32;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+}
+
+.periodo-indicator.activo i {
+    color: #4caf50;
+}
+
+.periodo-texto {
+    font-weight: 600;
+}
+
+/* Animación sutil al cargar */
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.periodo-indicator {
+    animation: fadeInSlide 0.4s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .periodo-indicator {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .periodo-indicator i {
+        font-size: 0.9rem;
+    }
+}
