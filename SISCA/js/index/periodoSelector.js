@@ -7,6 +7,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     cargarPeriodos();
     cargarPeriodoActivo();
+    cargarEstadisticas(); // Cargar estadísticas iniciales
 });
 
 /**
@@ -68,6 +69,8 @@ function handlePeriodoChange(event) {
     if (!periodoId) {
         // Si no hay período seleccionado, limpiar la sesión
         limpiarPeriodoActivo();
+        // Cargar estadísticas sin filtro de periodo
+        cargarEstadisticas();
         return;
     }
 
@@ -77,6 +80,9 @@ function handlePeriodoChange(event) {
 
     // Guardar el período en la sesión
     guardarPeriodoActivo(periodoId, periodoTexto);
+
+    // Actualizar estadísticas con el nuevo periodo
+    cargarEstadisticas(periodoId);
 }
 
 /**
@@ -144,6 +150,81 @@ function actualizarEstadoPeriodo(periodo) {
     } else {
         statusDiv.classList.remove('activo');
         statusText.textContent = 'Sin período seleccionado';
+    }
+}
+
+/**
+ * Carga las estadísticas del periodo seleccionado
+ */
+function cargarEstadisticas(periodoId = null) {
+    // Si no se proporciona periodoId, intentar obtener el periodo activo
+    if (!periodoId) {
+        const select = document.getElementById('periodo-select');
+        periodoId = select ? select.value : null;
+    }
+
+    // Construir URL con parámetro opcional
+    const url = periodoId
+        ? `./php/periodos/get_estadisticas_periodo.php?periodo_id=${periodoId}`
+        : './php/periodos/get_estadisticas_periodo.php';
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.estadisticas) {
+                actualizarTarjetasEstadisticas(data.estadisticas);
+            } else {
+                console.error('Error al cargar estadísticas:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar estadísticas:', error);
+        });
+}
+
+/**
+ * Actualiza las tarjetas de estadísticas en el dashboard
+ */
+function actualizarTarjetasEstadisticas(estadisticas) {
+    // Actualizar cada tarjeta con los datos obtenidos
+    if (estadisticas.periodos_activos !== undefined) {
+        const elem = document.getElementById('stat-periodos');
+        if (elem) elem.textContent = estadisticas.periodos_activos;
+    }
+
+    if (estadisticas.grupos_registrados !== undefined) {
+        const elem = document.getElementById('stat-grupos');
+        if (elem) elem.textContent = estadisticas.grupos_registrados;
+    }
+
+    if (estadisticas.horas_tutoria !== undefined) {
+        const elem = document.getElementById('stat-tutoria');
+        if (elem) elem.textContent = estadisticas.horas_tutoria;
+    }
+
+    if (estadisticas.plan_estudios !== undefined) {
+        const elem = document.getElementById('stat-plan');
+        if (elem) elem.textContent = estadisticas.plan_estudios;
+    }
+
+    if (estadisticas.docentes_registrados !== undefined) {
+        const elem = document.getElementById('stat-docentes');
+        if (elem) elem.textContent = estadisticas.docentes_registrados;
+    }
+
+    if (estadisticas.reportes_generados !== undefined) {
+        const elem = document.getElementById('stat-reportes');
+        if (elem) elem.textContent = estadisticas.reportes_generados;
+    }
+
+    if (estadisticas.cartas_emitidas !== undefined) {
+        const elem = document.getElementById('stat-cartas');
+        if (elem) elem.textContent = estadisticas.cartas_emitidas;
+    }
+
+    if (estadisticas.asignaciones_carga !== undefined) {
+        const elem = document.getElementById('stat-carga');
+        if (elem) elem.textContent = estadisticas.asignaciones_carga;
     }
 }
 
