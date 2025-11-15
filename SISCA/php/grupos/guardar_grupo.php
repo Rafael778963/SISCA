@@ -1,6 +1,7 @@
 <?php
 include '../session_check.php';
 include '../conexion.php';
+include 'funciones_letras.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -35,46 +36,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Generar código base del grupo
         $codigoBase = $generacion . $programa . $grado;
-        
-        // Buscar si ya existe ese código base con el mismo turno y obtener la siguiente letra
-        $stmt = $conn->prepare("
-            SELECT letra_identificacion 
-            FROM grupos 
-            WHERE generacion = ? 
-            AND programa_educativo = ? 
-            AND grado = ? 
-            AND turno = ?
-            ORDER BY letra_identificacion DESC 
-            LIMIT 1
-        ");
-        $stmt->bind_param("ssss", $generacion, $programa, $grado, $turno);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        $letraIdentificacion = null;
-        $codigoCompleto = $codigoBase . $turno; // Agregar turno al final
-        
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            $ultimaLetra = $row['letra_identificacion'];
-            
-            if ($ultimaLetra === null) {
-                // Si existe un grupo sin letra, el siguiente será con 'B'
-                $letraIdentificacion = 'B';
-            } else {
-                // Incrementar la letra
-                $letraIdentificacion = chr(ord($ultimaLetra) + 1);
-                
-                // Validar que no exceda la Z
-                if (ord($letraIdentificacion) > ord('Z')) {
-                    throw new Exception('Se ha alcanzado el límite de grupos con esta configuración y turno');
-                }
-            }
-            // Insertar letra antes del turno
+
+        // Usar la función para encontrar la primera letra disponible
+        // Esto permite llenar "huecos" cuando se dan de baja grupos
+        $letraIdentificacion = encontrarPrimeraLetraDisponible(
+            $conn,
+            $generacion,
+            $programa,
+            $grado,
+            $turno,
+            $periodo_id
+        );
+
+        // Generar código completo
+        if ($letraIdentificacion !== null) {
             $codigoCompleto = $codigoBase . $letraIdentificacion . $turno;
+        } else {
+            // Primer grupo de esta configuración, sin letra
+            $codigoCompleto = $codigoBase . $turno;
         }
-        
-        $stmt->close();
         
         // Insertar el nuevo grupo
         $stmt = $conn->prepare("

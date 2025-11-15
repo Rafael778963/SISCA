@@ -38,7 +38,7 @@ async function cargarPeriodoActivo() {
 }
 
 /**
- * Crea el indicador visual del periodo en el header
+ * Crea el indicador visual del periodo en el header (esquina derecha)
  */
 function crearIndicadorPeriodo() {
     const header = document.querySelector('.header');
@@ -69,10 +69,10 @@ function crearIndicadorPeriodo() {
         `;
     }
 
-    // Insertar antes del user-menu
+    // Insertar en el user-menu, al inicio (antes de los botones)
     const userMenu = header.querySelector('.user-menu');
     if (userMenu) {
-        header.insertBefore(indicador, userMenu);
+        userMenu.insertBefore(indicador, userMenu.firstChild);
     }
 }
 

@@ -16,7 +16,7 @@
     white-space: nowrap;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
-    margin-right: auto;
+    margin-right: 1rem; /* Espacio antes del botón de logout */
 }
 
 .periodo-indicator i {
@@ -59,9 +59,27 @@
     .periodo-indicator {
         font-size: 0.75rem;
         padding: 0.4rem 0.8rem;
+        margin-right: 0.5rem;
     }
 
     .periodo-indicator i {
         font-size: 0.9rem;
+    }
+
+    .periodo-texto {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 480px) {
+    .periodo-indicator {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .periodo-texto {
+        display: none; /* Ocultar texto en pantallas muy pequeñas, solo mostrar icono */
     }
 }
