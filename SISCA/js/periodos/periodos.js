@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     mensajeDetalle += `• Horarios eliminados: ${data.detalles.horarios_eliminados}\n`;
                                     mensajeDetalle += `• PDFs eliminados: ${data.detalles.archivos_pdf_eliminados}\n`;
                                     mensajeDetalle += `• Grupos eliminados: ${data.detalles.grupos_eliminados}\n`;
-                                    mensajeDetalle += `• Docentes desactivados: ${data.detalles.docentes_desactivados}\n`;
+                                    mensajeDetalle += `• Docentes eliminados: ${data.detalles.docentes_eliminados}\n`;
                                     if (data.detalles.archivos_no_eliminados > 0) {
                                         mensajeDetalle += `⚠️ PDFs no eliminados: ${data.detalles.archivos_no_eliminados}`;
                                     }

@@ -95,18 +95,18 @@ if(isset($_POST['id'])) {
         $grupos_eliminados = $stmt->affected_rows;
         $stmt->close();
 
-        // 6. Actualizar docentes del período a inactivos (en lugar de eliminarlos, por auditoría)
-        $sql_update_docentes = "UPDATE docentes SET estado = 'inactivo' WHERE periodo_id = ?";
-        $stmt = $conn->prepare($sql_update_docentes);
+        // 6. Eliminar todos los docentes del período de la BD
+        $sql_delete_docentes = "DELETE FROM docentes WHERE periodo_id = ?";
+        $stmt = $conn->prepare($sql_delete_docentes);
         if (!$stmt) {
-            throw new Exception('Error al preparar actualización de docentes: ' . $conn->error);
+            throw new Exception('Error al preparar eliminación de docentes: ' . $conn->error);
         }
 
         $stmt->bind_param("i", $id);
         if (!$stmt->execute()) {
-            throw new Exception('Error al actualizar docentes: ' . $stmt->error);
+            throw new Exception('Error al eliminar docentes: ' . $stmt->error);
         }
-        $docentes_desactivados = $stmt->affected_rows;
+        $docentes_eliminados = $stmt->affected_rows;
         $stmt->close();
 
         // 7. Eliminar el período de la BD
@@ -139,7 +139,7 @@ if(isset($_POST['id'])) {
                 'archivos_no_eliminados' => $archivos_no_eliminados,
                 'horarios_eliminados' => $horarios_eliminados,
                 'grupos_eliminados' => $grupos_eliminados,
-                'docentes_desactivados' => $docentes_desactivados,
+                'docentes_eliminados' => $docentes_eliminados,
                 'carpeta_eliminada' => $carpeta_eliminada
             ]
         ]);
