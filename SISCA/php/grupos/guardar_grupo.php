@@ -9,10 +9,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $programa = trim($_POST['programa']);
         $grado = trim($_POST['grado']);
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
-        
+        $periodo_id = isset($_POST['periodo_id']) ? intval($_POST['periodo_id']) : 1; // Por defecto periodo 1
+
         // Validaciones básicas
         if (empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
+        }
+
+        // Validar que el periodo existe
+        if ($periodo_id > 0) {
+            $stmt = $conn->prepare("SELECT id FROM periodos WHERE id = ?");
+            $stmt->bind_param("i", $periodo_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows === 0) {
+                throw new Exception('El periodo seleccionado no existe');
+            }
+            $stmt->close();
         }
         
         if (strlen($generacion) !== 2 || !is_numeric($generacion)) {
@@ -73,10 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Insertar el nuevo grupo
         $stmt = $conn->prepare("
-            INSERT INTO grupos (codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO grupos (periodo_id, codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->bind_param("sssssss", $codigoCompleto, $generacion, $nivel, $programa, $grado, $letraIdentificacion, $turno);
+        $stmt->bind_param("isssssss", $periodo_id, $codigoCompleto, $generacion, $nivel, $programa, $grado, $letraIdentificacion, $turno);
         
         if ($stmt->execute()) {
             $idInsertado = $stmt->insert_id;
@@ -85,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'message' => 'Grupo guardado exitosamente',
                 'data' => [
                     'id' => $idInsertado,
+                    'periodo_id' => $periodo_id,
                     'codigo_grupo' => $codigoCompleto,
                     'generacion' => $generacion,
                     'nivel_educativo' => $nivel,

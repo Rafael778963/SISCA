@@ -7,10 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Filtro de estado (activo/inactivo)
         $estado = isset($_GET['estado']) ? $_GET['estado'] : 'activo';
         
-        $sql = "SELECT id, codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno, estado, fecha_creacion 
-                FROM grupos 
-                WHERE estado = ?
-                ORDER BY id ASC";
+        $sql = "SELECT g.id, g.periodo_id, g.codigo_grupo, g.generacion, g.nivel_educativo, g.programa_educativo, g.grado, g.letra_identificacion, g.turno, g.estado, g.fecha_creacion, p.periodo, p.año
+                FROM grupos g
+                LEFT JOIN periodos p ON g.periodo_id = p.id
+                WHERE g.estado = ?
+                ORDER BY g.id ASC";
         
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $estado);

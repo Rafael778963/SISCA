@@ -3,17 +3,14 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-11-2025
+-- Tiempo de generación: 13-11-2025 a las 03:56:42
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
--- 
--- Base de datos mejorada con relaciones de integridad referencial
--- Modificado por: Claude AI
--- Fecha: 2025-11-15
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -23,261 +20,27 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `sisca`
 --
-CREATE DATABASE IF NOT EXISTS `sisca` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `sisca`;
-
--- --------------------------------------------------------
--- ORDEN DE CREACIÓN:
--- 1. Periodos (tabla padre)
--- 2. Programas (tabla padre)
--- 3. Docentes (tabla padre)
--- 4. Usuarios (tabla independiente)
--- 5. Grupos (depende de periodos)
--- 6. Programa_materias (depende de programas)
--- 7. Horarios (depende de periodos)
--- 8. Asignaciones (depende de docentes, grupos, programa_materias, periodos)
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `periodos`
--- TABLA PADRE: Sin dependencias
---
-
-CREATE TABLE `periodos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `periodo` varchar(255) NOT NULL,
-  `año` int(11) NOT NULL,
-  `activo` tinyint(1) DEFAULT 1,
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx_año` (`año`),
-  KEY `idx_activo` (`activo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `programas`
--- TABLA PADRE: Sin dependencias
---
-
-CREATE TABLE `programas` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nomenclatura` varchar(10) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `nivel` enum('TSU','I','L') NOT NULL,
-  `activo` tinyint(1) DEFAULT 1,
-  `fecha_alta` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx_nomenclatura` (`nomenclatura`),
-  KEY `idx_nivel` (`nivel`),
-  KEY `idx_activo` (`activo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `docentes`
--- TABLA PADRE: Sin dependencias
 --
 
 CREATE TABLE `docentes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `nombre_docente` varchar(255) NOT NULL,
   `turno` varchar(50) NOT NULL,
   `regimen` varchar(10) NOT NULL,
   `estado` enum('activo','inactivo') DEFAULT 'activo',
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_modificacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx_nombre` (`nombre_docente`),
-  KEY `idx_turno` (`turno`),
-  KEY `idx_regimen` (`regimen`),
-  KEY `idx_estado` (`estado`)
+  `fecha_modificacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
 --
--- Estructura de tabla para la tabla `usuarios`
--- TABLA INDEPENDIENTE: Sin dependencias ni relaciones
+-- Volcado de datos para la tabla `docentes`
 --
 
-CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `area` varchar(100) NOT NULL,
-  `nombre` varchar(150) NOT NULL,
-  `nombre_usuario` varchar(100) NOT NULL,
-  `contraseña` varchar(255) NOT NULL,
-  `activo` tinyint(1) DEFAULT 1,
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nombre_usuario` (`nombre_usuario`),
-  KEY `idx_area` (`area`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `grupos`
--- DEPENDE DE: periodos
--- CON CASCADA: Al eliminar un periodo, NO se eliminan los grupos (RESTRICT)
---
-
-CREATE TABLE `grupos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `periodo_id` int(11) NOT NULL,
-  `codigo_grupo` varchar(20) NOT NULL,
-  `generacion` varchar(2) NOT NULL,
-  `nivel_educativo` varchar(5) NOT NULL,
-  `programa_educativo` varchar(20) NOT NULL,
-  `grado` varchar(1) NOT NULL,
-  `letra_identificacion` varchar(1) DEFAULT NULL,
-  `turno` char(1) NOT NULL DEFAULT 'M' COMMENT 'M=Matutino, N=Nocturno',
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_modificacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `codigo_grupo` (`codigo_grupo`),
-  KEY `idx_generacion` (`generacion`),
-  KEY `idx_nivel` (`nivel_educativo`),
-  KEY `idx_programa` (`programa_educativo`),
-  KEY `idx_codigo` (`codigo_grupo`),
-  KEY `idx_periodo` (`periodo_id`),
-  KEY `idx_estado` (`estado`),
-  CONSTRAINT `fk_grupos_periodo` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `programa_materias`
--- DEPENDE DE: programas
--- CON CASCADA: Al eliminar un programa, se eliminan todas sus materias (CASCADE)
---
-
-CREATE TABLE `programa_materias` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_programa` int(11) NOT NULL,
-  `cve_materia` varchar(20) NOT NULL,
-  `nombre_materia` varchar(255) NOT NULL,
-  `grado` tinyint(2) NOT NULL,
-  `horas_semanales` int(11) NOT NULL,
-  `turno` enum('Matutino','Nocturno') NOT NULL,
-  `activo` tinyint(1) DEFAULT 1,
-  `fecha_alta` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `programa_materia_grado_turno` (`id_programa`,`cve_materia`,`grado`,`turno`),
-  KEY `id_programa` (`id_programa`),
-  KEY `idx_cve_materia` (`cve_materia`),
-  KEY `idx_grado` (`grado`),
-  KEY `idx_turno` (`turno`),
-  KEY `idx_activo` (`activo`),
-  CONSTRAINT `fk_programa_mat` FOREIGN KEY (`id_programa`) REFERENCES `programas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `horarios`
--- DEPENDE DE: periodos
--- CON CASCADA: Al eliminar un periodo, se eliminan todos sus horarios (CASCADE)
---
-
-CREATE TABLE `horarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `periodo_id` int(11) NOT NULL,
-  `nombre_archivo` varchar(255) NOT NULL,
-  `nombre_guardado` varchar(255) NOT NULL,
-  `ruta_archivo` varchar(500) NOT NULL,
-  `tamaño` bigint(11) DEFAULT 0,
-  `fecha_carga` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_modificacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `usuario_carga` varchar(100) DEFAULT NULL,
-  `estado` enum('activo','eliminado') DEFAULT 'activo',
-  PRIMARY KEY (`id`),
-  KEY `fk_periodo` (`periodo_id`),
-  KEY `idx_periodo_estado` (`periodo_id`,`estado`),
-  KEY `idx_fecha_carga` (`fecha_carga`),
-  KEY `idx_estado` (`estado`),
-  CONSTRAINT `fk_periodo_horarios` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `asignaciones`
--- NUEVA TABLA: Para relacionar docentes con materias, grupos y periodos
--- DEPENDE DE: docentes, programa_materias, grupos, periodos
--- CON CASCADA: Al eliminar cualquier entidad padre, se eliminan las asignaciones (CASCADE)
---
-
-CREATE TABLE `asignaciones` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `docente_id` int(11) NOT NULL,
-  `materia_id` int(11) NOT NULL,
-  `grupo_id` int(11) NOT NULL,
-  `periodo_id` int(11) NOT NULL,
-  `fecha_asignacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `fecha_modificacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `estado` enum('activo','inactivo') DEFAULT 'activo',
-  `observaciones` text DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_asignacion` (`docente_id`,`materia_id`,`grupo_id`,`periodo_id`),
-  KEY `idx_docente` (`docente_id`),
-  KEY `idx_materia` (`materia_id`),
-  KEY `idx_grupo` (`grupo_id`),
-  KEY `idx_periodo` (`periodo_id`),
-  KEY `idx_estado` (`estado`),
-  CONSTRAINT `fk_asignacion_docente` FOREIGN KEY (`docente_id`) REFERENCES `docentes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_asignacion_materia` FOREIGN KEY (`materia_id`) REFERENCES `programa_materias` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_asignacion_grupo` FOREIGN KEY (`grupo_id`) REFERENCES `grupos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_asignacion_periodo` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
--- INSERCIÓN DE DATOS
--- --------------------------------------------------------
-
-
---
--- Volcado de datos para la tabla `periodos`
--- PRIMERO: Insertar periodos (tabla padre)
---
-
-INSERT INTO `periodos` (`id`, `periodo`, `año`) VALUES
-(1, 'Enero - Abril', 2025),
-(2, 'Mayo - Agosto', 2025),
-(3, 'Septiembre - Diciembre', 2025);
-
--- --------------------------------------------------------
-
---
--- Volcado de datos para la tabla `programas`
--- SEGUNDO: Insertar programas (tabla padre)
---
-
-INSERT INTO `programas` (`id`, `nomenclatura`, `nombre`, `nivel`, `activo`, `fecha_alta`) VALUES
-(1, 'EVND', 'TSU Entornos Virtuales y Negocios Digitales', 'TSU', 1, '2025-11-13 02:52:17'),
-(2, 'QI', 'TSU en Química Industrial', 'TSU', 1, '2025-11-13 02:52:17'),
-(3, 'MERC', 'TSU en Mercadotecnia', 'TSU', 1, '2025-11-13 02:52:17'),
-(4, 'MI', 'TSU en Mantenimiento Industrial', 'TSU', 1, '2025-11-13 02:52:17'),
-(5, 'EII', 'TSU en Enseñanza del Idioma Inglés', 'TSU', 1, '2025-11-13 02:52:17'),
-(6, 'AUTO', 'TSU en Automatización', 'TSU', 1, '2025-11-13 02:52:17'),
-(7, 'TSU ', 'TSU en Entornos Virtuales y Negocios Digitales', 'TSU', 1, '2025-11-13 02:53:16'),
-(8, 'QI', 'TSU en Química Industrial', 'TSU', 1, '2025-11-13 02:53:16'),
-(9, 'AUTO', 'TSU en Automatización', 'TSU', 1, '2025-11-13 02:53:16'),
-(10, 'MERC', 'TSU en Mercadotecnia', 'TSU', 1, '2025-11-13 02:53:16'),
-(11, 'EII', 'TSU en Enseñanza del Idioma Inglés', 'TSU', 1, '2025-11-13 02:53:16'),
-(12, 'MI', 'TSU en Mantenimiento Industrial', 'TSU', 1, '2025-11-13 02:53:16'),
-(13, 'LICE', 'Licenciatura En Gestión Institucional Educativa y Curricular', 'L', 1, '2025-11-13 02:55:26'),
-(14, 'INGE', 'Ingeniería en Mecatrónia', 'I', 1, '2025-11-13 02:55:26'),
-(15, 'INGE', 'Ingeniería en Mantenimiento Industrial', 'I', 1, '2025-11-13 02:55:26'),
-(16, 'INGE', 'Ingeniería en Entornos Virtuales y Negocios Digitales', 'I', 1, '2025-11-13 02:55:26'),
-(17, 'LICE', 'Licenciatura en Innovación de Negocios y Mercadotecnia', 'L', 1, '2025-11-13 02:55:26'),
-(18, 'INGE', 'Ingeniería Química de Procesos Industriales', 'I', 1, '2025-11-13 02:55:26');
-
--- --------------------------------------------------------
 INSERT INTO `docentes` (`id`, `nombre_docente`, `turno`, `regimen`, `estado`, `fecha_creacion`, `fecha_modificacion`) VALUES
 (1, 'Adalberta Jiménez Salgado', 'Nocturno', 'PH', 'activo', '2025-10-13 20:38:54', '2025-10-17 19:02:57'),
 (2, 'Arely Eunice Cotero Rodríguez', 'Matutino', 'PH', 'activo', '2025-10-13 20:38:54', '2025-10-16 00:49:20'),
@@ -364,68 +127,82 @@ INSERT INTO `docentes` (`id`, `nombre_docente`, `turno`, `regimen`, `estado`, `f
 -- --------------------------------------------------------
 
 --
--- Volcado de datos para la tabla `usuarios`
--- CUARTO: Insertar usuarios (tabla independiente)
+-- Estructura de tabla para la tabla `grupos`
 --
 
-INSERT INTO `usuarios` (`id`, `area`, `nombre`, `nombre_usuario`, `contraseña`) VALUES
-(1, 'Admin', 'SUBDIRECTOR_ACADÉMICO', 'SUBDIRECTOR', '$2y$10$ZxH8fKe9gLqP3rY2sN4vJuO9mN1zX3wK5pQ7lR6eT8yU0iV4hS2gC'),
-(2, 'Admin', 'PTC_CARGA_ACADÉMICA', 'CARGA_ACADEMICA', '$2y$10$A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6'),
-(3, 'Coordinación', 'COORDINADOR_MATUTINO', 'COORD_MAT', '$2y$10$B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1'),
-(4, 'Coordinación', 'COORDINADOR_NOCTURNO', 'COORD_NOCT', '$2y$10$C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2'),
-(5, 'PTC Proyecto Integrador', 'PTC_PI_MATUTINO', 'PTC_PI_MAT', '$2y$10$D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3'),
-(6, 'PTC Proyecto Integrador', 'PTC_PI_NOCTURNO', 'PTC_PI_NOCT', '$2y$10$E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3D4'),
-(7, 'Tutoría', 'TUTORÍA', 'TUTORIA', '$2y$10$F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3D4E5'),
-(8, 'Prefectura', 'PREFECTURA', 'PREFECTURA', '$2y$10$G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3D4E5F6'),
-(9, 'Docente', 'PROYECTO_INTEGRADOR', 'PROYECTO_INT', '$2y$10$H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3D4E5F6G7');
-
--- --------------------------------------------------------
+CREATE TABLE `grupos` (
+  `id` int(11) NOT NULL,
+  `codigo_grupo` varchar(20) NOT NULL,
+  `generacion` varchar(2) NOT NULL,
+  `nivel_educativo` varchar(5) NOT NULL,
+  `programa_educativo` varchar(20) NOT NULL,
+  `grado` varchar(1) NOT NULL,
+  `letra_identificacion` varchar(1) DEFAULT NULL,
+  `turno` char(1) NOT NULL DEFAULT 'M' COMMENT 'M=Matutino, N=Nocturno',
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_modificacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `grupos`
--- QUINTO: Insertar grupos (depende de periodos)
--- MODIFICADO: Se agregó periodo_id con valor 1 (Enero - Abril 2025) para todos los grupos existentes
 --
 
-INSERT INTO `grupos` (`id`, `periodo_id`, `codigo_grupo`, `generacion`, `nivel_educativo`, `programa_educativo`, `grado`, `letra_identificacion`, `turno`, `fecha_creacion`, `fecha_modificacion`, `estado`) VALUES
-(3, 1, '51TSUQAI3M', '51', 'TSU', 'TSUQAI', '3', NULL, 'M', '2025-10-17 08:47:22', '2025-10-17 21:50:05', 'inactivo'),
-(4, 1, '60IEVND5N', '60', 'I', 'IEVND', '5', NULL, 'N', '2025-10-17 08:47:46', '2025-10-17 09:18:38', 'activo'),
-(5, 1, '60IQPI5N', '60', 'I', 'IQPI', '5', NULL, 'N', '2025-10-17 08:48:20', '2025-10-17 09:18:54', 'activo'),
-(6, 1, '28TSUA2BN', '28', 'TSU', 'TSUA', '2', 'B', 'N', '2025-10-17 17:49:51', '2025-10-17 17:49:51', 'activo'),
-(7, 1, '51TSUDN2M', '51', 'TSU', 'TSUDN', '2', NULL, 'M', '2025-10-17 21:13:01', '2025-10-17 21:13:01', 'activo'),
-(8, 1, '28TSUEV2M', '28', 'TSU', 'TSUEV', '2', NULL, 'M', '2025-10-17 21:13:15', '2025-10-17 21:13:15', 'activo'),
-(9, 1, '59IMI5N', '59', 'I', 'IMI', '5', NULL, 'N', '2025-10-17 21:13:22', '2025-10-17 21:40:39', 'inactivo'),
-(10, 1, '58IEVND2M', '58', 'I', 'IEVND', '2', NULL, 'M', '2025-10-17 21:13:30', '2025-10-17 21:13:30', 'activo'),
-(11, 1, '28IM7M', '28', 'I', 'IM', '7', NULL, 'M', '2025-10-17 21:13:38', '2025-10-17 21:13:38', 'activo'),
-(12, 1, '51TSUEI2M', '51', 'TSU', 'TSUEI', '2', NULL, 'M', '2025-10-17 21:13:52', '2025-10-17 21:13:52', 'activo'),
-(13, 1, '58IMI2M', '58', 'I', 'IMI', '2', NULL, 'M', '2025-10-17 21:18:13', '2025-10-17 21:18:13', 'activo'),
-(14, 1, '51IEVND2M', '51', 'I', 'IEVND', '2', NULL, 'M', '2025-10-17 21:18:19', '2025-10-17 21:18:19', 'activo'),
-(15, 1, '29TSUDN5M', '29', 'TSU', 'TSUDN', '5', NULL, 'M', '2025-10-17 21:18:25', '2025-10-17 21:18:25', 'activo'),
-(16, 1, '58TSUIT1M', '58', 'TSU', 'TSUIT', '1', NULL, 'M', '2025-10-17 21:18:36', '2025-10-17 21:18:36', 'activo'),
-(17, 1, '28IEVND8M', '28', 'I', 'IEVND', '8', NULL, 'M', '2025-10-17 21:18:51', '2025-10-17 21:18:51', 'activo'),
-(18, 1, '51TSUQAI3BM', '51', 'TSU', 'TSUQAI', '3', 'B', 'M', '2025-10-17 21:35:26', '2025-10-17 21:39:47', 'inactivo'),
-(19, 1, '51TSUQAI3CM', '51', 'TSU', 'TSUQAI', '3', 'C', 'M', '2025-10-17 21:35:28', '2025-10-17 21:35:28', 'activo'),
-(20, 1, '51TSUQAI3DM', '51', 'TSU', 'TSUQAI', '3', 'D', 'M', '2025-10-17 21:35:28', '2025-10-17 21:35:28', 'activo'),
-(21, 1, '51TSUQAI3EM', '51', 'TSU', 'TSUQAI', '3', 'E', 'M', '2025-10-17 21:35:28', '2025-10-17 21:35:28', 'activo'),
-(22, 1, '51TSUQAI3FM', '51', 'TSU', 'TSUQAI', '3', 'F', 'M', '2025-10-17 21:35:29', '2025-10-17 21:35:29', 'activo'),
-(23, 1, '28TSUA2M', '28', 'TSU', 'TSUA', '2', NULL, 'M', '2025-10-17 21:35:53', '2025-10-17 21:35:53', 'activo'),
-(25, 1, '28TSUDN2BM', '28', 'TSU', 'TSUDN', '2', 'B', 'M', '2025-10-17 21:36:17', '2025-10-17 21:36:17', 'activo'),
-(26, 1, '28TSUDN2CM', '28', 'TSU', 'TSUDN', '2', 'C', 'M', '2025-10-17 21:36:17', '2025-10-17 21:36:17', 'activo'),
-(27, 1, '28TSUDN2DM', '28', 'TSU', 'TSUDN', '2', 'D', 'M', '2025-10-17 21:36:17', '2025-10-17 21:36:17', 'activo'),
-(28, 1, '28TSUDN2EM', '28', 'TSU', 'TSUDN', '2', 'E', 'M', '2025-10-17 21:36:17', '2025-10-17 21:36:17', 'activo'),
-(29, 1, '28TSUDN2FM', '28', 'TSU', 'TSUDN', '2', 'F', 'M', '2025-10-17 21:36:21', '2025-10-17 21:36:21', 'activo'),
-(30, 1, '28TSUA8M', '28', 'TSU', 'TSUA', '8', NULL, 'M', '2025-10-17 21:36:37', '2025-10-17 21:36:37', 'activo'),
-(31, 1, '28TSUA8BM', '28', 'TSU', 'TSUA', '8', 'B', 'M', '2025-10-17 21:38:14', '2025-10-17 21:38:14', 'activo'),
-(32, 1, '51TSUQAI3GM', '51', 'TSU', 'TSUQAI', '3', 'G', 'M', '2025-10-17 21:38:53', '2025-10-17 21:38:53', 'activo'),
-(33, 1, '59IMI5BN', '59', 'I', 'IMI', '5', 'B', 'N', '2025-10-17 21:40:22', '2025-10-17 21:40:22', 'activo'),
-(34, 1, '28IM7BM', '28', 'I', 'IM', '7', 'B', 'M', '2025-10-17 21:49:18', '2025-10-17 21:49:18', 'activo'),
-(35, 1, '00IMI2N', '00', 'I', 'IMI', '2', NULL, 'N', '2025-10-18 01:33:27', '2025-10-18 01:33:27', 'activo');
+INSERT INTO `grupos` (`id`, `codigo_grupo`, `generacion`, `nivel_educativo`, `programa_educativo`, `grado`, `letra_identificacion`, `turno`, `fecha_creacion`, `fecha_modificacion`, `estado`) VALUES
+(3, '51TSUQAI3M', '51', 'TSU', 'TSUQAI', '3', NULL, 'M', '2025-10-17 08:47:22', '2025-10-17 21:50:05', 'inactivo'),
+(4, '60IEVND5N', '60', 'I', 'IEVND', '5', NULL, 'N', '2025-10-17 08:47:46', '2025-10-17 09:18:38', 'activo'),
+(5, '60IQPI5N', '60', 'I', 'IQPI', '5', NULL, 'N', '2025-10-17 08:48:20', '2025-10-17 09:18:54', 'activo'),
+(6, '28TSUA2BN', '28', 'TSU', 'TSUA', '2', 'B', 'N', '2025-10-17 17:49:51', '2025-10-17 17:49:51', 'activo'),
+(7, '51TSUDN2M', '51', 'TSU', 'TSUDN', '2', NULL, 'M', '2025-10-17 21:13:01', '2025-10-17 21:13:01', 'activo'),
+(8, '28TSUEV2M', '28', 'TSU', 'TSUEV', '2', NULL, 'M', '2025-10-17 21:13:15', '2025-10-17 21:13:15', 'activo'),
+(9, '59IMI5N', '59', 'I', 'IMI', '5', NULL, 'N', '2025-10-17 21:13:22', '2025-10-17 21:40:39', 'inactivo'),
+(10, '58IEVND2M', '58', 'I', 'IEVND', '2', NULL, 'M', '2025-10-17 21:13:30', '2025-10-17 21:13:30', 'activo'),
+(11, '28IM7M', '28', 'I', 'IM', '7', NULL, 'M', '2025-10-17 21:13:38', '2025-10-17 21:13:38', 'activo'),
+(12, '51TSUEI2M', '51', 'TSU', 'TSUEI', '2', NULL, 'M', '2025-10-17 21:13:52', '2025-10-17 21:13:52', 'activo'),
+(13, '58IMI2M', '58', 'I', 'IMI', '2', NULL, 'M', '2025-10-17 21:18:13', '2025-10-17 21:18:13', 'activo'),
+(14, '51IEVND2M', '51', 'I', 'IEVND', '2', NULL, 'M', '2025-10-17 21:18:19', '2025-10-17 21:18:19', 'activo'),
+(15, '29TSUDN5M', '29', 'TSU', 'TSUDN', '5', NULL, 'M', '2025-10-17 21:18:25', '2025-10-17 21:18:25', 'activo'),
+(16, '58TSUIT1M', '58', 'TSU', 'TSUIT', '1', NULL, 'M', '2025-10-17 21:18:36', '2025-10-17 21:18:36', 'activo'),
+(17, '28IEVND8M', '28', 'I', 'IEVND', '8', NULL, 'M', '2025-10-17 21:18:51', '2025-10-17 21:18:51', 'activo'),
+(18, '51TSUQAI3BM', '51', 'TSU', 'TSUQAI', '3', 'B', 'M', '2025-10-17 21:35:26', '2025-10-17 21:39:47', 'inactivo'),
+(19, '51TSUQAI3CM', '51', 'TSU', 'TSUQAI', '3', 'C', 'M', '2025-10-17 21:35:28', '2025-10-17 21:35:28', 'activo'),
+(20, '51TSUQAI3DM', '51', 'TSU', 'TSUQAI', '3', 'D', 'M', '2025-10-17 21:35:28', '2025-10-17 21:35:28', 'activo'),
+(21, '51TSUQAI3EM', '51', 'TSU', 'TSUQAI', '3', 'E', 'M', '2025-10-17 21:35:28', '2025-10-17 21:35:28', 'activo'),
+(22, '51TSUQAI3FM', '51', 'TSU', 'TSUQAI', '3', 'F', 'M', '2025-10-17 21:35:29', '2025-10-17 21:35:29', 'activo'),
+(23, '28TSUA2M', '28', 'TSU', 'TSUA', '2', NULL, 'M', '2025-10-17 21:35:53', '2025-10-17 21:35:53', 'activo'),
+(25, '28TSUDN2BM', '28', 'TSU', 'TSUDN', '2', 'B', 'M', '2025-10-17 21:36:17', '2025-10-17 21:36:17', 'activo'),
+(26, '28TSUDN2CM', '28', 'TSU', 'TSUDN', '2', 'C', 'M', '2025-10-17 21:36:17', '2025-10-17 21:36:17', 'activo'),
+(27, '28TSUDN2DM', '28', 'TSU', 'TSUDN', '2', 'D', 'M', '2025-10-17 21:36:17', '2025-10-17 21:36:17', 'activo'),
+(28, '28TSUDN2EM', '28', 'TSU', 'TSUDN', '2', 'E', 'M', '2025-10-17 21:36:17', '2025-10-17 21:36:17', 'activo'),
+(29, '28TSUDN2FM', '28', 'TSU', 'TSUDN', '2', 'F', 'M', '2025-10-17 21:36:21', '2025-10-17 21:36:21', 'activo'),
+(30, '28TSUA8M', '28', 'TSU', 'TSUA', '8', NULL, 'M', '2025-10-17 21:36:37', '2025-10-17 21:36:37', 'activo'),
+(31, '28TSUA8BM', '28', 'TSU', 'TSUA', '8', 'B', 'M', '2025-10-17 21:38:14', '2025-10-17 21:38:14', 'activo'),
+(32, '51TSUQAI3GM', '51', 'TSU', 'TSUQAI', '3', 'G', 'M', '2025-10-17 21:38:53', '2025-10-17 21:38:53', 'activo'),
+(33, '59IMI5BN', '59', 'I', 'IMI', '5', 'B', 'N', '2025-10-17 21:40:22', '2025-10-17 21:40:22', 'activo'),
+(34, '28IM7BM', '28', 'I', 'IM', '7', 'B', 'M', '2025-10-17 21:49:18', '2025-10-17 21:49:18', 'activo'),
+(35, '00IMI2N', '00', 'I', 'IMI', '2', NULL, 'N', '2025-10-18 01:33:27', '2025-10-18 01:33:27', 'activo');
 
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `horarios`
+--
+
+CREATE TABLE `horarios` (
+  `id` int(11) NOT NULL,
+  `periodo_id` int(11) NOT NULL,
+  `nombre_archivo` varchar(255) NOT NULL,
+  `nombre_guardado` varchar(255) NOT NULL,
+  `ruta_archivo` varchar(500) NOT NULL,
+  `tamaño` bigint(11) DEFAULT 0,
+  `fecha_carga` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_modificacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `usuario_carga` varchar(100) DEFAULT NULL,
+  `estado` enum('activo','eliminado') DEFAULT 'activo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
 -- Volcado de datos para la tabla `horarios`
--- SEXTO: Insertar horarios (depende de periodos)
 --
 
 INSERT INTO `horarios` (`id`, `periodo_id`, `nombre_archivo`, `nombre_guardado`, `ruta_archivo`, `tamaño`, `fecha_carga`, `fecha_modificacion`, `usuario_carga`, `estado`) VALUES
@@ -451,8 +228,83 @@ INSERT INTO `horarios` (`id`, `periodo_id`, `nombre_archivo`, `nombre_guardado`,
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `periodos`
+--
+
+CREATE TABLE `periodos` (
+  `id` int(11) NOT NULL,
+  `periodo` varchar(255) NOT NULL,
+  `año` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `periodos`
+--
+
+INSERT INTO `periodos` (`id`, `periodo`, `año`) VALUES
+(1, 'Enero - Abril', 2025),
+(2, 'Mayo - Agosto', 2025),
+(3, 'Septiembre - Diciembre', 2025);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `programas`
+--
+
+CREATE TABLE `programas` (
+  `id` int(11) NOT NULL,
+  `nomenclatura` varchar(10) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `nivel` enum('TSU','I','L') NOT NULL,
+  `activo` tinyint(1) DEFAULT 1,
+  `fecha_alta` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `programas`
+--
+
+INSERT INTO `programas` (`id`, `nomenclatura`, `nombre`, `nivel`, `activo`, `fecha_alta`) VALUES
+(1, 'EVND', 'TSU Entornos Virtuales y Negocios Digitales', 'TSU', 1, '2025-11-13 02:52:17'),
+(2, 'QI', 'TSU en Química Industrial', 'TSU', 1, '2025-11-13 02:52:17'),
+(3, 'MERC', 'TSU en Mercadotecnia', 'TSU', 1, '2025-11-13 02:52:17'),
+(4, 'MI', 'TSU en Mantenimiento Industrial', 'TSU', 1, '2025-11-13 02:52:17'),
+(5, 'EII', 'TSU en Enseñanza del Idioma Inglés', 'TSU', 1, '2025-11-13 02:52:17'),
+(6, 'AUTO', 'TSU en Automatización', 'TSU', 1, '2025-11-13 02:52:17'),
+(7, 'TSU ', 'TSU en Entornos Virtuales y Negocios Digitales', 'TSU', 1, '2025-11-13 02:53:16'),
+(8, 'QI', 'TSU en Química Industrial', 'TSU', 1, '2025-11-13 02:53:16'),
+(9, 'AUTO', 'TSU en Automatización', 'TSU', 1, '2025-11-13 02:53:16'),
+(10, 'MERC', 'TSU en Mercadotecnia', 'TSU', 1, '2025-11-13 02:53:16'),
+(11, 'EII', 'TSU en Enseñanza del Idioma Inglés', 'TSU', 1, '2025-11-13 02:53:16'),
+(12, 'MI', 'TSU en Mantenimiento Industrial', 'TSU', 1, '2025-11-13 02:53:16'),
+(13, 'LICE', 'Licenciatura En Gestión Institucional Educativa y Curricular', 'L', 1, '2025-11-13 02:55:26'),
+(14, 'INGE', 'Ingeniería en Mecatrónia', 'I', 1, '2025-11-13 02:55:26'),
+(15, 'INGE', 'Ingeniería en Mantenimiento Industrial', 'I', 1, '2025-11-13 02:55:26'),
+(16, 'INGE', 'Ingeniería en Entornos Virtuales y Negocios Digitales', 'I', 1, '2025-11-13 02:55:26'),
+(17, 'LICE', 'Licenciatura en Innovación de Negocios y Mercadotecnia', 'L', 1, '2025-11-13 02:55:26'),
+(18, 'INGE', 'Ingeniería Química de Procesos Industriales', 'I', 1, '2025-11-13 02:55:26');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `programa_materias`
+--
+
+CREATE TABLE `programa_materias` (
+  `id` int(11) NOT NULL,
+  `id_programa` int(11) NOT NULL,
+  `cve_materia` varchar(20) NOT NULL,
+  `nombre_materia` varchar(255) NOT NULL,
+  `grado` tinyint(2) NOT NULL,
+  `horas_semanales` int(11) NOT NULL,
+  `turno` enum('Matutino','Nocturno') NOT NULL,
+  `activo` tinyint(1) DEFAULT 1,
+  `fecha_alta` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
 -- Volcado de datos para la tabla `programa_materias`
--- SÉPTIMO: Insertar materias de programas (depende de programas)
 --
 
 INSERT INTO `programa_materias` (`id`, `id_programa`, `cve_materia`, `nombre_materia`, `grado`, `horas_semanales`, `turno`, `activo`, `fecha_alta`) VALUES
@@ -1217,118 +1069,140 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
--- --------------------------------------------------------
+INSERT INTO `usuarios` (`id`, `area`, `nombre`, `nombre_usuario`, `contraseña`) VALUES
+(1, 'Admin', 'Subdirector Académico', 'SUBDIRECTOR_ACADÉMICO', 'SUBDIRECTOR'),
+(2, 'Admin', 'PTC Carga Académica', 'PTC_CARGA_ACADÉMICA', 'CARGAACADEMICA'),
+(3, 'Coordinación', 'Coordinador Matutino', 'COORDINADOR_MATUTINO', 'COORDUTC123'),
+(4, 'Coordinación', 'Coordinador Nocturno', 'COORDINADOR_NOCTURNO', 'UTCCOORD234'),
+(5, 'PTC Proyecto Integrador', 'PTC Proyecto Integrador Matutino', 'PTC_PI_MATUTINO', 'guest123'),
+(6, 'PTC Proyecto Integrador', 'PTC Proyecto Integrador Nocturno', 'PTC_PI_NOCTURNO', 'guest234'),
+(7, 'Tutoría', 'Tutoría General', 'TUTORÍA', 'TTR234'),
+(8, 'Prefectura', 'Prefectura General', 'PREFECTURA', 'PREF123'),
+(9, 'Docente', 'Docente Proyecto Integrador', 'PROYECTO_INTEGRADOR', 'guest123');
 
 --
--- Configuración de AUTO_INCREMENT para las tablas
+-- Índices para tablas volcadas
 --
 
+--
+-- Indices de la tabla `docentes`
+--
+ALTER TABLE `docentes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_nombre` (`nombre_docente`),
+  ADD KEY `idx_turno` (`turno`),
+  ADD KEY `idx_regimen` (`regimen`);
+
+--
+-- Indices de la tabla `grupos`
+--
+ALTER TABLE `grupos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `codigo_grupo` (`codigo_grupo`),
+  ADD KEY `idx_generacion` (`generacion`),
+  ADD KEY `idx_nivel` (`nivel_educativo`),
+  ADD KEY `idx_programa` (`programa_educativo`),
+  ADD KEY `idx_codigo` (`codigo_grupo`);
+
+--
+-- Indices de la tabla `horarios`
+--
+ALTER TABLE `horarios`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_periodo` (`periodo_id`),
+  ADD KEY `idx_periodo_estado` (`periodo_id`,`estado`),
+  ADD KEY `idx_fecha_carga` (`fecha_carga`);
+
+--
+-- Indices de la tabla `periodos`
+--
 ALTER TABLE `periodos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  ADD PRIMARY KEY (`id`);
 
+--
+-- Indices de la tabla `programas`
+--
 ALTER TABLE `programas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  ADD PRIMARY KEY (`id`);
 
+--
+-- Indices de la tabla `programa_materias`
+--
+ALTER TABLE `programa_materias`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `programa_materia_grado_turno` (`id_programa`,`cve_materia`,`grado`,`turno`),
+  ADD KEY `id_programa` (`id_programa`);
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre_usuario` (`nombre_usuario`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `docentes`
+--
 ALTER TABLE `docentes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
-ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
+--
+-- AUTO_INCREMENT de la tabla `grupos`
+--
 ALTER TABLE `grupos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
-ALTER TABLE `programa_materias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=702;
-
+--
+-- AUTO_INCREMENT de la tabla `horarios`
+--
 ALTER TABLE `horarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
-ALTER TABLE `asignaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-
--- --------------------------------------------------------
+--
+-- AUTO_INCREMENT de la tabla `periodos`
+--
+ALTER TABLE `periodos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- DOCUMENTACIÓN DE RELACIONES Y CASCADAS
+-- AUTO_INCREMENT de la tabla `programas`
+--
+ALTER TABLE `programas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT de la tabla `programa_materias`
+--
+ALTER TABLE `programa_materias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1016;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- Restricciones para tablas volcadas
 --
 
-/*
-RESUMEN DE RELACIONES DE INTEGRIDAD REFERENCIAL:
+--
+-- Filtros para la tabla `horarios`
+--
+ALTER TABLE `horarios`
+  ADD CONSTRAINT `fk_periodo_horarios` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`) ON DELETE CASCADE;
 
-1. PERIODOS (Tabla central)
-   └── ON DELETE en dependientes:
-       ├── grupos.periodo_id → RESTRICT (No eliminar periodo si tiene grupos)
-       ├── horarios.periodo_id → CASCADE (Eliminar horarios del periodo)
-       └── asignaciones.periodo_id → CASCADE (Eliminar asignaciones del periodo)
-
-2. PROGRAMAS
-   └── ON DELETE en dependientes:
-       ├── programa_materias.id_programa → CASCADE (Eliminar materias del programa)
-       └── (No tiene relación directa con grupos debido a nomenclatura compuesta)
-
-3. DOCENTES
-   └── ON DELETE en dependientes:
-       └── asignaciones.docente_id → CASCADE (Eliminar asignaciones del docente)
-
-4. GRUPOS
-   └── ON DELETE en dependientes:
-       └── asignaciones.grupo_id → CASCADE (Eliminar asignaciones del grupo)
-
-5. PROGRAMA_MATERIAS
-   └── ON DELETE en dependientes:
-       └── asignaciones.materia_id → CASCADE (Eliminar asignaciones de la materia)
-
-6. USUARIOS
-   └── Sin dependientes (tabla independiente para autenticación)
-
-COMPORTAMIENTO DE CASCADAS:
-
-- Si eliminas un PERIODO:
-  * Los GRUPOS relacionados NO se eliminarán (RESTRICT impide la eliminación)
-  * Los HORARIOS del periodo SÍ se eliminarán (CASCADE)
-  * Las ASIGNACIONES del periodo SÍ se eliminarán (CASCADE)
-  
-- Si eliminas un PROGRAMA:
-  * Todas las MATERIAS del programa SÍ se eliminarán (CASCADE)
-  * Las ASIGNACIONES de esas materias SÍ se eliminarán (CASCADE por cascada transitiva)
-
-- Si eliminas un DOCENTE:
-  * Todas las ASIGNACIONES del docente SÍ se eliminarán (CASCADE)
-
-- Si eliminas un GRUPO:
-  * Todas las ASIGNACIONES del grupo SÍ se eliminarán (CASCADE)
-
-- Si eliminas una MATERIA:
-  * Todas las ASIGNACIONES de esa materia SÍ se eliminarán (CASCADE)
-
-ÍNDICES CREADOS PARA OPTIMIZACIÓN:
-
-- periodos: idx_año, idx_activo
-- programas: idx_nomenclatura, idx_nivel, idx_activo
-- docentes: idx_nombre, idx_turno, idx_regimen, idx_estado
-- usuarios: idx_area
-- grupos: idx_generacion, idx_nivel, idx_programa, idx_codigo, idx_periodo, idx_estado
-- programa_materias: idx_cve_materia, idx_grado, idx_turno, idx_activo
-- horarios: idx_periodo_estado, idx_fecha_carga, idx_estado
-- asignaciones: idx_docente, idx_materia, idx_grupo, idx_periodo, idx_estado
-
-CLAVES ÚNICAS:
-
-- usuarios.nombre_usuario
-- grupos.codigo_grupo
-- programa_materias(id_programa, cve_materia, grado, turno)
-- asignaciones(docente_id, materia_id, grupo_id, periodo_id)
-*/
-
+--
+-- Filtros para la tabla `programa_materias`
+--
+ALTER TABLE `programa_materias`
+  ADD CONSTRAINT `fk_programa_mat` FOREIGN KEY (`id_programa`) REFERENCES `programas` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
--- --------------------------------------------------------
--- FIN DEL ARCHIVO SQL
--- Base de datos SISCA con relaciones de integridad referencial completas
--- Fecha: 2025-11-15
--- --------------------------------------------------------
