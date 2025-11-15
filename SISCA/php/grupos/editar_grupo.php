@@ -10,10 +10,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $programa = trim($_POST['programa']);
         $grado = trim($_POST['grado']);
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
-        
+        $periodo_id = isset($_POST['periodo_id']) ? (int)$_POST['periodo_id'] : null;
+
         // Validaciones básicas
         if (empty($id) || empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
+        }
+
+        if ($periodo_id === null) {
+            throw new Exception('El periodo_id es requerido');
         }
         
         if (strlen($generacion) !== 2 || !is_numeric($generacion)) {
@@ -54,18 +59,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($cambioConfiguracion) {
             // Solo si cambió generación, programa o grado, recalcular la letra
+            // CRÍTICO: Filtrar solo por el período activo para evitar conflictos entre períodos
             $stmt = $conn->prepare("
-                SELECT letra_identificacion 
-                FROM grupos 
-                WHERE generacion = ? 
-                AND programa_educativo = ? 
-                AND grado = ? 
+                SELECT letra_identificacion
+                FROM grupos
+                WHERE generacion = ?
+                AND programa_educativo = ?
+                AND grado = ?
                 AND turno = ?
+                AND periodo_id = ?
+                AND estado = 'activo'
                 AND id != ?
-                ORDER BY letra_identificacion DESC 
+                ORDER BY letra_identificacion DESC
                 LIMIT 1
             ");
-            $stmt->bind_param("ssssi", $generacion, $programa, $grado, $turno, $id);
+            $stmt->bind_param("ssssii", $generacion, $programa, $grado, $turno, $periodo_id, $id);
             $stmt->execute();
             $result = $stmt->get_result();
             

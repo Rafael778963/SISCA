@@ -6,14 +6,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         // Filtro de estado (activo/inactivo)
         $estado = isset($_GET['estado']) ? $_GET['estado'] : 'activo';
-        
-        $sql = "SELECT id, codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno, estado, fecha_creacion 
-                FROM grupos 
-                WHERE estado = ?
+
+        // Filtro de período - CRÍTICO para separar grupos por período académico
+        $periodo_id = isset($_GET['periodo_id']) ? (int)$_GET['periodo_id'] : null;
+
+        if ($periodo_id === null) {
+            throw new Exception('El periodo_id es requerido');
+        }
+
+        $sql = "SELECT id, codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno, estado, fecha_creacion
+                FROM grupos
+                WHERE estado = ? AND periodo_id = ?
                 ORDER BY id ASC";
-        
+
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $estado);
+        $stmt->bind_param("si", $estado, $periodo_id);
         $stmt->execute();
         $result = $stmt->get_result();
         

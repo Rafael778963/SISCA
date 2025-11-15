@@ -23,8 +23,9 @@ function cargarProgramasDesdeDB() {
 // ============================================
 function verificarLetraGrupo(generacion, programa, grado, turno, codigoBase) {
     const grupoGenerado = document.getElementById('grupoGenerado');
-    
-    fetch(`../../php/grupos/verificar_letra.php?generacion=${generacion}&programa=${programa}&grado=${grado}&turno=${turno}`)
+    const periodoId = obtenerPeriodoActivoId();
+
+    fetch(`../../php/grupos/verificar_letra.php?generacion=${generacion}&programa=${programa}&grado=${grado}&turno=${turno}&periodo_id=${periodoId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -95,8 +96,9 @@ function guardarGrupo() {
 // ============================================
 function cargarGrupos() {
     const estado = mostrandoInactivos ? 'inactivo' : 'activo';
-    
-    fetch(`../../php/grupos/obtener_grupos.php?estado=${estado}`)
+    const periodoId = obtenerPeriodoActivoId();
+
+    fetch(`../../php/grupos/obtener_grupos.php?estado=${estado}&periodo_id=${periodoId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -115,8 +117,9 @@ function cargarGrupos() {
 // ============================================
 function editarGrupo(id) {
     const estado = mostrandoInactivos ? 'inactivo' : 'activo';
-    
-    fetch(`../../php/grupos/obtener_grupos.php?estado=${estado}`)
+    const periodoId = obtenerPeriodoActivoId();
+
+    fetch(`../../php/grupos/obtener_grupos.php?estado=${estado}&periodo_id=${periodoId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
