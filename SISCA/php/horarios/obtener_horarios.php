@@ -2,18 +2,19 @@
 // obtener_horarios.php - Ubicación: /php/horarios/obtener_horarios.php
 include '../session_check.php';
 include '../conexion.php';
+include '../periodo_session.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     echo json_encode(['success' => false, 'message' => 'Método no permitido']);
     exit;
 }
 
+// Usar el periodo activo de la sesión si no se proporciona uno
 if (!isset($_GET['periodo_id']) || empty($_GET['periodo_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Período no especificado']);
-    exit;
+    $periodo_id = get_periodo_activo();
+} else {
+    $periodo_id = intval($_GET['periodo_id']);
 }
-
-$periodo_id = intval($_GET['periodo_id']);
 
 // Obtener horarios del período
 $sql = "SELECT h.id, h.periodo_id, h.nombre_archivo, h.nombre_guardado, h.ruta_archivo, 

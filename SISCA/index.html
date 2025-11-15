@@ -93,6 +93,15 @@
                             id="user-name"></a></span>
                 </h1>
                 <div class="user-menu">
+                    <!-- Selector de Periodo -->
+                    <div class="periodo-selector">
+                        <label for="periodo-select" style="font-size: 14px; margin-right: 8px;">
+                            <i class="fa-solid fa-calendar-days"></i> Periodo:
+                        </label>
+                        <select id="periodo-select" class="periodo-select">
+                            <!-- Se llenará dinámicamente -->
+                        </select>
+                    </div>
                     <div class="user-dropdown">
                         <button class="user-btn" onclick="logout()">
                             <i class="fa-solid fa-right-from-bracket fa-xl"></i>
@@ -196,5 +205,64 @@
         <script src="./js/index/menuLateral.js"></script>
         <script src="./fonts/js/all.min.js"></script>
         <script src="./js/session_check.js"></script>
+        <script src="./js/periodo_selector.js"></script>
+
+        <style>
+            .periodo-selector {
+                display: flex;
+                align-items: center;
+                margin-right: 20px;
+                padding: 8px 12px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 6px;
+            }
+
+            .periodo-selector label {
+                color: #333;
+                font-weight: 500;
+            }
+
+            .periodo-select {
+                padding: 6px 12px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                background: white;
+                cursor: pointer;
+                font-size: 14px;
+                outline: none;
+                transition: all 0.3s ease;
+            }
+
+            .periodo-select:hover {
+                border-color: #4CAF50;
+            }
+
+            .periodo-select:focus {
+                border-color: #4CAF50;
+                box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        </style>
     </body>
 </html>

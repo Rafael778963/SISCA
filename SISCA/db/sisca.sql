@@ -369,15 +369,15 @@ INSERT INTO `docentes` (`id`, `nombre_docente`, `turno`, `regimen`, `estado`, `f
 --
 
 INSERT INTO `usuarios` (`id`, `area`, `nombre`, `nombre_usuario`, `contraseña`) VALUES
-(1, 'Admin', 'SUBDIRECTOR_ACADÉMICO', 'SUBDIRECTOR', '$2y$10$ZxH8fKe9gLqP3rY2sN4vJuO9mN1zX3wK5pQ7lR6eT8yU0iV4hS2gC'),
-(2, 'Admin', 'PTC_CARGA_ACADÉMICA', 'CARGA_ACADEMICA', '$2y$10$A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6'),
-(3, 'Coordinación', 'COORDINADOR_MATUTINO', 'COORD_MAT', '$2y$10$B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1'),
-(4, 'Coordinación', 'COORDINADOR_NOCTURNO', 'COORD_NOCT', '$2y$10$C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2'),
-(5, 'PTC Proyecto Integrador', 'PTC_PI_MATUTINO', 'PTC_PI_MAT', '$2y$10$D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3'),
-(6, 'PTC Proyecto Integrador', 'PTC_PI_NOCTURNO', 'PTC_PI_NOCT', '$2y$10$E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3D4'),
-(7, 'Tutoría', 'TUTORÍA', 'TUTORIA', '$2y$10$F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3D4E5'),
-(8, 'Prefectura', 'PREFECTURA', 'PREFECTURA', '$2y$10$G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3D4E5F6'),
-(9, 'Docente', 'PROYECTO_INTEGRADOR', 'PROYECTO_INT', '$2y$10$H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A1B2C3D4E5F6G7');
+(1, 'Admin', 'Subdirector Académico', 'SUBDIRECTOR_ACADÉMICO', 'SUBDIRECTOR'),
+(2, 'Admin', 'PTC Carga Académica', 'PTC_CARGA_ACADÉMICA', 'CARGAACADEMICA'),
+(3, 'Coordinación', 'Coordinador Matutino', 'COORDINADOR_MATUTINO', 'COORDUTC123'),
+(4, 'Coordinación', 'Coordinador Nocturno', 'COORDINADOR_NOCTURNO', 'UTCCOORD234'),
+(5, 'PTC Proyecto Integrador', 'PTC Proyecto Integrador Matutino', 'PTC_PI_MATUTINO', 'guest123'),
+(6, 'PTC Proyecto Integrador', 'PTC Proyecto Integrador Nocturno', 'PTC_PI_NOCTURNO', 'guest234'),
+(7, 'Tutoría', 'Tutoría General', 'TUTORÍA', 'TTR234'),
+(8, 'Prefectura', 'Prefectura General', 'PREFECTURA', 'PREF123'),
+(9, 'Docente', 'Docente Proyecto Integrador', 'PROYECTO_INTEGRADOR', 'guest123');
 
 -- --------------------------------------------------------
 

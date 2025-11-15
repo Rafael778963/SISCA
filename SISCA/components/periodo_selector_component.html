@@ -1,0 +1,93 @@
+<!-- Componente Selector de Periodo -->
+<div class="periodo-selector">
+    <label for="periodo-select" style="font-size: 14px; margin-right: 8px;">
+        <i class="fa-solid fa-calendar-days"></i> Periodo:
+    </label>
+    <select id="periodo-select" class="periodo-select">
+        <!-- Se llenará dinámicamente -->
+    </select>
+</div>
+
+<style>
+    .periodo-selector {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+    }
+
+    .periodo-selector label {
+        color: #333;
+        font-weight: 500;
+    }
+
+    .periodo-select {
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    .periodo-select:hover {
+        border-color: #4CAF50;
+    }
+
+    .periodo-select:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    }
+
+    .notificacion {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        color: white;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .notificacion-success {
+        background: #4CAF50;
+    }
+
+    .notificacion-error {
+        background: #f44336;
+    }
+
+    .notificacion-info {
+        background: #2196F3;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+</style>
+
+<script src="../../js/periodo_selector.js"></script>
