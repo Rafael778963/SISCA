@@ -17,7 +17,7 @@ if(isset($_POST['id'])) {
 
     try {
         // 1. Obtener y eliminar archivos físicos de horarios antes de eliminar registros
-        $stmt_horarios = $conn->prepare("SELECT ruta_archivo FROM horarios WHERE periodo_id = ?");
+        $stmt_horarios = $conn->prepare("SELECT id, ruta_archivo FROM horarios WHERE periodo_id = ?");
         if (!$stmt_horarios) {
             throw new Exception('Error al obtener horarios del periodo');
         }
@@ -26,30 +26,38 @@ if(isset($_POST['id'])) {
         $result_horarios = $stmt_horarios->get_result();
 
         $archivos_eliminados = 0;
+        $horarios_totales = 0;
         $rutas_archivos = [];
 
         // Recopilar todas las rutas de archivos
         while ($row = $result_horarios->fetch_assoc()) {
             $rutas_archivos[] = $row['ruta_archivo'];
+            $horarios_totales++;
         }
         $stmt_horarios->close();
 
         // Eliminar los archivos físicos
         foreach ($rutas_archivos as $ruta) {
-            // La ruta en BD es relativa, construir ruta absoluta
-            $ruta_completa = '../../' . $ruta;
-            if (file_exists($ruta_completa)) {
-                if (unlink($ruta_completa)) {
+            // Construir ruta absoluta correctamente
+            $ruta_absoluta = __DIR__ . '/../../' . $ruta;
+
+            // Normalizar la ruta
+            $ruta_absoluta = str_replace('\\', '/', $ruta_absoluta);
+
+            if (file_exists($ruta_absoluta)) {
+                if (@unlink($ruta_absoluta)) {
                     $archivos_eliminados++;
                 }
             }
         }
 
         // Intentar eliminar la carpeta del periodo si existe y está vacía
-        $carpeta_periodo = "../../PDFs/horarios/periodo_" . $id;
+        $carpeta_periodo = __DIR__ . '/../../PDFs/horarios/periodo_' . $id;
         if (is_dir($carpeta_periodo)) {
-            // Eliminar la carpeta solo si está vacía
-            @rmdir($carpeta_periodo);
+            // Verificar que esté vacía antes de eliminar
+            if (count(array_diff(scandir($carpeta_periodo), array('.', '..'))) === 0) {
+                @rmdir($carpeta_periodo);
+            }
         }
 
         // 2. Eliminar grupos relacionados con el periodo
@@ -62,7 +70,19 @@ if(isset($_POST['id'])) {
         $grupos_eliminados = $stmt_grupos->affected_rows;
         $stmt_grupos->close();
 
-        // 3. Eliminar el periodo (esto eliminará los horarios de la BD automáticamente por CASCADE)
+        // 3. Obtener count de horarios antes de eliminar el periodo
+        $stmt_count = $conn->prepare("SELECT COUNT(*) as total FROM horarios WHERE periodo_id = ?");
+        if (!$stmt_count) {
+            throw new Exception('Error al contar horarios del periodo');
+        }
+        $stmt_count->bind_param("i", $id);
+        $stmt_count->execute();
+        $result_count = $stmt_count->get_result();
+        $count_row = $result_count->fetch_assoc();
+        $horarios_bd_eliminados = $count_row['total'];
+        $stmt_count->close();
+
+        // 4. Eliminar el periodo (esto eliminará los horarios de la BD automáticamente por CASCADE)
         $stmt = $conn->prepare("DELETE FROM periodos WHERE id = ?");
         if (!$stmt) {
             throw new Exception('Error al preparar eliminación del periodo');
@@ -76,16 +96,18 @@ if(isset($_POST['id'])) {
             $conn->commit();
             echo json_encode([
                 'success' => true,
-                'message' => 'Periodo eliminado correctamente',
+                'message' => 'Periodo eliminado correctamente con todos sus datos',
                 'detalles' => [
                     'grupos_eliminados' => $grupos_eliminados,
-                    'archivos_eliminados' => $archivos_eliminados
+                    'horarios_eliminados_bd' => $horarios_bd_eliminados,
+                    'archivos_pdf_eliminados' => $archivos_eliminados,
+                    'archivos_totales_periodo' => $horarios_totales
                 ]
             ]);
         } else {
             // Revertir la transacción
             $conn->rollback();
-            echo json_encode(['success' => false, 'message' => 'No se encontró el periodo']);
+            echo json_encode(['success' => false, 'message' => 'No se encontró el periodo especificado']);
         }
 
         $stmt->close();
