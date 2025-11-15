@@ -90,46 +90,102 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Función para contar horarios de un período
+    function contarHorariosPeriodo(periodoId) {
+        return fetch(`../../php/horarios/obtener_horarios.php?periodo_id=${periodoId}`, {
+            credentials: 'include'
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && Array.isArray(data.horarios)) {
+                    return data.horarios.length;
+                }
+                return 0;
+            })
+            .catch(err => {
+                console.error('Error al contar horarios:', err);
+                return 0;
+            });
+    }
+
     // Función eliminar periodo
     function eliminarPeriodo(id) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡No podrás revertir esto!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#78B543',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar'
-        }).then(result => {
-            if (result.isConfirmed) {
-                fetch('../../php/periodos/eliminar_periodo.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${encodeURIComponent(id)}`,
-                    credentials: 'include'
-                })
-                    .then(res => {
-                        if (res.status === 401) {
-                            alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
-                            window.location.href = '../../login.html';
-                            return;
-                        }
-                        return res.json();
-                    })
-                    .then(data => {
-                        if (!data) return; // Si fue 401, ya redirigió
-                        if (data.success) {
-                            Swal.fire('¡Eliminado!', data.message, 'success');
-                            cargarPeriodos();
-                        } else {
-                            Swal.fire('Error', data.message || 'No se pudo eliminar', 'error');
-                        }
-                    })
-                    .catch(err => {
-                        Swal.fire('Error', 'Ocurrió un error al eliminar', 'error');
-                        console.error(err);
-                    });
+        // Primero contar cuántos horarios hay
+        contarHorariosPeriodo(id).then(cantidadHorarios => {
+            let textoAdvertencia = '';
+
+            if (cantidadHorarios > 0) {
+                textoAdvertencia = `⚠️ Este período contiene ${cantidadHorarios} horario(s).\n\n`;
+                textoAdvertencia += 'Se eliminarán:\n';
+                textoAdvertencia += `• El período\n`;
+                textoAdvertencia += `• ${cantidadHorarios} archivo(s) PDF\n`;
+                textoAdvertencia += `• Todos sus registros de la base de datos\n\n`;
+                textoAdvertencia += '¡Esta acción no se puede deshacer!';
+            } else {
+                textoAdvertencia = 'Se eliminará el período.\n¡Esta acción no se puede deshacer!';
             }
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: textoAdvertencia,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#78B543',
+                confirmButtonText: 'Sí, eliminar todo',
+                cancelButtonText: 'Cancelar'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    // Mostrar loading
+                    Swal.fire({
+                        title: 'Eliminando...',
+                        text: 'Por favor espera mientras se elimina el período y todos sus horarios.',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    fetch('../../php/periodos/eliminar_periodo.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `id=${encodeURIComponent(id)}`,
+                        credentials: 'include'
+                    })
+                        .then(res => {
+                            if (res.status === 401) {
+                                alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
+                                window.location.href = '../../login.html';
+                                return;
+                            }
+                            return res.json();
+                        })
+                        .then(data => {
+                            if (!data) return; // Si fue 401, ya redirigió
+                            if (data.success) {
+                                let mensajeDetalle = data.message;
+                                if (data.detalles) {
+                                    mensajeDetalle += `\n\n📊 Detalles:\n`;
+                                    mensajeDetalle += `• PDFs eliminados: ${data.detalles.archivos_pdf_eliminados}\n`;
+                                    mensajeDetalle += `• Horarios eliminados: ${data.detalles.horarios_eliminados}\n`;
+                                    if (data.detalles.archivos_no_eliminados > 0) {
+                                        mensajeDetalle += `⚠️ PDFs no eliminados: ${data.detalles.archivos_no_eliminados}`;
+                                    }
+                                }
+                                Swal.fire('¡Eliminado!', mensajeDetalle, 'success');
+                                cargarPeriodos();
+                            } else {
+                                Swal.fire('Error', data.message || 'No se pudo eliminar', 'error');
+                            }
+                        })
+                        .catch(err => {
+                            Swal.fire('Error', 'Ocurrió un error al eliminar', 'error');
+                            console.error(err);
+                        });
+                }
+            });
         });
     }
 

@@ -17,7 +17,7 @@ if (!isset($data['id']) || empty($data['id'])) {
 $archivo_id = intval($data['id']);
 
 // Obtener información del archivo
-$sql_select = "SELECT ruta_archivo, nombre_guardado FROM horarios WHERE id = ? AND estado = 'activo'";
+$sql_select = "SELECT ruta_archivo, nombre_guardado FROM horarios WHERE id = ?";
 $stmt = $conn->prepare($sql_select);
 $stmt->bind_param("i", $archivo_id);
 $stmt->execute();
@@ -45,25 +45,25 @@ if (file_exists($ruta_absoluta)) {
     }
 }
 
-// Actualizar estado en BD a 'eliminado' (soft delete)
-$sql_update = "UPDATE horarios SET estado = 'eliminado' WHERE id = ?";
-$stmt = $conn->prepare($sql_update);
+// Eliminar registro de la BD (hard delete)
+$sql_delete = "DELETE FROM horarios WHERE id = ?";
+$stmt = $conn->prepare($sql_delete);
 $stmt->bind_param("i", $archivo_id);
 
 if ($stmt->execute()) {
     $stmt->close();
     $conn->close();
-    
+
     echo json_encode([
         'success' => true,
-        'message' => 'Archivo eliminado correctamente',
+        'message' => 'Archivo eliminado correctamente de la BD y del servidor',
         'archivo_eliminado' => $archivo_eliminado,
         'id' => $archivo_id
     ]);
 } else {
     $stmt->close();
     $conn->close();
-    
+
     echo json_encode([
         'success' => false,
         'message' => 'Error al eliminar el archivo: ' . $stmt->error
