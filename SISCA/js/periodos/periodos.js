@@ -167,9 +167,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (data.success) {
                                 let mensajeDetalle = data.message;
                                 if (data.detalles) {
-                                    mensajeDetalle += `\n\n📊 Detalles:\n`;
-                                    mensajeDetalle += `• PDFs eliminados: ${data.detalles.archivos_pdf_eliminados}\n`;
+                                    mensajeDetalle += `\n\n📊 Resumen de eliminación:\n`;
                                     mensajeDetalle += `• Horarios eliminados: ${data.detalles.horarios_eliminados}\n`;
+                                    mensajeDetalle += `• PDFs eliminados: ${data.detalles.archivos_pdf_eliminados}\n`;
+                                    mensajeDetalle += `• Grupos eliminados: ${data.detalles.grupos_eliminados}\n`;
+                                    mensajeDetalle += `• Docentes desactivados: ${data.detalles.docentes_desactivados}\n`;
                                     if (data.detalles.archivos_no_eliminados > 0) {
                                         mensajeDetalle += `⚠️ PDFs no eliminados: ${data.detalles.archivos_no_eliminados}`;
                                     }

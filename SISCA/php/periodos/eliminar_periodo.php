@@ -81,7 +81,35 @@ if(isset($_POST['id'])) {
             $carpeta_eliminada = true;
         }
 
-        // 5. Eliminar el período de la BD
+        // 5. Eliminar todos los grupos asociados al período
+        $sql_delete_grupos = "DELETE FROM grupos WHERE periodo_id = ?";
+        $stmt = $conn->prepare($sql_delete_grupos);
+        if (!$stmt) {
+            throw new Exception('Error al preparar eliminación de grupos: ' . $conn->error);
+        }
+
+        $stmt->bind_param("i", $id);
+        if (!$stmt->execute()) {
+            throw new Exception('Error al eliminar grupos: ' . $stmt->error);
+        }
+        $grupos_eliminados = $stmt->affected_rows;
+        $stmt->close();
+
+        // 6. Actualizar docentes del período a inactivos (en lugar de eliminarlos, por auditoría)
+        $sql_update_docentes = "UPDATE docentes SET estado = 'inactivo' WHERE periodo_id = ?";
+        $stmt = $conn->prepare($sql_update_docentes);
+        if (!$stmt) {
+            throw new Exception('Error al preparar actualización de docentes: ' . $conn->error);
+        }
+
+        $stmt->bind_param("i", $id);
+        if (!$stmt->execute()) {
+            throw new Exception('Error al actualizar docentes: ' . $stmt->error);
+        }
+        $docentes_desactivados = $stmt->affected_rows;
+        $stmt->close();
+
+        // 7. Eliminar el período de la BD
         $sql_delete_periodo = "DELETE FROM periodos WHERE id = ?";
         $stmt = $conn->prepare($sql_delete_periodo);
         if (!$stmt) {
@@ -104,12 +132,14 @@ if(isset($_POST['id'])) {
 
         echo json_encode([
             'success' => true,
-            'message' => 'Período y todos sus horarios eliminados correctamente',
+            'message' => 'Período y todos sus datos asociados eliminados correctamente',
             'detalles' => [
                 'periodo_id' => $id,
                 'archivos_pdf_eliminados' => $archivos_eliminados,
                 'archivos_no_eliminados' => $archivos_no_eliminados,
                 'horarios_eliminados' => $horarios_eliminados,
+                'grupos_eliminados' => $grupos_eliminados,
+                'docentes_desactivados' => $docentes_desactivados,
                 'carpeta_eliminada' => $carpeta_eliminada
             ]
         ]);
