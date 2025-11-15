@@ -11,6 +11,32 @@ try {
     $estadisticas = [];
 
     // ============================================
+    // FUNCIÓN AUXILIAR: Verificar si una columna existe en una tabla
+    // ============================================
+    function columnaExiste($conn, $tabla, $columna) {
+        $sql = "SELECT COUNT(*) as existe
+                FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = 'sisca'
+                AND TABLE_NAME = ?
+                AND COLUMN_NAME = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $tabla, $columna);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        return $row['existe'] > 0;
+    }
+
+    // ============================================
+    // FUNCIÓN AUXILIAR: Verificar si una tabla existe
+    // ============================================
+    function tablaExiste($conn, $tabla) {
+        $result = $conn->query("SHOW TABLES LIKE '$tabla'");
+        return $result->num_rows > 0;
+    }
+
+    // ============================================
     // 1. PERÍODOS ACTIVOS (Total, no depende del periodo seleccionado)
     // ============================================
     $sql = "SELECT COUNT(*) as total FROM periodos WHERE estado = 'activo'";
@@ -18,9 +44,9 @@ try {
     $estadisticas['periodos_activos'] = $result->fetch_assoc()['total'];
 
     // ============================================
-    // 2. GRUPOS REGISTRADOS (Filtrado por periodo)
+    // 2. GRUPOS REGISTRADOS (Filtrado por periodo si la columna existe)
     // ============================================
-    if ($periodo_id) {
+    if ($periodo_id && columnaExiste($conn, 'grupos', 'periodo_id')) {
         $sql = "SELECT COUNT(*) as total FROM grupos WHERE periodo_id = ? AND estado = 'activo'";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $periodo_id);
@@ -29,17 +55,16 @@ try {
         $estadisticas['grupos_registrados'] = $result->fetch_assoc()['total'];
         $stmt->close();
     } else {
-        // Si no hay periodo seleccionado, contar todos los grupos activos
+        // Si no hay periodo o no existe la columna, contar todos los grupos activos
         $sql = "SELECT COUNT(*) as total FROM grupos WHERE estado = 'activo'";
         $result = $conn->query($sql);
         $estadisticas['grupos_registrados'] = $result->fetch_assoc()['total'];
     }
 
     // ============================================
-    // 3. DOCENTES REGISTRADOS (Filtrado por periodo si existe)
+    // 3. DOCENTES REGISTRADOS (Filtrado por periodo si la columna existe)
     // ============================================
-    if ($periodo_id) {
-        // Verificar si la tabla docentes tiene la columna periodo_id
+    if ($periodo_id && columnaExiste($conn, 'docentes', 'periodo_id')) {
         $sql = "SELECT COUNT(*) as total FROM docentes WHERE estado = 'activo' AND (periodo_id = ? OR periodo_id IS NULL)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $periodo_id);
@@ -48,6 +73,7 @@ try {
         $estadisticas['docentes_registrados'] = $result->fetch_assoc()['total'];
         $stmt->close();
     } else {
+        // Si no hay periodo o no existe la columna, contar todos los docentes activos
         $sql = "SELECT COUNT(*) as total FROM docentes WHERE estado = 'activo'";
         $result = $conn->query($sql);
         $estadisticas['docentes_registrados'] = $result->fetch_assoc()['total'];
@@ -56,20 +82,21 @@ try {
     // ============================================
     // 4. HORAS DE TUTORÍA (Por periodo)
     // ============================================
-    // Verificar si existe la tabla tutoria
-    $sql = "SHOW TABLES LIKE 'tutoria'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0 && $periodo_id) {
-        // Si la tabla existe, intentar contar horas
+    if (tablaExiste($conn, 'tutoria') && $periodo_id && columnaExiste($conn, 'tutoria', 'periodo_id') && columnaExiste($conn, 'tutoria', 'horas_asignadas')) {
         $sql = "SELECT SUM(horas_asignadas) as total FROM tutoria WHERE periodo_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $periodo_id);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-        $estadisticas['horas_tutoria'] = $row['total'] ? $row['total'] : 0;
+        $estadisticas['horas_tutoria'] = $row['total'] ? intval($row['total']) : 0;
         $stmt->close();
+    } elseif (tablaExiste($conn, 'tutoria') && columnaExiste($conn, 'tutoria', 'horas_asignadas')) {
+        // Si la tabla existe pero no tiene periodo_id o no hay periodo seleccionado
+        $sql = "SELECT SUM(horas_asignadas) as total FROM tutoria";
+        $result = $conn->query($sql);
+        $row = $result->fetch_assoc();
+        $estadisticas['horas_tutoria'] = $row['total'] ? intval($row['total']) : 0;
     } else {
         $estadisticas['horas_tutoria'] = 0;
     }
@@ -77,14 +104,10 @@ try {
     // ============================================
     // 5. PLAN DE ESTUDIOS REGISTRADOS (Total)
     // ============================================
-    // Verificar si existe la tabla plan_estudios o programa_materias
-    $sql = "SHOW TABLES LIKE 'programa_materias'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
+    if (tablaExiste($conn, 'programa_materias')) {
         $sql = "SELECT COUNT(DISTINCT programa_educativo) as total FROM programa_materias";
         $result = $conn->query($sql);
-        $estadisticas['plan_estudios'] = $result->fetch_assoc()['total'];
+        $estadisticas['plan_estudios'] = intval($result->fetch_assoc()['total']);
     } else {
         $estadisticas['plan_estudios'] = 0;
     }
@@ -92,17 +115,18 @@ try {
     // ============================================
     // 6. REPORTES GENERADOS (Por periodo)
     // ============================================
-    $sql = "SHOW TABLES LIKE 'reportes'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0 && $periodo_id) {
+    if (tablaExiste($conn, 'reportes') && $periodo_id && columnaExiste($conn, 'reportes', 'periodo_id')) {
         $sql = "SELECT COUNT(*) as total FROM reportes WHERE periodo_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $periodo_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        $estadisticas['reportes_generados'] = $result->fetch_assoc()['total'];
+        $estadisticas['reportes_generados'] = intval($result->fetch_assoc()['total']);
         $stmt->close();
+    } elseif (tablaExiste($conn, 'reportes')) {
+        $sql = "SELECT COUNT(*) as total FROM reportes";
+        $result = $conn->query($sql);
+        $estadisticas['reportes_generados'] = intval($result->fetch_assoc()['total']);
     } else {
         $estadisticas['reportes_generados'] = 0;
     }
@@ -110,17 +134,18 @@ try {
     // ============================================
     // 7. CARTAS DE ASIGNACIÓN (Por periodo)
     // ============================================
-    $sql = "SHOW TABLES LIKE 'carta_asignacion'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0 && $periodo_id) {
+    if (tablaExiste($conn, 'carta_asignacion') && $periodo_id && columnaExiste($conn, 'carta_asignacion', 'periodo_id')) {
         $sql = "SELECT COUNT(*) as total FROM carta_asignacion WHERE periodo_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $periodo_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        $estadisticas['cartas_emitidas'] = $result->fetch_assoc()['total'];
+        $estadisticas['cartas_emitidas'] = intval($result->fetch_assoc()['total']);
         $stmt->close();
+    } elseif (tablaExiste($conn, 'carta_asignacion')) {
+        $sql = "SELECT COUNT(*) as total FROM carta_asignacion";
+        $result = $conn->query($sql);
+        $estadisticas['cartas_emitidas'] = intval($result->fetch_assoc()['total']);
     } else {
         $estadisticas['cartas_emitidas'] = 0;
     }
@@ -128,17 +153,18 @@ try {
     // ============================================
     // 8. ASIGNACIONES DE CARGA (Por periodo)
     // ============================================
-    $sql = "SHOW TABLES LIKE 'carga'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0 && $periodo_id) {
+    if (tablaExiste($conn, 'carga') && $periodo_id && columnaExiste($conn, 'carga', 'periodo_id')) {
         $sql = "SELECT COUNT(*) as total FROM carga WHERE periodo_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $periodo_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        $estadisticas['asignaciones_carga'] = $result->fetch_assoc()['total'];
+        $estadisticas['asignaciones_carga'] = intval($result->fetch_assoc()['total']);
         $stmt->close();
+    } elseif (tablaExiste($conn, 'carga')) {
+        $sql = "SELECT COUNT(*) as total FROM carga";
+        $result = $conn->query($sql);
+        $estadisticas['asignaciones_carga'] = intval($result->fetch_assoc()['total']);
     } else {
         $estadisticas['asignaciones_carga'] = 0;
     }
