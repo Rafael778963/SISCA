@@ -7,6 +7,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     cargarPeriodos();
     cargarPeriodoActivo();
+    cargarEstadisticas(null); // Cargar estadísticas generales al inicio
 });
 
 /**
@@ -52,6 +53,9 @@ function cargarPeriodoActivo() {
 
                 // Actualizar el estado visual
                 actualizarEstadoPeriodo(data.periodo);
+
+                // Cargar estadísticas del período activo
+                cargarEstadisticas(data.periodo.id);
             }
         })
         .catch(error => {
@@ -68,6 +72,7 @@ function handlePeriodoChange(event) {
     if (!periodoId) {
         // Si no hay período seleccionado, limpiar la sesión
         limpiarPeriodoActivo();
+        cargarEstadisticas(null); // Cargar estadísticas generales
         return;
     }
 
@@ -77,6 +82,9 @@ function handlePeriodoChange(event) {
 
     // Guardar el período en la sesión
     guardarPeriodoActivo(periodoId, periodoTexto);
+
+    // Cargar estadísticas del período seleccionado
+    cargarEstadisticas(periodoId);
 }
 
 /**
@@ -180,5 +188,53 @@ function mostrarError(mensaje) {
     } else {
         console.error('✗', mensaje);
         alert(mensaje);
+    }
+}
+
+/**
+ * Carga las estadísticas según el período seleccionado
+ */
+function cargarEstadisticas(periodoId) {
+    // Construir la URL con o sin periodo_id
+    let url = './php/periodos/get_estadisticas_periodo.php';
+    if (periodoId) {
+        url += '?periodo_id=' + periodoId;
+    }
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Actualizar los valores en el dashboard
+                actualizarEstadisticasDashboard(data.data);
+            } else {
+                console.error('Error al cargar estadísticas:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar estadísticas:', error);
+        });
+}
+
+/**
+ * Actualiza los valores de las estadísticas en el dashboard
+ */
+function actualizarEstadisticasDashboard(data) {
+    // Actualizar período
+    const periodosElement = document.getElementById('total-periodos');
+    if (periodosElement) {
+        periodosElement.textContent = data.periodos || 0;
+    }
+
+    // Actualizar grupos
+    const gruposElement = document.getElementById('total-grupos');
+    if (gruposElement) {
+        gruposElement.textContent = data.grupos || 0;
+    }
+
+    // Actualizar docentes
+    const docentesElement = document.getElementById('total-docentes');
+    if (docentesElement) {
+        docentesElement.textContent = data.docentes || 0;
     }
 }
