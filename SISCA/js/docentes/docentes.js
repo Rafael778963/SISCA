@@ -380,7 +380,8 @@ async function cargarDocentes(page = 1) {
 
     const filtrosConEstado = {
         ...filtrosActivos,
-        estado: mostrandoInactivos ? 'inactivo' : 'activo'
+        estado: mostrandoInactivos ? 'inactivo' : 'activo',
+        periodo_id: obtenerPeriodoActivoId()
     };
 
     const resultado = await DocentesAPI.obtener(filtrosConEstado, page);

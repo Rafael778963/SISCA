@@ -16,27 +16,34 @@ try {
     $where = [];
     $params = [];
     $types = '';
-    
+
+    // Filtro de período (importante para mostrar solo docentes del período activo)
+    if (!empty($_GET['periodo_id'])) {
+        $where[] = "periodo_id = ?";
+        $params[] = intval($_GET['periodo_id']);
+        $types .= 'i';
+    }
+
     // Filtro de estado (activo/inactivo)
     $estado = isset($_GET['estado']) ? $_GET['estado'] : 'activo';
     $where[] = "estado = ?";
     $params[] = $estado;
     $types .= 's';
-    
+
     // Filtro por nombre
     if (!empty($_GET['nombre_docente'])) {
         $where[] = "nombre_docente LIKE ?";
         $params[] = '%' . $_GET['nombre_docente'] . '%';
         $types .= 's';
     }
-    
+
     // Filtro por turno
     if (!empty($_GET['turno'])) {
         $where[] = "turno = ?";
         $params[] = $_GET['turno'];
         $types .= 's';
     }
-    
+
     // Filtro por régimen
     if (!empty($_GET['regimen'])) {
         $where[] = "regimen = ?";
