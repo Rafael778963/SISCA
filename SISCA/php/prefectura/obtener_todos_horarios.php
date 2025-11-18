@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// OBTENER TODOS LOS HORARIOS ACTIVOS
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 
@@ -6,6 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     echo json_encode(['success' => false, 'message' => 'Método no permitido']);
     exit;
 }
+
+// ============================================
+// CONSULTA DE HORARIOS CON INFORMACIÓN DE PERIODO
+// ============================================
 
 try {
     $sql = "SELECT h.id, h.periodo_id, h.nombre_archivo, h.nombre_guardado, h.ruta_archivo,
@@ -23,7 +31,7 @@ try {
     }
 
     $horarios = [];
-    
+
     while ($row = $result->fetch_assoc()) {
         $horarios[] = [
             'id' => $row['id'],

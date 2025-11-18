@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// PROCESAMIENTO DE INICIO DE SESIÓN
+// ============================================
+
 ob_start();
 session_start();
 
@@ -7,6 +11,10 @@ ini_set('session.cookie_secure', 0);
 ini_set('session.use_only_cookies', 1);
 ob_end_clean();
 header('Content-Type: application/json; charset=utf-8');
+
+// ============================================
+// VALIDACIÓN DE MÉTODO Y DATOS
+// ============================================
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
@@ -26,6 +34,10 @@ if (empty($usuario) || empty($password)) {
     exit;
 }
 
+// ============================================
+// CONEXIÓN A BASE DE DATOS
+// ============================================
+
 $conn = new mysqli("localhost", "root", "", "sisca");
 
 if ($conn->connect_error) {
@@ -37,6 +49,10 @@ if ($conn->connect_error) {
 }
 
 $conn->set_charset("utf8");
+
+// ============================================
+// CONSULTA Y VERIFICACIÓN DE USUARIO
+// ============================================
 
 $stmt = $conn->prepare("SELECT id, area, nombre, nombre_usuario FROM usuarios WHERE nombre_usuario = ? AND contraseña = ?");
 
@@ -56,7 +72,7 @@ $result = $stmt->get_result();
 if ($result->num_rows > 0) {
     $user_data = $result->fetch_assoc();
     session_regenerate_id(true);
-    
+
     $_SESSION['user_id'] = $user_data['id'];
     $_SESSION['username'] = $user_data['nombre_usuario'];
     $_SESSION['username_name'] = $user_data['nombre'];
@@ -65,7 +81,7 @@ if ($result->num_rows > 0) {
     $_SESSION['last_activity'] = time();
     $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'];
     $_SESSION['user_agent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-    
+
     echo json_encode([
         'success' => true,
         'redirect' => 'index.html',

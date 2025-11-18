@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// OBTENER HORARIOS POR PERIODO
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 
@@ -13,6 +17,10 @@ if (!isset($_GET['periodo_id']) || empty($_GET['periodo_id'])) {
 }
 
 $periodo_id = intval($_GET['periodo_id']);
+
+// ============================================
+// CONSULTA DE HORARIOS ACTIVOS DEL PERIODO
+// ============================================
 
 $sql = "SELECT h.id, h.periodo_id, h.nombre_archivo, h.nombre_guardado, h.ruta_archivo,
                h.tamaño, h.fecha_carga, h.usuario_carga, p.periodo, p.año
@@ -34,7 +42,7 @@ $result = $stmt->get_result();
 $horarios = [];
 while ($row = $result->fetch_assoc()) {
     $tamaño_mb = round($row['tamaño'] / (1024 * 1024), 2);
-    
+
     $horarios[] = [
         'id' => $row['id'],
         'periodo_id' => $row['periodo_id'],

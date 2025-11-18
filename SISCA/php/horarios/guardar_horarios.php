@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// GUARDAR ARCHIVOS DE HORARIOS
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 
@@ -15,6 +19,10 @@ if (!isset($_POST['periodo_id']) || empty($_POST['periodo_id'])) {
 $periodo_id = intval($_POST['periodo_id']);
 $usuario = $_SESSION['username'] ?? 'Sistema';
 
+// ============================================
+// VALIDAR PERIODO
+// ============================================
+
 $sql_check = "SELECT id FROM periodos WHERE id = ?";
 $stmt = $conn->prepare($sql_check);
 $stmt->bind_param("i", $periodo_id);
@@ -26,6 +34,10 @@ if ($result->num_rows === 0) {
     exit;
 }
 $stmt->close();
+
+// ============================================
+// CREAR DIRECTORIOS DE ALMACENAMIENTO
+// ============================================
 
 $base_dir = '../../PDFs/horarios/';
 $absolute_dir = __DIR__ . '/../../PDFs/horarios/';
@@ -56,6 +68,10 @@ if (!isset($_FILES['files']) || empty($_FILES['files']['name'][0])) {
 
 $files_count = count($_FILES['files']['name']);
 
+// ============================================
+// PROCESAR CADA ARCHIVO SUBIDO
+// ============================================
+
 for ($i = 0; $i < $files_count; $i++) {
     $file_name = $_FILES['files']['name'][$i];
     $file_tmp = $_FILES['files']['tmp_name'][$i];
@@ -66,6 +82,10 @@ for ($i = 0; $i < $files_count; $i++) {
         $errores[] = "Error al cargar '$file_name': código de error $file_error";
         continue;
     }
+
+    // ============================================
+    // VALIDACIONES DE ARCHIVO
+    // ============================================
 
     $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
     if ($file_ext !== 'pdf') {
@@ -87,6 +107,10 @@ for ($i = 0; $i < $files_count; $i++) {
         continue;
     }
 
+    // ============================================
+    // GENERAR NOMBRE ÚNICO Y GUARDAR ARCHIVO
+    // ============================================
+
     $timestamp = time();
     $random_str = substr(md5(uniqid()), 0, 8);
     $nombre_original = pathinfo($file_name, PATHINFO_FILENAME);
@@ -99,6 +123,10 @@ for ($i = 0; $i < $files_count; $i++) {
         $errores[] = "No se pudo guardar '$file_name'";
         continue;
     }
+
+    // ============================================
+    // REGISTRAR ARCHIVO EN BASE DE DATOS
+    // ============================================
 
     $sql_insert = "INSERT INTO horarios (periodo_id, nombre_archivo, nombre_guardado, ruta_archivo, tamaño, usuario_carga)
                    VALUES (?, ?, ?, ?, ?, ?)";

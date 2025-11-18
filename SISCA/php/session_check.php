@@ -19,7 +19,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
-// Verificar timeout de inactividad (15 minutos)
+// ============================================
+// VERIFICACIÓN DE TIMEOUT DE INACTIVIDAD
+// ============================================
+
 $timeout_duration = 900;
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout_duration) {
     session_unset();
@@ -34,7 +37,10 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
     exit;
 }
 
-// Protección contra session hijacking - verificar IP
+// ============================================
+// PROTECCIÓN CONTRA SESSION HIJACKING
+// ============================================
+
 if (isset($_SESSION['ip_address']) && $_SESSION['ip_address'] !== $_SERVER['REMOTE_ADDR']) {
     session_unset();
     session_destroy();
@@ -48,7 +54,6 @@ if (isset($_SESSION['ip_address']) && $_SESSION['ip_address'] !== $_SERVER['REMO
     exit;
 }
 
-// Protección contra session hijacking - verificar user agent
 $current_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 if (isset($_SESSION['user_agent']) && $_SESSION['user_agent'] !== $current_user_agent) {
     session_unset();

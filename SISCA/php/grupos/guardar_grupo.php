@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// GUARDAR NUEVO GRUPO
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 include 'funciones_letras.php';
@@ -11,6 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $grado = trim($_POST['grado']);
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
         $periodo_id = isset($_POST['periodo_id']) ? (int)$_POST['periodo_id'] : null;
+
+        // ============================================
+        // VALIDAR DATOS DE ENTRADA
+        // ============================================
 
         if (empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
@@ -32,9 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Turno inválido. Debe ser M (Matutino) o N (Nocturno)');
         }
 
+        // ============================================
+        // GENERAR CÓDIGO DE GRUPO
+        // ============================================
+
         $codigoBase = $generacion . $programa . $grado;
 
-        // Encontrar primera letra disponible (permite llenar huecos cuando se dan de baja grupos)
         $letraIdentificacion = encontrarPrimeraLetraDisponible(
             $conn,
             $generacion,
@@ -50,12 +61,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $codigoCompleto = $codigoBase . $turno;
         }
 
+        // ============================================
+        // INSERTAR GRUPO EN BASE DE DATOS
+        // ============================================
+
         $stmt = $conn->prepare("
             INSERT INTO grupos (codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno, periodo_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->bind_param("sssssssi", $codigoCompleto, $generacion, $nivel, $programa, $grado, $letraIdentificacion, $turno, $periodo_id);
-        
+
         if ($stmt->execute()) {
             $idInsertado = $stmt->insert_id;
             echo json_encode([

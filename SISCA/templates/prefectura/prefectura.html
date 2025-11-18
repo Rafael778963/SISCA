@@ -27,7 +27,9 @@
         })();
     </script>
 
-    <!-- Barra lateral -->
+    <!-- ============================================
+         SIDEBAR - BARRA LATERAL
+         ============================================ -->
     <aside class="sidebar" id="sidebar">
         <button class="toggle-btn" id="toggleBtn">
             <i class="fa-solid fa-chevron-left"></i>
@@ -84,9 +86,13 @@
         </nav>
     </aside>
 
-    <!-- Página principal -->
+    <!-- ============================================
+         CONTENIDO PRINCIPAL
+         ============================================ -->
     <main class="main-content">
-        <!-- Encabezado -->
+        <!-- ============================================
+             HEADER - ENCABEZADO
+             ============================================ -->
         <header class="header">
             <h1 class="page-title">
                 Bienvenido <span class="username"><a id="user-name"></a></span>
@@ -103,9 +109,10 @@
             </div>
         </header>
 
-        <!-- Contenedor principal de Prefectura -->
+        <!-- ============================================
+             CONTENEDOR DE PREFECTURA
+             ============================================ -->
         <div class="prefectura-container">
-            <!-- Encabezado con estadísticas -->
             <div class="prefectura-header">
                 <div class="header-content">
                     <img src="../../img/SISCA C.png" alt="Logo" class="header-logo">
@@ -126,7 +133,6 @@
                 </div>
             </div>
 
-            <!-- Panel de controles y búsqueda -->
             <div class="prefectura-controls">
                 <h3 class="controls-title">
                     <i class="fa-solid fa-sliders"></i> Controles y Filtros
@@ -175,7 +181,6 @@
                     </div>
                 </div>
 
-                <!-- Botones de acciones -->
                 <div class="action-buttons">
                     <button class="btn btn-primary" id="reloadBtn">
                         <i class="fa-solid fa-arrows-rotate"></i> Recargar
@@ -194,7 +199,6 @@
                 </div>
             </div>
 
-            <!-- Panel de visualización -->
             <div class="prefectura-display">
                 <!-- Encabezado de la sección -->
                 <div class="display-header">
@@ -206,24 +210,20 @@
                     </p>
                 </div>
 
-                <!-- Alertas dinámicas -->
                 <div id="alertContainer"></div>
 
-                <!-- Grid de PDFs (vista predeterminada) -->
                 <div id="pdfGridContainer">
                     <ul class="pdf-grid" id="pdfGrid">
                         <!-- Los PDFs se cargarán dinámicamente aquí -->
                     </ul>
                 </div>
 
-                <!-- Lista de PDFs (vista alternativa, oculta por defecto) -->
                 <div id="pdfListContainer" style="display: none;">
                     <ul class="pdf-list" id="pdfList">
                         <!-- Los PDFs se cargarán dinámicamente aquí -->
                     </ul>
                 </div>
 
-                <!-- Estado vacío -->
                 <div id="emptyState" style="display: none;">
                     <div class="empty-state">
                         <div class="empty-state-icon">
@@ -235,7 +235,6 @@
                     </div>
                 </div>
 
-                <!-- Paginación -->
                 <div class="pagination" id="paginationContainer" style="display: none;">
                     <button class="pagination-btn" id="prevBtn">
                         <i class="fa-solid fa-chevron-left"></i> Anterior
@@ -250,7 +249,6 @@
             </div>
         </div>
 
-        <!-- Visor PDF Modal -->
         <div id="pdfViewerModal" class="pdf-viewer-modal" style="display: none;">
             <div class="viewer-header">
                 <h3 class="viewer-title">
@@ -274,14 +272,12 @@
             </div>
         </div>
 
-        <!-- Pie de página -->
         <div class="footer-text">
             <p>La presente publicación se plantea de manera incluyente y libre de estereotipos de género, 
                por lo que al referirse a una persona como "él" significa "él o ella".</p>
         </div>
     </main>
 
-    <!-- Scripts -->
     <script src="../../fonts/js/all.min.js"></script>
     <script src="../../js/js/sweetalert2.all.min.js"></script>
     <script src="../../js/session_check.js"></script>

@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// VERIFICAR LETRA DISPONIBLE PARA GRUPO
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 
@@ -22,7 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $turno = 'M';
         }
 
-        // Buscar última letra usada para esta configuración en el período activo
+        // ============================================
+        // BUSCAR ÚLTIMA LETRA USADA
+        // ============================================
+
         $stmt = $conn->prepare("
             SELECT letra_identificacion
             FROM grupos
@@ -38,9 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt->bind_param("ssssi", $generacion, $programa, $grado, $turno, $periodo_id);
         $stmt->execute();
         $result = $stmt->get_result();
-        
+
         $letraCorrespondiente = null;
-        
+
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $ultimaLetra = $row['letra_identificacion'];
@@ -55,20 +62,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
-        
+
         $stmt->close();
-        
+
         $turnoTexto = $turno === 'M' ? 'Matutino' : 'Nocturno';
-        
+
         echo json_encode([
             'success' => true,
             'letra' => $letraCorrespondiente,
             'turno' => $turno,
-            'mensaje' => $letraCorrespondiente ? 
-                "Ya existe este grupo en turno $turnoTexto, se asignará la letra $letraCorrespondiente" : 
+            'mensaje' => $letraCorrespondiente ?
+                "Ya existe este grupo en turno $turnoTexto, se asignará la letra $letraCorrespondiente" :
                 "Grupo disponible sin letra en turno $turnoTexto"
         ]);
-        
+
     } catch (Exception $e) {
         http_response_code(400);
         echo json_encode([
@@ -76,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'message' => $e->getMessage()
         ]);
     }
-    
+
 } else {
     http_response_code(405);
     echo json_encode([

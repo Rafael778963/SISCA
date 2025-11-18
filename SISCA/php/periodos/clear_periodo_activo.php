@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// LIMPIAR PERIODO ACTIVO DE LA SESIÓN
+// ============================================
+
 include '../session_check.php';
 
 unset($_SESSION['periodo_activo']);

@@ -1,4 +1,6 @@
-/* ----  vARIABLES -----*/
+/* ============================================
+   VARIABLES DE COLOR
+   ============================================ */
 :root {
   --verde-claro: #A4D17B;
   --verde-medio: #78B543;
@@ -7,6 +9,9 @@
   --naranja-medio: #E46220;
 }
 
+/* ============================================
+   ESTILOS BASE
+   ============================================ */
 body {
   font-family: Arial, sans-serif;
   display: flex;
@@ -18,7 +23,6 @@ body {
   overflow: hidden;
 }
 
-/* Fondo con blur */
 body::before {
   content: "";
   position: absolute;
@@ -31,7 +35,9 @@ body::before {
   z-index: -1;
 }
 
-/* Contenedor translúcido */
+/* ============================================
+   CONTENEDOR DE LOGIN
+   ============================================ */
 .content-wrapper {
   background: rgba(255, 255, 255, 0.85);
   border-radius: 20px;
@@ -88,11 +94,8 @@ body::before {
 
 .arrow {
   -webkit-user-select: none;
-  /* Safari/Chrome */
   -moz-user-select: none;
-  /* Firefox */
   -ms-user-select: none;
-  /* IE 10+ */
   cursor: pointer;
   font-size: 18px;
   color: #fff;
@@ -105,6 +108,9 @@ body::before {
   flex: 1;
 }
 
+/* ============================================
+   CAMPOS DEL FORMULARIO
+   ============================================ */
 .password-wrapper {
   position: relative;
   display: flex;
@@ -160,6 +166,9 @@ body::before {
   font-weight: bold;
 }
 
+/* ============================================
+   MENSAJES DE LOGIN
+   ============================================ */
 .login-message {
   margin-top: 15px;
   padding: 12px 16px;
@@ -180,6 +189,9 @@ body::before {
   opacity: 0;
 }
 
+/* ============================================
+   ANIMACIONES
+   ============================================ */
 @keyframes slideDown {
   from {
     opacity: 0;

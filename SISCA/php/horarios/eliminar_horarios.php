@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// ELIMINAR ARCHIVO DE HORARIO
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 
@@ -15,6 +19,10 @@ if (!isset($data['id']) || empty($data['id'])) {
 }
 
 $archivo_id = intval($data['id']);
+
+// ============================================
+// OBTENER INFORMACIÓN DEL ARCHIVO
+// ============================================
 
 $sql_select = "SELECT ruta_archivo, nombre_guardado FROM horarios WHERE id = ?";
 $stmt = $conn->prepare($sql_select);
@@ -33,6 +41,10 @@ $ruta_archivo = $row['ruta_archivo'];
 $nombre_guardado = $row['nombre_guardado'];
 $stmt->close();
 
+// ============================================
+// ELIMINAR ARCHIVO FÍSICO DEL SERVIDOR
+// ============================================
+
 $ruta_absoluta = __DIR__ . '/../../PDFs/horarios/' . str_replace('../../PDFs/horarios/', '', $ruta_archivo);
 
 $archivo_eliminado = true;
@@ -41,6 +53,10 @@ if (file_exists($ruta_absoluta)) {
         $archivo_eliminado = false;
     }
 }
+
+// ============================================
+// ELIMINAR REGISTRO DE BASE DE DATOS
+// ============================================
 
 $sql_delete = "DELETE FROM horarios WHERE id = ?";
 $stmt = $conn->prepare($sql_delete);

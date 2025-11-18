@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// OBTENER DATOS DE USUARIO DE LA SESIÓN
+// ============================================
+
 session_start();
 
 header('Content-Type: application/json; charset=utf-8');
@@ -12,7 +16,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
-// Verificar timeout de inactividad (15 minutos)
+// ============================================
+// VERIFICACIÓN DE TIMEOUT DE INACTIVIDAD
+// ============================================
+
 $timeout_duration = 900;
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout_duration) {
     session_unset();

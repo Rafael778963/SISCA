@@ -1,14 +1,22 @@
 <?php
+// ============================================
+// ELIMINAR GRUPO DEFINITIVAMENTE
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $id = intval($_POST['id']);
-        
+
         if (empty($id)) {
             throw new Exception('ID de grupo no especificado');
         }
+
+        // ============================================
+        // VALIDAR QUE EL GRUPO ESTÁ INACTIVO
+        // ============================================
 
         $stmt = $conn->prepare("SELECT id, codigo_grupo, estado FROM grupos WHERE id = ?");
         $stmt->bind_param("i", $id);
@@ -21,16 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $grupo = $result->fetch_assoc();
 
-        // Solo permitir eliminar grupos inactivos
         if ($grupo['estado'] !== 'inactivo') {
             throw new Exception('Solo se pueden eliminar grupos inactivos. Primero da de baja el grupo.');
         }
 
         $stmt->close();
 
+        // ============================================
+        // ELIMINAR GRUPO DE BASE DE DATOS
+        // ============================================
+
         $stmt = $conn->prepare("DELETE FROM grupos WHERE id = ?");
         $stmt->bind_param("i", $id);
-        
+
         if ($stmt->execute()) {
             echo json_encode([
                 'success' => true,
@@ -43,9 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             throw new Exception('Error al eliminar el grupo: ' . $stmt->error);
         }
-        
+
         $stmt->close();
-        
+
     } catch (Exception $e) {
         http_response_code(400);
         echo json_encode([
@@ -53,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'message' => $e->getMessage()
         ]);
     }
-    
+
 } else {
     http_response_code(405);
     echo json_encode([

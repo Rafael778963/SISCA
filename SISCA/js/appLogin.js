@@ -1,3 +1,7 @@
+// ============================================
+// DEFINICIÓN DE ROLES
+// ============================================
+
 const roles = [
   { name: "SUBDIRECTOR_ACADÉMICO", icon: "fa-solid fa-graduation-cap" },
   { name: "PTC_CARGA_ACADÉMICA", icon: "fa-solid fa-book" },
@@ -11,6 +15,10 @@ const roles = [
 ];
 
 let currentIndex = 0;
+
+// ============================================
+// NAVEGACIÓN DE ROLES
+// ============================================
 
 function updateRole() {
   const role = roles[currentIndex];
@@ -27,6 +35,10 @@ function prevRole() {
   currentIndex = (currentIndex - 1 + roles.length) % roles.length;
   updateRole();
 }
+
+// ============================================
+// MOSTRAR MENSAJES
+// ============================================
 
 function showMessage(message, type) {
   const existingMsg = document.querySelector('.login-message');
@@ -89,6 +101,10 @@ function handleLogin(event) {
     });
 }
 
+// ============================================
+// INICIALIZACIÓN Y EVENT LISTENERS
+// ============================================
+
 document.addEventListener('DOMContentLoaded', function () {
   updateRole();
 
@@ -106,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Mostrar/ocultar contraseña
   const togglePassword = document.getElementById('togglePassword');
   if (togglePassword) {
     togglePassword.addEventListener('click', function () {

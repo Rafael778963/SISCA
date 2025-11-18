@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// OBTENER GRUPOS POR PERIODO
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 
@@ -11,6 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($periodo_id === null) {
             throw new Exception('El periodo_id es requerido');
         }
+
+        // ============================================
+        // CONSULTAR GRUPOS ACTIVOS DEL PERIODO
+        // ============================================
 
         $sql = "SELECT id, codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno, estado, fecha_creacion
                 FROM grupos
@@ -31,14 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $grupos[] = $row;
             }
         }
-        
+
         echo json_encode([
             'success' => true,
             'data' => $grupos
         ]);
-        
+
         $stmt->close();
-        
+
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([
@@ -46,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'message' => 'Error al obtener los grupos: ' . $e->getMessage()
         ]);
     }
-    
+
 } else {
     http_response_code(405);
     echo json_encode([

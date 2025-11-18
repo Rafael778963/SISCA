@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// GUARDAR NUEVO PERIODO
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 
@@ -11,6 +15,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn->close();
         exit;
     }
+
+    // ============================================
+    // VERIFICAR SI YA EXISTE EL PERIODO
+    // ============================================
 
     $check_stmt = $conn->prepare("SELECT id FROM periodos WHERE periodo = ? AND año = ?");
     if (!$check_stmt) {
@@ -28,6 +36,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $check_stmt->close();
     } else {
         $check_stmt->close();
+
+        // ============================================
+        // INSERTAR NUEVO PERIODO
+        // ============================================
 
         $insert_stmt = $conn->prepare("INSERT INTO periodos (periodo, año) VALUES (?, ?)");
         if (!$insert_stmt) {

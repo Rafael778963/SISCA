@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// ELIMINAR DOCENTE
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 

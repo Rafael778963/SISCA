@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// OBTENER ESTADÍSTICAS DEL PERIODO
+// ============================================
+
 session_start();
 header('Content-Type: application/json');
 
@@ -12,6 +16,10 @@ try {
     $sql_periodos = "SELECT COUNT(*) as total FROM periodos";
     $result_periodos = $conn->query($sql_periodos);
     $total_periodos = $result_periodos->fetch_assoc()['total'];
+
+    // ============================================
+    // CONSULTAR GRUPOS Y DOCENTES
+    // ============================================
 
     if (!$periodo_id) {
         $sql_grupos = "SELECT COUNT(*) as total FROM grupos WHERE estado = 'activo'";

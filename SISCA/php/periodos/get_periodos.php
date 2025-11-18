@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// OBTENER TODOS LOS PERIODOS
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 

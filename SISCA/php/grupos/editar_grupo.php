@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// EDITAR GRUPO EXISTENTE
+// ============================================
+
 include '../session_check.php';
 include '../conexion.php';
 include 'funciones_letras.php';
@@ -12,6 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $grado = trim($_POST['grado']);
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
         $periodo_id = isset($_POST['periodo_id']) ? (int)$_POST['periodo_id'] : null;
+
+        // ============================================
+        // VALIDAR DATOS DE ENTRADA
+        // ============================================
 
         if (empty($id) || empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
@@ -32,6 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!in_array($turno, ['M', 'N'])) {
             throw new Exception('Turno inválido. Debe ser M (Matutino) o N (Nocturno)');
         }
+
+        // ============================================
+        // OBTENER DATOS ACTUALES DEL GRUPO
+        // ============================================
 
         $stmt = $conn->prepare("SELECT generacion, programa_educativo, grado, letra_identificacion, turno FROM grupos WHERE id = ?");
         $stmt->bind_param("i", $id);
@@ -57,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $codigoCompleto = $codigoBase . $turno;
 
         // ============================================
-        // SI CAMBIÓ LA CONFIGURACIÓN, REORGANIZAR
+        // REORGANIZAR SI CAMBIÓ LA CONFIGURACIÓN
         // ============================================
         if ($cambioConfiguracion) {
             // Marcar temporalmente como inactivo para evitar conflictos
