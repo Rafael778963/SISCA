@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario SISCA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Calibri', 'Segoe UI', Tahoma, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        .portada {
+            text-align: center;
+            padding: 60px 0;
+            border-bottom: 3px solid #003366;
+            margin-bottom: 40px;
+            page-break-after: always;
+        }
+        .portada h1 {
+            font-size: 48px;
+            color: #003366;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .portada h2 {
+            font-size: 28px;
+            color: #666;
+            margin-bottom: 60px;
+        }
+        .portada p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .fecha {
+            margin-top: 60px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        h1 {
+            font-size: 28px;
+            color: #003366;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 10px;
+            page-break-after: avoid;
+        }
+        h2 {
+            font-size: 20px;
+            color: #0066cc;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            page-break-after: avoid;
+        }
+        h3 {
+            font-size: 16px;
+            color: #004499;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        ul {
+            margin: 15px 0 15px 40px;
+            page-break-inside: avoid;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        ul ul {
+            margin: 8px 0 8px 30px;
+        }
+        strong {
+            color: #003366;
+        }
+        .tabla-contenidos {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #003366;
+            page-break-inside: avoid;
+        }
+        .tabla-contenidos ul {
+            list-style-type: none;
+            margin-left: 0;
+        }
+        .tabla-contenidos li {
+            padding: 5px 0;
+        }
+        .seccion {
+            page-break-inside: avoid;
+        }
+        .paso {
+            background: #f0f5ff;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #0066cc;
+            page-break-inside: avoid;
+        }
+        .nota {
+            background: #fff3cd;
+            padding: 12px;
+            border-left: 4px solid #ff9800;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        .importante {
+            background: #f8d7da;
+            padding: 12px;
+            border-left: 4px solid #dc3545;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        .codigo-grupo {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        .ejemplo {
+            background: #e8f4f8;
+            padding: 10px 15px;
+            border-left: 3px solid #0099cc;
+            margin: 10px 0;
+            page-break-inside: avoid;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        .salto {
+            margin-bottom: 30px;
+        }
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                padding: 20px;
+            }
+            h1, h2, h3, .paso, .nota, .importante {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<!-- PORTADA -->
+<div class="portada">
+    <h1>MANUAL DE USUARIO</h1>
+    <h2>SISCA - Sistema de Carga Académica</h2>
+    <p style="font-size: 16px; margin-top: 40px;">Sistema de Gestión de Carga Académica</p>
+    <p style="font-size: 16px;">Universidad Tecnológica</p>
+    <p class="fecha">Noviembre de 2024</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- TABLA DE CONTENIDOS -->
+<h1>TABLA DE CONTENIDOS</h1>
+<div class="tabla-contenidos">
+    <ul>
+        <li>1. INTRODUCCIÓN AL SISTEMA SISCA</li>
+        <li>2. GUÍA DE INICIO DE SESIÓN</li>
+        <li>3. PANEL PRINCIPAL (DASHBOARD)</li>
+        <li>4. MÓDULO DE PERÍODOS ACADÉMICOS</li>
+        <li>5. MÓDULO DE PLAN DE ESTUDIOS</li>
+        <li>6. MÓDULO DE GRUPOS</li>
+        <li>7. MÓDULO DE DOCENTES</li>
+        <li>8. MÓDULO DE CARGA ACADÉMICA</li>
+        <li>9. MÓDULO DE TUTORÍA</li>
+        <li>10. MÓDULO DE HORARIOS</li>
+        <li>11. MÓDULO DE CARTA DE ASIGNACIÓN</li>
+        <li>12. MÓDULO DE REPORTES</li>
+        <li>13. MÓDULO DE PREFECTURA</li>
+        <li>14. PREGUNTAS FRECUENTES Y SOLUCIÓN DE PROBLEMAS</li>
+    </ul>
+</div>
+
+<div class="page-break"></div>
+
+<!-- 1. INTRODUCCIÓN -->
+<h1>1. INTRODUCCIÓN AL SISTEMA SISCA</h1>
+
+<h2>¿Qué es SISCA?</h2>
+<p><strong>SISCA</strong> es el Sistema de Carga Académica diseñado para la Universidad Tecnológica. Este sistema le permite a los administradores educativos y coordinadores gestionar de manera eficiente:</p>
+<ul>
+    <li>Períodos académicos (Enero-Abril, Mayo-Agosto, Septiembre-Diciembre)</li>
+    <li>Planes de estudio y programas educativos</li>
+    <li>Grupos académicos y su asignación</li>
+    <li>Docentes y sus datos laborales</li>
+    <li>Asignación de carga académica a profesores</li>
+    <li>Horarios de clases</li>
+    <li>Tutoría académica</li>
+    <li>Generación de reportes y cartas de asignación</li>
+</ul>
+
+<h2>Objetivo Principal</h2>
+<p>Organizar y centralizar la información académica institucional, facilitando la asignación de carga académica a los docentes de forma ordenada y transparente.</p>
+
+<div class="page-break"></div>
+
+<!-- 2. INICIO DE SESIÓN -->
+<h1>2. GUÍA DE INICIO DE SESIÓN</h1>
+
+<h2>Paso a Paso para Iniciar Sesión</h2>
+
+<div class="paso">
+    <strong>Paso 1: Acceder a la plataforma</strong>
+    <p>Abra su navegador web e ingrese a la dirección de la plataforma SISCA que le proporcionó su institución.</p>
+</div>
+
+<div class="paso">
+    <strong>Paso 2: Página de inicio de sesión</strong>
+    <p>Verá una pantalla con un campo para contraseña y un área que muestra el rol actual. En la parte superior verá flechas arriba (↑) y abajo (↓) que le permitirán cambiar de rol.</p>
+</div>
+
+<div class="paso">
+    <strong>Paso 3: Seleccionar su rol</strong>
+    <p>Haga clic en las flechas o use las teclas arriba/abajo de su teclado para seleccionar el rol con el que desea iniciar sesión. Los roles disponibles incluyen:</p>
+    <ul>
+        <li>SUBDIRECTOR ACADÉMICO - Para administradores</li>
+        <li>PTC CARGA ACADÉMICA - Para gestores de carga</li>
+        <li>COORDINADOR MATUTINO - Para coordinadores del turno matutino</li>
+        <li>COORDINADOR NOCTURNO - Para coordinadores del turno nocturno</li>
+        <li>TUTORÍA - Para gestión de tutorías</li>
+        <li>PREFECTURA - Para consulta de horarios</li>
+    </ul>
+</div>
+
+<div class="paso">
+    <strong>Paso 4: Ingresar contraseña</strong>
+    <p>Una vez seleccione su rol, ingrese su contraseña en el campo de texto.</p>
+</div>
+
+<div class="paso">
+    <strong>Paso 5: Iniciar sesión</strong>
+    <p>Presione el botón 'Iniciar Sesión' o presione Enter. El sistema verificará sus credenciales.</p>
+</div>
+
+<div class="paso">
+    <strong>Paso 6: Acceso al panel</strong>
+    <p>Si las credenciales son correctas, será redirigido al panel principal (Dashboard) de SISCA.</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- 3. PANEL PRINCIPAL -->
+<h1>3. PANEL PRINCIPAL (DASHBOARD)</h1>
+
+<h2>Descripción General</h2>
+<p>El panel principal es su punto de partida. Aquí encontrará:</p>
+<ul>
+    <li>Acceso rápido a todos los módulos del sistema</li>
+    <li>Selector de período académico activo</li>
+    <li>Estadísticas principales resumidas</li>
+    <li>Navegación lateral con todos los módulos disponibles</li>
+</ul>
+
+<h2>Elementos Principales del Dashboard</h2>
+
+<h3>Barra Lateral (Menú)</h3>
+<p>En el lado izquierdo encontrará el menú con todos los módulos. Puede contraer este menú haciendo clic en el icono de hamburguesa (☰) para ganar más espacio en pantalla.</p>
+
+<h3>Selector de Período Académico</h3>
+<p>En la parte superior derecha hay un selector que muestra el período activo. Haga clic en él para cambiar entre diferentes períodos académicos.</p>
+
+<h3>Tarjetas de Información</h3>
+<p>En el centro verá tarjetas que muestran estadísticas del período actual:</p>
+<ul>
+    <li>Total de Períodos</li>
+    <li>Grupos Registrados</li>
+    <li>Docentes Registrados</li>
+    <li>Horas de Tutoría</li>
+    <li>Reportes Generados</li>
+    <li>Cartas de Asignación</li>
+</ul>
+
+<h3>Acceso a Módulos</h3>
+<p>Puede hacer clic directamente en las tarjetas o en el menú lateral para acceder a cada módulo específico.</p>
+
+<div class="page-break"></div>
+
+<!-- 4. PERÍODOS ACADÉMICOS -->
+<h1>4. MÓDULO DE PERÍODOS ACADÉMICOS</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>Los períodos académicos son los bloques de tiempo en los que se divide el año escolar. En SISCA, todo está organizado por períodos: docentes, grupos, horarios y carga académica. Este módulo le permite crear y gestionar estos períodos.</p>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral izquierdo, haga clic en <strong>"Períodos"</strong></li>
+    <li>Se abrirá la pantalla de gestión de períodos académicos</li>
+</ol>
+
+<h2>Crear un Nuevo Período</h2>
+<ul>
+    <li>Haga clic en el botón <strong>'Crear Nuevo Período'</strong></li>
+    <li>Se abrirá un formulario con los siguientes campos:
+        <ul>
+            <li><strong>Nombre del Período:</strong> Escriba el nombre (ejemplo: 'Enero-Abril 2024')</li>
+            <li><strong>Fecha de Inicio:</strong> Seleccione la fecha cuando comienza el período</li>
+            <li><strong>Fecha de Fin:</strong> Seleccione la fecha cuando termina el período</li>
+        </ul>
+    </li>
+    <li>Haga clic en <strong>'Guardar'</strong></li>
+    <li>El período aparecerá en la lista de períodos</li>
+</ul>
+
+<h2>Activar un Período</h2>
+<p>El período activo es el que está en uso en ese momento. Para activarlo:</p>
+<ul>
+    <li>Ubique el período que desea activar en la lista</li>
+    <li>Haga clic en el botón <strong>'Activar'</strong> correspondiente</li>
+    <li>El período ahora será el activo y aparecerá en el selector del dashboard</li>
+    <li>Solo un período puede estar activo a la vez</li>
+</ul>
+
+<h2>Ver Estadísticas</h2>
+<p>Para cada período, puede ver estadísticas como:</p>
+<ul>
+    <li>Cantidad de grupos en ese período</li>
+    <li>Cantidad de docentes asignados</li>
+    <li>Total de horas académicas</li>
+    <li>Cantidad de reportes generados</li>
+</ul>
+
+<h2>Eliminar un Período</h2>
+<p>Si necesita eliminar un período que no está en uso:</p>
+<ul>
+    <li>Haga clic en el botón <strong>'Eliminar'</strong> del período correspondiente</li>
+    <li>Se le pedirá confirmación</li>
+    <li>Una vez confirmado, el período y todos sus datos asociados serán eliminados permanentemente</li>
+</ul>
+
+<div class="importante">
+    <strong>⚠️ IMPORTANTE:</strong> Sea cuidadoso, esta acción no se puede deshacer.
+</div>
+
+<div class="page-break"></div>
+
+<!-- 5. PLAN DE ESTUDIOS -->
+<h1>5. MÓDULO DE PLAN DE ESTUDIOS</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>Este módulo le permite gestionar los programas educativos (carreras) que ofrece su institución y las materias que pertenecen a cada programa. Define qué materias se imparten en cada grado y cuántas horas semanales tiene cada una.</p>
+
+<h2>Programas Disponibles</h2>
+<p>Los programas disponibles en el sistema son:</p>
+<ul>
+    <li>TSU en Entornos Virtuales y Negocios Digitales (EVND)</li>
+    <li>TSU en Química Industrial (QI)</li>
+    <li>TSU en Mercadotecnia (MERC)</li>
+    <li>TSU en Mantenimiento Industrial (MI)</li>
+    <li>TSU en Enseñanza del Idioma Inglés (EII)</li>
+    <li>TSU en Automatización (AUTO)</li>
+    <li>Ingenierías (ING)</li>
+    <li>Licenciaturas (LIC)</li>
+</ul>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral, haga clic en <strong>"Plan de Estudios"</strong></li>
+    <li>Seleccione el programa del cual desea gestionar materias</li>
+</ol>
+
+<h2>Agregar una Nueva Materia</h2>
+<p>Para añadir una materia a un programa:</p>
+<ul>
+    <li>Seleccione el programa educativo</li>
+    <li>Haga clic en <strong>'Agregar Materia'</strong></li>
+    <li>Ingrese los datos de la materia:
+        <ul>
+            <li><strong>Nombre de la Materia:</strong> Nombre completo de la materia</li>
+            <li><strong>Código:</strong> Código único de la materia</li>
+            <li><strong>Grado:</strong> Seleccione el grado (1er, 2do, 3er, etc.)</li>
+            <li><strong>Horas Semanales:</strong> Número de horas que se imparte por semana</li>
+        </ul>
+    </li>
+    <li>Haga clic en <strong>'Guardar'</strong></li>
+</ul>
+
+<h2>Editar una Materia</h2>
+<ul>
+    <li>Ubique la materia en la lista</li>
+    <li>Haga clic en el botón <strong>'Editar'</strong></li>
+    <li>Modifique los campos necesarios</li>
+    <li>Haga clic en <strong>'Guardar Cambios'</strong></li>
+</ul>
+
+<h2>Eliminar una Materia</h2>
+<ul>
+    <li>Haga clic en el botón <strong>'Eliminar'</strong> de la materia</li>
+    <li>Confirme la eliminación</li>
+    <li>La materia será eliminada del programa</li>
+</ul>
+
+<div class="nota">
+    <strong>📌 NOTA:</strong> Solo podrá eliminar materias que no estén asignadas a docentes.
+</div>
+
+<div class="page-break"></div>
+
+<!-- 6. GRUPOS -->
+<h1>6. MÓDULO DE GRUPOS</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>Un grupo es un conjunto de estudiantes de un mismo nivel académico en un programa específico. Este módulo le permite crear y gestionar todos los grupos académicos de su institución. Cada grupo tiene un código único que identifica su generación, programa, grado y turno.</p>
+
+<h2>Entendiendo el Código del Grupo</h2>
+
+<div class="codigo-grupo">
+    <strong>Estructura:</strong> [Generación][Programa][Grado][Letra][Turno]<br>
+    <strong>Ejemplo:</strong> 52AUTO6BM
+</div>
+
+<div class="ejemplo">
+    <strong>Desglose del ejemplo:</strong><br>
+    52 = Generación 52<br>
+    AUTO = Programa Automatización<br>
+    6 = Sexto grado<br>
+    B = Grupo B<br>
+    M = Matutino
+</div>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral, haga clic en <strong>"Grupos"</strong></li>
+    <li>Se mostrará la lista de grupos existentes</li>
+</ol>
+
+<h2>Crear un Nuevo Grupo</h2>
+<p>Para crear un nuevo grupo académico:</p>
+<ul>
+    <li>Haga clic en <strong>'Crear Nuevo Grupo'</strong></li>
+    <li>Complete el formulario con los siguientes datos:
+        <ul>
+            <li><strong>Generación:</strong> Número de la generación (ej: 52)</li>
+            <li><strong>Programa:</strong> Seleccione el programa educativo</li>
+            <li><strong>Grado:</strong> Seleccione el grado (1er, 2do, 3er, etc.)</li>
+            <li><strong>Letra del Grupo:</strong> Seleccione una letra (A, B, C, etc.)</li>
+            <li><strong>Turno:</strong> Seleccione Matutino o Nocturno</li>
+        </ul>
+    </li>
+    <li>El sistema genera automáticamente el código del grupo</li>
+    <li>Haga clic en <strong>'Guardar'</strong></li>
+</ul>
+
+<h2>Editar Información del Grupo</h2>
+<ul>
+    <li>Ubique el grupo en la lista</li>
+    <li>Haga clic en <strong>'Editar'</strong></li>
+    <li>Modifique los datos necesarios</li>
+    <li>Haga clic en <strong>'Guardar Cambios'</strong></li>
+</ul>
+
+<h2>Dar de Baja/Alta un Grupo</h2>
+<p>Cuando un grupo se gradúa o deja de existir, puede darle de baja:</p>
+<ul>
+    <li>Ubique el grupo que desea dar de baja</li>
+    <li>Haga clic en <strong>'Baja'</strong></li>
+    <li>El grupo dejará de aparecer en la lista activa</li>
+    <li>Puede reactivar un grupo haciendo clic en <strong>'Alta'</strong></li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- 7. DOCENTES -->
+<h1>7. MÓDULO DE DOCENTES</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>Este módulo le permite registrar y gestionar toda la información de los docentes de su institución, incluyendo su régimen de contratación y turno de trabajo.</p>
+
+<h2>Tipos de Régimen de Contratación</h2>
+<ul>
+    <li><strong>PTC</strong> (Profesor de Tiempo Completo)
+        <ul>
+            <li>Trabaja tiempo completo en la institución</li>
+        </ul>
+    </li>
+    <li><strong>PA</strong> (Profesor de Asignatura)
+        <ul>
+            <li>Contratado para impartir asignaturas específicas</li>
+        </ul>
+    </li>
+    <li><strong>PH</strong> (Profesor por Horas)
+        <ul>
+            <li>Contratado por horas específicas</li>
+        </ul>
+    </li>
+</ul>
+
+<h2>Turnos Disponibles</h2>
+<ul>
+    <li><strong>Matutino:</strong> Docentes que trabajan en la mañana</li>
+    <li><strong>Nocturno:</strong> Docentes que trabajan en la noche</li>
+    <li><strong>Matutino/Nocturno:</strong> Docentes que trabajan en ambos turnos</li>
+</ul>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral, haga clic en <strong>"Docentes"</strong></li>
+    <li>Se mostrará la lista de docentes registrados</li>
+</ol>
+
+<h2>Registrar un Nuevo Docente</h2>
+<p>Para añadir un nuevo docente:</p>
+<ul>
+    <li>Haga clic en <strong>'Registrar Nuevo Docente'</strong></li>
+    <li>Complete el formulario:
+        <ul>
+            <li><strong>Nombre Completo:</strong> Nombre y apellido del docente</li>
+            <li><strong>Turno:</strong> Seleccione el turno donde trabaja</li>
+            <li><strong>Régimen:</strong> Seleccione el tipo de contratación (PTC, PA, PH)</li>
+        </ul>
+    </li>
+    <li>Haga clic en <strong>'Guardar'</strong></li>
+</ul>
+
+<h2>Editar Información del Docente</h2>
+<ul>
+    <li>Ubique al docente en la lista</li>
+    <li>Haga clic en <strong>'Editar'</strong></li>
+    <li>Modifique los datos necesarios</li>
+    <li>Haga clic en <strong>'Guardar Cambios'</strong></li>
+</ul>
+
+<h2>Dar de Baja un Docente</h2>
+<p>Cuando un docente se retira:</p>
+<ul>
+    <li>Ubique al docente que desea dar de baja</li>
+    <li>Haga clic en <strong>'Baja'</strong></li>
+    <li>El docente dejará de aparecer en la lista activa</li>
+    <li>Puede reactivar un docente haciendo clic en <strong>'Alta'</strong></li>
+</ul>
+
+<h2>Filtrar Docentes</h2>
+<p>Puede filtrar la lista de docentes por:</p>
+<ul>
+    <li><strong>Turno:</strong> Ver solo docentes de un turno específico</li>
+    <li><strong>Régimen:</strong> Ver solo docentes de un régimen de contratación</li>
+    <li><strong>Combinación:</strong> Combinar ambos filtros</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- 8. CARGA ACADÉMICA -->
+<h1>8. MÓDULO DE CARGA ACADÉMICA</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>Este módulo es donde se asignan las materias a los docentes. Aquí se define qué docente impartirá qué materia a qué grupo en un período determinado.</p>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral, haga clic en <strong>"Carga Académica"</strong></li>
+    <li>Se mostrará el formulario de asignación de carga</li>
+</ol>
+
+<h2>Asignar Carga Académica</h2>
+<p>Para asignar una materia a un docente:</p>
+<ul>
+    <li>Seleccione el <strong>Período Académico</strong></li>
+    <li>Seleccione el <strong>Docente</strong> al que desea asignar carga</li>
+    <li>Seleccione la <strong>Materia</strong> a asignar</li>
+    <li>Seleccione el <strong>Grupo</strong> al que impartirá la materia</li>
+    <li>Ingrese las <strong>Horas Semanales</strong> que dedicará a esta materia</li>
+    <li>Haga clic en <strong>'Asignar'</strong></li>
+    <li>La asignación aparecerá en la lista de carga del docente</li>
+</ul>
+
+<h2>Ver Carga Académica de un Docente</h2>
+<p>Puede ver todas las materias asignadas a un docente en un período:</p>
+<ul>
+    <li>Seleccione el período y el docente</li>
+    <li>Se mostrará una tabla con todas sus asignaciones</li>
+    <li>Cada fila muestra: Materia, Grupo, y Horas Semanales</li>
+    <li>Al final aparece el <strong>TOTAL DE HORAS ASIGNADAS</strong></li>
+</ul>
+
+<h2>Modificar una Asignación</h2>
+<p>Para cambiar el número de horas de una asignación:</p>
+<ul>
+    <li>Ubique la asignación en la lista</li>
+    <li>Haga clic en <strong>'Editar'</strong></li>
+    <li>Modifique las horas</li>
+    <li>Haga clic en <strong>'Guardar'</strong></li>
+</ul>
+
+<h2>Eliminar una Asignación</h2>
+<p>Para quitar una materia de la carga de un docente:</p>
+<ul>
+    <li>Ubique la asignación en la lista</li>
+    <li>Haga clic en <strong>'Eliminar'</strong></li>
+    <li>Confirme la eliminación</li>
+    <li>La asignación será eliminada y las horas totales se actualizarán</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- 9. TUTORÍA -->
+<h1>9. MÓDULO DE TUTORÍA</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>La tutoría académica es un complemento importante en la formación de estudiantes. Este módulo permite asignar horas de tutoría a los docentes y gestionar grupos de estudiantes bajo su seguimiento.</p>
+
+<h2>¿Qué es la Tutoría?</h2>
+<p>La tutoría es un acompañamiento académico y personal que brinda un docente a un grupo de estudiantes para:</p>
+<ul>
+    <li>Seguimiento académico personalizado</li>
+    <li>Orientación en problemas académicos</li>
+    <li>Apoyo en desarrollo personal</li>
+    <li>Motivación y retención estudiantil</li>
+</ul>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral, haga clic en <strong>"Tutoría"</strong></li>
+    <li>Se mostrará el formulario de gestión de tutorías</li>
+</ol>
+
+<h2>Asignar Horas de Tutoría</h2>
+<p>Para asignar horas de tutoría a un docente:</p>
+<ul>
+    <li>Seleccione el <strong>Período Académico</strong></li>
+    <li>Seleccione el <strong>Docente</strong></li>
+    <li>Seleccione el <strong>Grupo</strong> que tutorará</li>
+    <li>Ingrese las <strong>Horas de Tutoría por semana</strong></li>
+    <li>Haga clic en <strong>'Asignar'</strong></li>
+</ul>
+
+<h2>Ver Tutorías Asignadas</h2>
+<p>Para ver las tutorías asignadas a un docente:</p>
+<ul>
+    <li>Seleccione el período y el docente</li>
+    <li>Se mostrarán todas las tutorías asignadas</li>
+    <li>Cada registro muestra el grupo y las horas semanales</li>
+</ul>
+
+<h2>Modificar o Eliminar Tutorías</h2>
+<p>Similar al módulo de carga académica:</p>
+<ul>
+    <li>Haga clic en <strong>'Editar'</strong> para cambiar las horas</li>
+    <li>Haga clic en <strong>'Eliminar'</strong> para quitar la tutoría</li>
+    <li>Confirme los cambios</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- 10. HORARIOS -->
+<h1>10. MÓDULO DE HORARIOS</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>Este módulo le permite centralizar todos los horarios de clase en formato PDF. Aquí se cargan, organizan y consultan los horarios de cada período académico.</p>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral, haga clic en <strong>"Horarios"</strong></li>
+    <li>Se mostrará la interfaz de gestión de horarios</li>
+</ol>
+
+<h2>Cargar un Archivo de Horario</h2>
+<p>Para subir un PDF de horario:</p>
+<ul>
+    <li>Haga clic en <strong>'Cargar Nuevo Horario'</strong></li>
+    <li>Seleccione el <strong>Período Académico</strong></li>
+    <li>Seleccione el <strong>Programa</strong> (ej: Automatización, Química, etc.)</li>
+    <li>Seleccione el <strong>Turno</strong> (Matutino o Nocturno)</li>
+    <li>Haga clic en <strong>'Seleccionar Archivo'</strong> y elija el PDF del horario</li>
+    <li>Haga clic en <strong>'Cargar'</strong></li>
+    <li>El sistema procesa el archivo y lo almacena</li>
+</ul>
+
+<h2>Buscar un Horario</h2>
+<p>Para encontrar un horario específico:</p>
+<ul>
+    <li>Use los filtros en la parte superior</li>
+    <li>Seleccione el Período, Programa y/o Turno</li>
+    <li>Haga clic en <strong>'Buscar'</strong></li>
+    <li>Se mostrarán los horarios que coincidan</li>
+</ul>
+
+<h2>Ver un Horario</h2>
+<p>Para abrir y consultar un horario:</p>
+<ul>
+    <li>Ubique el horario en la lista</li>
+    <li>Haga clic en el nombre del archivo</li>
+    <li>Se abrirá el PDF en una nueva ventana</li>
+    <li>Puede imprimirlo o descargarlo si lo necesita</li>
+</ul>
+
+<h2>Eliminar un Horario</h2>
+<p>Si necesita eliminar un horario:</p>
+<ul>
+    <li>Ubique el horario que desea eliminar</li>
+    <li>Haga clic en <strong>'Eliminar'</strong></li>
+    <li>Confirme la eliminación</li>
+    <li>El archivo será eliminado del sistema</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- 11. CARTA DE ASIGNACIÓN -->
+<h1>11. MÓDULO DE CARTA DE ASIGNACIÓN</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>La Carta de Asignación es un documento oficial que se entrega a cada docente detallando todas sus responsabilidades académicas en un período. Este módulo permite generar estas cartas de forma automática.</p>
+
+<h2>¿Qué Contiene una Carta de Asignación?</h2>
+<p>Una carta de asignación incluye:</p>
+<ul>
+    <li>Datos del docente (nombre, régimen, turno)</li>
+    <li>Período académico</li>
+    <li>Listado de materias asignadas con sus grupos</li>
+    <li>Horas semanales por materia</li>
+    <li>Total de horas asignadas</li>
+    <li>Horas de tutoría (si aplica)</li>
+</ul>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral, haga clic en <strong>"Carta de Asignación"</strong></li>
+    <li>Se mostrará el formulario de generación de cartas</li>
+</ol>
+
+<h2>Generar una Carta de Asignación</h2>
+<p>Para generar la carta de un docente:</p>
+<ul>
+    <li>Seleccione el <strong>Período Académico</strong></li>
+    <li>Seleccione el <strong>Docente</strong></li>
+    <li>El sistema automáticamente obtiene toda su carga académica</li>
+    <li>Haga clic en <strong>'Generar Carta'</strong></li>
+    <li>La carta se genera en formato PDF</li>
+    <li>Se abrirá en una nueva ventana</li>
+</ul>
+
+<h2>Descargar o Imprimir la Carta</h2>
+<p>Una vez generada la carta:</p>
+<ul>
+    <li>Puede descargarla haciendo clic en el icono de descarga</li>
+    <li>Puede imprimirla directamente desde el navegador</li>
+    <li>Puede enviarla por correo electrónico al docente</li>
+</ul>
+
+<h2>Generar Cartas en Lote</h2>
+<p>Para generar cartas de múltiples docentes a la vez:</p>
+<ul>
+    <li>Seleccione el Período</li>
+    <li>Haga clic en <strong>'Generar Cartas en Lote'</strong></li>
+    <li>Seleccione los docentes para los que desea generar cartas</li>
+    <li>Haga clic en <strong>'Generar'</strong></li>
+    <li>El sistema genera todas las cartas a la vez</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- 12. REPORTES -->
+<h1>12. MÓDULO DE REPORTES</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>Los reportes le permiten obtener información consolidada sobre la carga académica, tutorías y estadísticas generales. Son documentos que sirven para análisis, toma de decisiones y presentación de información a directivos.</p>
+
+<h2>Tipos de Reportes Disponibles</h2>
+<p>El sistema puede generar reportes sobre:</p>
+<ul>
+    <li><strong>Carga Académica por Docente:</strong> Detalle de materias, grupos y horas</li>
+    <li><strong>Carga Académica por Materia:</strong> Qué docentes imparten cada materia</li>
+    <li><strong>Estadísticas por Período:</strong> Resumen de actividades del período</li>
+    <li><strong>Carga por Programa:</strong> Distribución de carga por cada carrera</li>
+    <li><strong>Resumen de Tutorías:</strong> Docentes y horas de tutoría asignadas</li>
+</ul>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>En el menú lateral, haga clic en <strong>"Reportes"</strong></li>
+    <li>Se mostrará el formulario de generación de reportes</li>
+</ol>
+
+<h2>Generar un Reporte</h2>
+<p>Para generar un reporte:</p>
+<ul>
+    <li>Seleccione el <strong>Tipo de Reporte</strong> que desea</li>
+    <li>Seleccione el <strong>Período Académico</strong></li>
+    <li>Si aplica, seleccione Docente, Programa, o Materia</li>
+    <li>Haga clic en <strong>'Generar'</strong></li>
+    <li>El reporte se abre en formato PDF o tabla</li>
+</ul>
+
+<h2>Interpretar los Reportes</h2>
+
+<h3>Reporte de Carga Académica por Docente</h3>
+<p>Muestra todas las materias que imparte el docente, con grupos y horas. Útil para verificar si la carga es equilibrada.</p>
+
+<h3>Reporte de Carga por Programa</h3>
+<p>Muestra cuántas horas se imparten de cada programa, qué docentes participan y en qué grupos. Útil para coordinadores.</p>
+
+<h3>Reporte de Estadísticas por Período</h3>
+<p>Muestra números totales: docentes contratados, grupos activos, total de horas, reportes generados, etc.</p>
+
+<h2>Descargar o Imprimir Reportes</h2>
+<p>Los reportes generados pueden:</p>
+<ul>
+    <li>Descargarse en formato PDF</li>
+    <li>Imprimirse directamente</li>
+    <li>Exportarse a otros formatos si está disponible</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- 13. PREFECTURA -->
+<h1>13. MÓDULO DE PREFECTURA</h1>
+
+<h2>¿Para qué sirve?</h2>
+<p>El módulo de Prefectura es de consulta. Permite al personal de prefectura (responsables de disciplina y orden) acceder rápidamente a los horarios de todas las clases para coordinar actividades, verificar asistencias y gestionar el orden académico.</p>
+
+<h2>Accediendo al Módulo</h2>
+<ol>
+    <li>Los usuarios con rol <strong>"PREFECTURA"</strong> ven este módulo en su menú</li>
+    <li>Haga clic en <strong>"Prefectura"</strong> en el menú lateral</li>
+</ol>
+
+<h2>Ver Horarios Completos</h2>
+<p>En este módulo puede:</p>
+<ul>
+    <li>Ver todos los horarios de la institución en un solo lugar</li>
+    <li>Filtrar por período académico</li>
+    <li>Filtrar por programa educativo</li>
+    <li>Filtrar por turno (matutino/nocturno)</li>
+    <li>Descargar o imprimir horarios completos</li>
+</ul>
+
+<h2>Usos Prácticos</h2>
+<p>El personal de prefectura utiliza esta información para:</p>
+<ul>
+    <li>Coordinar eventos especiales sin choques de horarios</li>
+    <li>Verificar que los docentes estén en sus salones asignados</li>
+    <li>Resolver conflictos de espacios o salones</li>
+    <li>Comunicar cambios a estudiantes y docentes</li>
+    <li>Mantener el orden y disciplina académica</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- 14. PREGUNTAS FRECUENTES -->
+<h1>14. PREGUNTAS FRECUENTES Y SOLUCIÓN DE PROBLEMAS</h1>
+
+<h2>¿Qué debo hacer primero al usar SISCA?</h2>
+<p><strong>Respuesta:</strong> Siga este orden:</p>
+<ol>
+    <li>Crear Períodos Académicos</li>
+    <li>Configurar el Plan de Estudios (Programas y Materias)</li>
+    <li>Crear los Grupos</li>
+    <li>Registrar los Docentes</li>
+    <li>Hacer asignaciones de Carga Académica</li>
+    <li>Cargar Horarios</li>
+    <li>Generar Reportes y Cartas</li>
+</ol>
+
+<h2>¿Puedo cambiar de período después de crear información?</h2>
+<p><strong>Respuesta:</strong> Sí, desde el dashboard puede cambiar el período activo en cualquier momento. Los datos permanecerán asociados a cada período.</p>
+
+<h2>¿Qué pasa si elimino un docente?</h2>
+<p><strong>Respuesta:</strong> Si un docente tiene asignaciones (carga académica o tutoría), el sistema no le permitirá eliminarlo directamente. Primero debe eliminar las asignaciones o usar la opción "Dar de Baja" en lugar de "Eliminar".</p>
+
+<h2>¿Cómo recupero información eliminada?</h2>
+<p><strong>Respuesta:</strong> Lamentablemente, los datos eliminados no se pueden recuperar. Sea cuidadoso antes de confirmar eliminaciones. Si lo necesita, contacte al administrador del sistema.</p>
+
+<h2>¿Por qué no puedo crear dos grupos con el mismo código?</h2>
+<p><strong>Respuesta:</strong> El sistema no permite códigos de grupos duplicados porque cada grupo debe ser único. Si ve este error, verifique que no haya otro grupo con esa combinación de generación, programa, grado, letra y turno.</p>
+
+<h2>¿Cómo aseguro que mi carga académica esté correcta?</h2>
+<p><strong>Respuesta:</strong> Genere un reporte de carga académica por docente. Este mostrará todas las materias, grupos y horas asignadas. Verifique que coincidan con sus registros.</p>
+
+<h2>¿Puedo editar un período después de activarlo?</h2>
+<p><strong>Respuesta:</strong> Sí, puede editar la información de un período activo en cualquier momento. Los cambios no afectarán los datos ya cargados.</p>
+
+<h2>¿Qué hago si olvido la contraseña?</h2>
+<p><strong>Respuesta:</strong> Contacte al administrador del sistema. El administrador puede restablecer contraseñas.</p>
+
+<h2>¿Puedo ver la carga académica de otro período sin cambiarlo?</h2>
+<p><strong>Respuesta:</strong> Sí, en la mayoría de los módulos puede usar filtros para seleccionar un período sin necesariamente activarlo.</p>
+
+<h2>¿Qué debo hacer si encuentro un error o problema?</h2>
+<p><strong>Respuesta:</strong> Contacte al administrador del sistema e informe:</p>
+<ul>
+    <li>Qué módulo estaba usando</li>
+    <li>Qué acción realizaba</li>
+    <li>Qué error vio</li>
+    <li>Si es posible, tome una captura de pantalla</li>
+</ul>
+
+<div class="page-break"></div>
+
+<!-- CONCLUSIÓN -->
+<h1>CONCLUSIÓN</h1>
+
+<p>Este manual le proporciona una guía completa para utilizar SISCA de manera efectiva. Cada módulo está diseñado para ser intuitivo, pero si tiene dudas, no dude en consultar la sección de Preguntas Frecuentes o contactar al administrador del sistema.</p>
+
+<h2>Puntos clave a recordar:</h2>
+<ul>
+    <li>SISCA organiza todo por períodos académicos</li>
+    <li>El orden correcto de uso es: Períodos → Plan de Estudios → Grupos → Docentes → Carga Académica</li>
+    <li>Cada módulo tiene funciones específicas y complementarias</li>
+    <li>Los reportes y cartas se generan automáticamente con la información cargada</li>
+    <li>Sea cuidadoso con las eliminaciones permanentes</li>
+    <li>Comuníquese con el administrador si necesita ayuda</li>
+</ul>
+
+<p style="margin-top: 40px; text-align: center; color: #666;">
+    <strong>¡Gracias por usar SISCA!</strong><br>
+    Sistema de Carga Académica - Universidad Tecnológica<br>
+    Noviembre 2024
+</p>
+
+</div>
+</body>
+</html>
