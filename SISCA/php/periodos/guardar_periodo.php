@@ -6,14 +6,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $periodo = trim($_POST['periodo'] ?? '');
     $anio = (int)($_POST['anio'] ?? 0);
 
-    // Validar entrada
     if (empty($periodo) || $anio <= 0) {
         echo json_encode(['success' => false, 'message' => 'Datos inválidos.']);
         $conn->close();
         exit;
     }
 
-    // Verificar si ya existe ese periodo y año usando prepared statement
     $check_stmt = $conn->prepare("SELECT id FROM periodos WHERE periodo = ? AND año = ?");
     if (!$check_stmt) {
         echo json_encode(['success' => false, 'message' => 'Error en la consulta.']);
@@ -31,7 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $check_stmt->close();
 
-        // Insertar usando prepared statement
         $insert_stmt = $conn->prepare("INSERT INTO periodos (periodo, año) VALUES (?, ?)");
         if (!$insert_stmt) {
             echo json_encode(['success' => false, 'message' => 'Error en la consulta.']);

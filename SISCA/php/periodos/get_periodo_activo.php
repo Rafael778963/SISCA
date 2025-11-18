@@ -1,8 +1,4 @@
 <?php
-/**
- * Obtiene el período activo de la sesión
- */
-
 include '../session_check.php';
 
 if (isset($_SESSION['periodo_activo'])) {

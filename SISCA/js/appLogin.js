@@ -28,7 +28,6 @@ function prevRole() {
   updateRole();
 }
 
-// Mensaje de error
 function showMessage(message, type) {
   const existingMsg = document.querySelector('.login-message');
   if (existingMsg) {
@@ -48,7 +47,9 @@ function showMessage(message, type) {
   }, 3000);
 }
 
-// Funcion de login
+// ============================================
+// MANEJADOR DE LOGIN
+// ============================================
 function handleLogin(event) {
   event.preventDefault();
 

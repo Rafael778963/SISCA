@@ -1,5 +1,4 @@
 <?php
-// obtener_todos_horarios.php - Ubicación: /php/prefectura/obtener_todos_horarios.php
 include '../session_check.php';
 include '../conexion.php';
 
@@ -9,8 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
-    // Obtener todos los horarios activos con información de período
-    $sql = "SELECT h.id, h.periodo_id, h.nombre_archivo, h.nombre_guardado, h.ruta_archivo, 
+    $sql = "SELECT h.id, h.periodo_id, h.nombre_archivo, h.nombre_guardado, h.ruta_archivo,
                    h.tamaño, h.fecha_carga, h.usuario_carga, p.periodo, p.año,
                    CONCAT(p.periodo, ' - ', p.año) as periodo_completo
             FROM horarios h

@@ -18,13 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             throw new Exception('El periodo_id es requerido');
         }
 
-        // Validar turno
         if (!in_array($turno, ['M', 'N'])) {
             $turno = 'M';
         }
 
-        // Buscar si ya existe ese código base con el mismo turno y obtener la última letra
-        // CRÍTICO: Filtrar solo por el período activo para evitar conflictos entre períodos
+        // Buscar última letra usada para esta configuración en el período activo
         $stmt = $conn->prepare("
             SELECT letra_identificacion
             FROM grupos
@@ -46,15 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $ultimaLetra = $row['letra_identificacion'];
-            
+
             if ($ultimaLetra === null) {
-                // Si existe un grupo sin letra, el siguiente será con 'B'
                 $letraCorrespondiente = 'B';
             } else {
-                // Incrementar la letra
                 $letraCorrespondiente = chr(ord($ultimaLetra) + 1);
-                
-                // Validar que no exceda la Z
+
                 if (ord($letraCorrespondiente) > ord('Z')) {
                     throw new Exception('Límite de grupos alcanzado');
                 }

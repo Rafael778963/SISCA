@@ -1,15 +1,12 @@
 <?php
-// guardar_horarios.php - Ubicación: /php/horarios/guardar_horarios.php
 include '../session_check.php';
 include '../conexion.php';
 
-// Verificar que sea una solicitud POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Método no permitido']);
     exit;
 }
 
-// Validar período
 if (!isset($_POST['periodo_id']) || empty($_POST['periodo_id'])) {
     echo json_encode(['success' => false, 'message' => 'Período no especificado']);
     exit;
@@ -18,7 +15,6 @@ if (!isset($_POST['periodo_id']) || empty($_POST['periodo_id'])) {
 $periodo_id = intval($_POST['periodo_id']);
 $usuario = $_SESSION['username'] ?? 'Sistema';
 
-// Verificar que el período existe
 $sql_check = "SELECT id FROM periodos WHERE id = ?";
 $stmt = $conn->prepare($sql_check);
 $stmt->bind_param("i", $periodo_id);
@@ -31,11 +27,9 @@ if ($result->num_rows === 0) {
 }
 $stmt->close();
 
-// Directorio donde se guardarán los PDFs
-$base_dir = '../../PDFs/horarios/'; // Ruta relativa desde este archivo PHP
-$absolute_dir = __DIR__ . '/../../PDFs/horarios/'; // Ruta absoluta
+$base_dir = '../../PDFs/horarios/';
+$absolute_dir = __DIR__ . '/../../PDFs/horarios/';
 
-// Crear directorio si no existe
 if (!is_dir($absolute_dir)) {
     if (!mkdir($absolute_dir, 0755, true)) {
         echo json_encode(['success' => false, 'message' => 'No se pudo crear el directorio de almacenamiento']);
@@ -43,7 +37,6 @@ if (!is_dir($absolute_dir)) {
     }
 }
 
-// Crear subdirectorio por período
 $periodo_dir = $absolute_dir . 'periodo_' . $periodo_id . '/';
 if (!is_dir($periodo_dir)) {
     if (!mkdir($periodo_dir, 0755, true)) {
@@ -52,10 +45,9 @@ if (!is_dir($periodo_dir)) {
     }
 }
 
-// Validar y procesar archivos
 $archivos_guardados = [];
 $errores = [];
-$max_file_size = 50 * 1024 * 1024; // 50MB
+$max_file_size = 50 * 1024 * 1024;
 
 if (!isset($_FILES['files']) || empty($_FILES['files']['name'][0])) {
     echo json_encode(['success' => false, 'message' => 'No se seleccionaron archivos']);
@@ -70,63 +62,56 @@ for ($i = 0; $i < $files_count; $i++) {
     $file_error = $_FILES['files']['error'][$i];
     $file_size = $_FILES['files']['size'][$i];
 
-    // Validaciones
     if ($file_error !== UPLOAD_ERR_OK) {
         $errores[] = "Error al cargar '$file_name': código de error $file_error";
         continue;
     }
 
-    // Verificar extensión
     $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
     if ($file_ext !== 'pdf') {
         $errores[] = "'$file_name' no es un archivo PDF válido";
         continue;
     }
 
-    // Verificar tamaño
     if ($file_size > $max_file_size) {
         $errores[] = "'$file_name' excede el tamaño máximo permitido (50MB)";
         continue;
     }
 
-    // Verificar tipo MIME
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
     $mime_type = finfo_file($finfo, $file_tmp);
     finfo_close($finfo);
-    
+
     if ($mime_type !== 'application/pdf') {
         $errores[] = "'$file_name' no es un PDF válido (MIME: $mime_type)";
         continue;
     }
 
-    // Generar nombre único para evitar conflictos
     $timestamp = time();
     $random_str = substr(md5(uniqid()), 0, 8);
     $nombre_original = pathinfo($file_name, PATHINFO_FILENAME);
     $nombre_guardado = $nombre_original . '_' . $timestamp . '_' . $random_str . '.pdf';
-    
+
     $ruta_destino = $periodo_dir . $nombre_guardado;
     $ruta_relativa = $base_dir . 'periodo_' . $periodo_id . '/' . $nombre_guardado;
 
-    // Mover archivo
     if (!move_uploaded_file($file_tmp, $ruta_destino)) {
         $errores[] = "No se pudo guardar '$file_name'";
         continue;
     }
 
-    // Guardar información en base de datos
-    $sql_insert = "INSERT INTO horarios (periodo_id, nombre_archivo, nombre_guardado, ruta_archivo, tamaño, usuario_carga) 
+    $sql_insert = "INSERT INTO horarios (periodo_id, nombre_archivo, nombre_guardado, ruta_archivo, tamaño, usuario_carga)
                    VALUES (?, ?, ?, ?, ?, ?)";
-    
+
     $stmt = $conn->prepare($sql_insert);
     if (!$stmt) {
         $errores[] = "Error en la base de datos para '$file_name': " . $conn->error;
-        @unlink($ruta_destino); // Eliminar archivo si falla BD
+        @unlink($ruta_destino);
         continue;
     }
 
     $stmt->bind_param("isssii", $periodo_id, $file_name, $nombre_guardado, $ruta_relativa, $file_size, $usuario);
-    
+
     if ($stmt->execute()) {
         $archivos_guardados[] = [
             'id' => $stmt->insert_id,
@@ -138,11 +123,10 @@ for ($i = 0; $i < $files_count; $i++) {
         $errores[] = "Error al registrar '$file_name' en BD: " . $stmt->error;
         @unlink($ruta_destino);
     }
-    
+
     $stmt->close();
 }
 
-// Respuesta
 $response = [
     'success' => count($archivos_guardados) > 0,
     'guardados' => $archivos_guardados,

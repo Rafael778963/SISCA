@@ -1,18 +1,14 @@
 <?php
-/**
- * Verificación centralizada de sesión para todos los endpoints
- * Incluir este archivo al inicio de cualquier endpoint protegido
- */
+// ============================================
+// VERIFICACIÓN CENTRALIZADA DE SESIÓN
+// ============================================
 
-// Iniciar sesión
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Configurar headers de seguridad para JSON
 header('Content-Type: application/json; charset=utf-8');
 
-// Verificar que la sesión esté iniciada
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     http_response_code(401);
     echo json_encode([
@@ -23,10 +19,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit;
 }
 
-// Verificar timeout de inactividad (15 minutos = 900 segundos)
+// Verificar timeout de inactividad (15 minutos)
 $timeout_duration = 900;
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $timeout_duration) {
-    // Destruir la sesión expirada
     session_unset();
     session_destroy();
 
@@ -39,9 +34,8 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
     exit;
 }
 
-// Verificar que el IP address coincida (protección contra session hijacking)
+// Protección contra session hijacking - verificar IP
 if (isset($_SESSION['ip_address']) && $_SESSION['ip_address'] !== $_SERVER['REMOTE_ADDR']) {
-    // IP address cambió - posible intento de secuestro de sesión
     session_unset();
     session_destroy();
 
@@ -54,10 +48,9 @@ if (isset($_SESSION['ip_address']) && $_SESSION['ip_address'] !== $_SERVER['REMO
     exit;
 }
 
-// Verificar que el user agent coincida (protección adicional)
+// Protección contra session hijacking - verificar user agent
 $current_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 if (isset($_SESSION['user_agent']) && $_SESSION['user_agent'] !== $current_user_agent) {
-    // User agent cambió - posible intento de secuestro de sesión
     session_unset();
     session_destroy();
 
@@ -70,8 +63,5 @@ if (isset($_SESSION['user_agent']) && $_SESSION['user_agent'] !== $current_user_
     exit;
 }
 
-// Actualizar el timestamp de última actividad
 $_SESSION['last_activity'] = time();
-
-// La sesión es válida - continuar con el endpoint
 ?>

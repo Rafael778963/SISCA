@@ -16,7 +16,6 @@ if (!isset($data['id']) || empty($data['id'])) {
 
 $archivo_id = intval($data['id']);
 
-// Obtener información del archivo
 $sql_select = "SELECT ruta_archivo, nombre_guardado FROM horarios WHERE id = ?";
 $stmt = $conn->prepare($sql_select);
 $stmt->bind_param("i", $archivo_id);
@@ -34,10 +33,8 @@ $ruta_archivo = $row['ruta_archivo'];
 $nombre_guardado = $row['nombre_guardado'];
 $stmt->close();
 
-// Ruta absoluta del archivo
 $ruta_absoluta = __DIR__ . '/../../PDFs/horarios/' . str_replace('../../PDFs/horarios/', '', $ruta_archivo);
 
-// Intentar eliminar archivo físico
 $archivo_eliminado = true;
 if (file_exists($ruta_absoluta)) {
     if (!@unlink($ruta_absoluta)) {
@@ -45,7 +42,6 @@ if (file_exists($ruta_absoluta)) {
     }
 }
 
-// Eliminar registro de la BD (hard delete)
 $sql_delete = "DELETE FROM horarios WHERE id = ?";
 $stmt = $conn->prepare($sql_delete);
 $stmt->bind_param("i", $archivo_id);

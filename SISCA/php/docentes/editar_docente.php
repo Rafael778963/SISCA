@@ -14,19 +14,14 @@ try {
     $regimen = trim($data['regimen'] ?? '');
     $periodo_id = isset($data['periodo_id']) ? (int)$data['periodo_id'] : null;
 
-    // Validar campos obligatorios
     if ($id <= 0 || empty($nombre_docente) || empty($turno) || empty($regimen)) {
         throw new Exception('Todos los campos son obligatorios');
     }
 
-    // Validar que hay un periodo activo
     if (empty($periodo_id)) {
         throw new Exception('Debe seleccionar un período activo antes de guardar');
     }
 
-    // ============================================
-    // VERIFICAR QUE EL DOCENTE EXISTE
-    // ============================================
     $stmtCheck = $conn->prepare("SELECT id FROM docentes WHERE id = ?");
     $stmtCheck->bind_param("i", $id);
     $stmtCheck->execute();
@@ -37,7 +32,6 @@ try {
     }
     $stmtCheck->close();
 
-    // Validar que el periodo existe
     $stmt_check_periodo = $conn->prepare("SELECT id FROM periodos WHERE id = ?");
     $stmt_check_periodo->bind_param("i", $periodo_id);
     $stmt_check_periodo->execute();
@@ -48,9 +42,6 @@ try {
     }
     $stmt_check_periodo->close();
 
-    // ============================================
-    // ACTUALIZAR DOCENTE CON PERIODO_ID
-    // ============================================
     $stmt = $conn->prepare("UPDATE docentes SET nombre_docente = ?, turno = ?, regimen = ?, periodo_id = ? WHERE id = ?");
     $stmt->bind_param("sssii", $nombre_docente, $turno, $regimen, $periodo_id, $id);
 
@@ -65,7 +56,6 @@ try {
 
     $stmt->close();
 
-    //Manejo de errores
 } catch (Exception $e) {
     echo json_encode([
         'success' => false,

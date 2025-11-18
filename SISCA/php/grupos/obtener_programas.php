@@ -5,14 +5,13 @@ include '../conexion.php';
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $nivel = isset($_GET['nivel']) ? trim($_GET['nivel']) : '';
-        
+
         if (empty($nivel)) {
-            // Si no se especifica nivel, devolver todos los programas agrupados por nivel
-            $sql = "SELECT id, nomenclatura, nombre, nivel, activo 
-                    FROM programas 
-                    WHERE activo = 1 
+            $sql = "SELECT id, nomenclatura, nombre, nivel, activo
+                    FROM programas
+                    WHERE activo = 1
                     ORDER BY nivel, nombre";
-            
+
             $result = $conn->query($sql);
             
             $programasPorNivel = [

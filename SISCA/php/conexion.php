@@ -1,16 +1,16 @@
 <?php
-$servername = "localhost";   
-$username   = "root";  
-$password   = ""; 
-$database   = "sisca"; 
+// ============================================
+// CONFIGURACIÓN DE CONEXIÓN A BASE DE DATOS
+// ============================================
+
+$servername = "localhost";
+$username   = "root";
+$password   = "";
+$database   = "sisca";
 
 $conn = new mysqli($servername, $username, $password, $database);
 
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
-} else {
-    //echo "Conexión exitosa a la base de datos";
 }
-
-// $conn->close();
 ?>

@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
         $periodo_id = isset($_POST['periodo_id']) ? (int)$_POST['periodo_id'] : null;
 
-        // Validaciones básicas
         if (empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
         }
@@ -20,25 +19,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($periodo_id)) {
             throw new Exception('Debe seleccionar un período activo antes de guardar');
         }
-        
+
         if (strlen($generacion) !== 2 || !is_numeric($generacion)) {
             throw new Exception('La generación debe tener 2 dígitos numéricos');
         }
-        
+
         if ($grado < 1 || $grado > 9) {
             throw new Exception('El grado debe estar entre 1 y 9');
         }
-        
-        // Validar turno
+
         if (!in_array($turno, ['M', 'N'])) {
             throw new Exception('Turno inválido. Debe ser M (Matutino) o N (Nocturno)');
         }
-        
-        // Generar código base del grupo
+
         $codigoBase = $generacion . $programa . $grado;
 
-        // Usar la función para encontrar la primera letra disponible
-        // Esto permite llenar "huecos" cuando se dan de baja grupos
+        // Encontrar primera letra disponible (permite llenar huecos cuando se dan de baja grupos)
         $letraIdentificacion = encontrarPrimeraLetraDisponible(
             $conn,
             $generacion,
@@ -48,15 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $periodo_id
         );
 
-        // Generar código completo
         if ($letraIdentificacion !== null) {
             $codigoCompleto = $codigoBase . $letraIdentificacion . $turno;
         } else {
-            // Primer grupo de esta configuración, sin letra
             $codigoCompleto = $codigoBase . $turno;
         }
-        
-        // Insertar el nuevo grupo
+
         $stmt = $conn->prepare("
             INSERT INTO grupos (codigo_grupo, generacion, nivel_educativo, programa_educativo, grado, letra_identificacion, turno, periodo_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)

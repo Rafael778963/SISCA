@@ -1,21 +1,15 @@
-// Variable global para almacenar el periodo activo
+// ============================================
+// GESTOR DE PERÍODO ACTIVO
+// ============================================
+
 let periodoActivo = null;
 
-/**
- * Inicializa el gestor de periodo
- * Debe llamarse en el DOMContentLoaded de cada módulo
- */
 async function inicializarPeriodoManager() {
     await cargarPeriodoActivo();
     crearIndicadorPeriodo();
-    
-    // Ajustar posición del indicador si es necesario
     window.addEventListener('resize', ajustarIndicador);
 }
 
-/**
- * Carga el periodo activo desde la sesión
- */
 async function cargarPeriodoActivo() {
     try {
         const response = await fetch('../../php/periodos/get_periodo_activo.php');
@@ -35,21 +29,16 @@ async function cargarPeriodoActivo() {
     }
 }
 
-/**
- * Crea el indicador visual del periodo en el center del header
- */
 function crearIndicadorPeriodo() {
     const header = document.querySelector('.header');
     if (!header) return;
 
-    // Verificar si ya existe el indicador
     let indicador = document.getElementById('periodo-indicator');
     if (indicador) {
         actualizarIndicadorVisual(indicador);
         return;
     }
 
-    // Crear el indicador
     indicador = document.createElement('div');
     indicador.id = 'periodo-indicator';
     indicador.className = 'periodo-indicator';
@@ -67,25 +56,19 @@ function crearIndicadorPeriodo() {
         `;
     }
 
-    // Insertar directamente en el header (para centrado absoluto)
     header.appendChild(indicador);
-    
-    // Asegurar que el header es relativo
+
     if (getComputedStyle(header).position === 'static') {
         header.style.position = 'relative';
     }
 }
 
-/**
- * Ajusta la posición del indicador según el tamaño de la pantalla
- */
 function ajustarIndicador() {
     const indicador = document.getElementById('periodo-indicator');
     if (!indicador) return;
 
     const screenWidth = window.innerWidth;
-    
-    // En pantallas muy pequeñas, cambiar a posición estática
+
     if (screenWidth <= 768) {
         indicador.style.position = 'static';
         indicador.style.transform = 'none';
@@ -99,9 +82,6 @@ function ajustarIndicador() {
     }
 }
 
-/**
- * Actualiza el indicador visual
- */
 function actualizarIndicadorVisual(indicador) {
     if (periodoActivo) {
         indicador.classList.add('activo');
@@ -118,11 +98,6 @@ function actualizarIndicadorVisual(indicador) {
     }
 }
 
-/**
- * Valida que haya un periodo activo antes de realizar una operación
- * @param {string} accion - Descripción de la acción que se quiere realizar
- * @returns {boolean} - true si hay periodo activo, false si no
- */
 function validarPeriodoActivo(accion = 'realizar esta operación') {
     if (!periodoActivo || !periodoActivo.id) {
         if (typeof Swal !== 'undefined') {
@@ -151,34 +126,18 @@ function validarPeriodoActivo(accion = 'realizar esta operación') {
     return true;
 }
 
-/**
- * Obtiene el ID del periodo activo
- * @returns {number|null} - ID del periodo o null si no hay periodo activo
- */
 function obtenerPeriodoActivoId() {
     return periodoActivo ? periodoActivo.id : null;
 }
 
-/**
- * Obtiene el objeto completo del periodo activo
- * @returns {object|null} - Objeto del periodo o null
- */
 function obtenerPeriodoActivo() {
     return periodoActivo;
 }
 
-/**
- * Verifica si hay un periodo activo
- * @returns {boolean}
- */
 function hayPeriodoActivo() {
     return periodoActivo !== null && periodoActivo.id !== undefined;
 }
 
-/**
- * Recarga y actualiza el periodo activo
- * Útil cuando el período cambia desde otro módulo
- */
 async function recargarPeriodoActivo() {
     await cargarPeriodoActivo();
     const indicador = document.getElementById('periodo-indicator');
