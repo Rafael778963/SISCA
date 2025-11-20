@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost";   
-$username   = "root";  
-$password   = ""; 
-$database   = "sisca"; 
+$servername = "sql303.infinityfree.com";
+$username   = "if0_40378542";
+$password   = "DDf99AfXCTk";
+$database   = "if0_40378542_sisca"; 
 
 $conn = new mysqli($servername, $username, $password, $database);
 

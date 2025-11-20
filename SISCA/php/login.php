@@ -26,7 +26,7 @@ if (empty($usuario) || empty($password)) {
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "", "sisca");
+$conn = new mysqli("sql303.infinityfree.com", "if0_40378542", "DDf99AfXCTk", "if0_40378542_sisca");
 
 if ($conn->connect_error) {
     echo json_encode([
