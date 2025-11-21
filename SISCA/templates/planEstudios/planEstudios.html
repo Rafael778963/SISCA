@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../../img/SISCA I C.png" type="image/x-icon">
+    <link rel="stylesheet" href="../../css/planEstudios/planEstudios.css">
+    <link rel="stylesheet" href="../../css/planEstudios/menuLateral.css">
+    <link rel="stylesheet" href="../../css/periodo_indicator.css">
+    <title>SISCA - Sistema de Carga Académica</title>
+</head>
+
+<body>
+    <script>
+        (function () {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.sidebar{width:70px!important}.sidebar .logo-full{display:none!important}.sidebar .logo-collapsed{display:block!important}.sidebar .nav-item{justify-content:center;padding:12px;margin:8px auto;width:46px;gap:0!important}.sidebar .nav-item span{display:none!important}.toggle-btn{left:55px!important}.main-content{margin-left:70px!important}.header{left:70px!important;width:calc(100% - 70px)!important}';
+                document.head.appendChild(style);
+            } else {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.main-content{margin-left:240px!important}.header{left:240px!important;width:calc(100% - 240px)!important}';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+
+    <!-- Barra lateral -->
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" id="toggleBtn">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="logo-container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../img/SISCA C.png" alt="Logo completo" class="logo-full">
+                    <img src="../../img/SISCA I C.png" alt="Logo icono" class="logo-collapsed">
+                </a>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="../periodos/periodos.html" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Períodos</span>
+            </a>
+            <a href="../planEstudios/planEstudios.html" class="nav-item active">
+                <i class="fa-solid fa-book"></i>
+                <span>Plan de Estudios</span>
+            </a>
+            <a href="../cartaAsignacion/cartaAsignacion.html" class="nav-item">
+                <i class="fa-solid fa-envelopes-bulk"></i>
+                <span>Carta Asignación</span>
+            </a>
+            <a href="../grupos/grupos.html" class="nav-item">
+                <i class="fa-solid fa-border-all"></i>
+                <span>Grupos</span>
+            </a>
+            <a href="../docentes/docentes.html" class="nav-item">
+                <i class="fa-solid fa-user-tie"></i>
+                <span>Docentes</span>
+            </a>
+            <a href="../carga/carga.html" class="nav-item">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Carga</span>
+            </a>
+            <a href="../tutoria/tutoria.html" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Tutoría</span>
+            </a>
+            <a href="../reportes/reportes.html" class="nav-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reportes</span>
+            </a>
+            <a href="../horarios/horarios.html" class="nav-item">
+                <i class="fa-solid fa-clock"></i>
+                <span>Horarios</span>
+            </a>
+            <a href="../prefectura/prefectura.html" class="nav-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Prefectura</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Página principal -->
+    <main class="main-content">
+        <!-- Encabezado -->
+        <header class="header">
+            <h1 class="page-title">
+                Bienvenido <span class="username"><a id="user-name"></a></span>
+            </h1>
+            <div class="user-menu">
+                <div class="user-dropdown">
+                    <button class="user-btn" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket fa-xl"></i>
+                    </button>
+                </div>
+                <button class="user-btn">
+                    <i class="fa-solid fa-circle-user fa-2xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenedor de Plan de Estudios -->
+        <div class="plan-estudios-container">
+            <!-- Panel de Formulario -->
+            <div class="plan-form-panel">
+                <h2 class="panel-title">
+                    <i class="fa-solid fa-graduation-cap"></i> Configuración del Plan
+                </h2>
+
+                <form class="plan-form" id="planEstudiosForm">
+                    <div class="form-group">
+                        <label for="periodo">
+                            <i class="fa-solid fa-calendar"></i> Periodo:
+                            <span class="required">*</span>
+                        </label>
+                        <select id="periodo" name="periodo" class="form-select" required>
+                            <option value="" disabled selected>Cargando períodos...</option>
+                        </select>
+                        <span class="error-message" id="error-periodo"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="anio">
+                            <i class="fa-solid fa-calendar-check"></i> Año Académico:
+                            <span class="required">*</span>
+                        </label>
+                        <input type="number" id="anio" name="anio" class="form-input" 
+                               placeholder="Ej: 2024" min="2000" max="2100" 
+                               onchange="actualizarFooter()" required>
+                        <span class="error-message" id="error-anio"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nivel">
+                            <i class="fa-solid fa-layer-group"></i> Nivel:
+                            <span class="required">*</span>
+                        </label>
+                        <select id="nivel" name="nivel" class="form-select" 
+                                onchange="actualizarInformacionCarrera()" required>
+                            <option value="">Selecciona el Nivel</option>
+                            <option value="TSU">TSU</option>
+                            <option value="Ing">Ingeniería</option>
+                            <option value="Lic">Licenciatura</option>
+                        </select>
+                        <span class="error-message" id="error-nivel"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="turno">
+                            <i class="fa-solid fa-clock"></i> Turno:
+                            <span class="required">*</span>
+                        </label>
+                        <select id="turno" name="turno" class="form-select" required>
+                            <option value="">Selecciona el Turno</option>
+                            <option value="Matutino">Matutino</option>
+                            <option value="Vespertino">Vespertino</option>
+                            <option value="Nocturno">Nocturno</option>
+                        </select>
+                        <span class="error-message" id="error-turno"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="programa_educativo">
+                            <i class="fa-solid fa-book-open"></i> Programa Educativo:
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" id="programa_educativo" name="programa_educativo" 
+                               class="form-input" placeholder="Ej: Ingeniería en Software"
+                               onchange="actualizarInformacionCarrera()" required>
+                        <span class="error-message" id="error-programa"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cuatrimestre">
+                            <i class="fa-solid fa-stairs"></i> Grado:
+                            <span class="required">*</span>
+                        </label>
+                        <select id="cuatrimestre" name="cuatrimestre" class="form-select" required>
+                            <option value="">Selecciona el Cuatrimestre</option>
+                            <option value="1">1°</option>
+                            <option value="2">2°</option>
+                            <option value="3">3°</option>
+                            <option value="4">4°</option>
+                            <option value="5">5°</option>
+                            <option value="6">6°</option>
+                            <option value="7">7°</option>
+                            <option value="8">8°</option>
+                            <option value="9">9°</option>
+                            <option value="10">10°</option>
+                            <option value="11">11°</option>
+                        </select>
+                        <span class="error-message" id="error-cuatrimestre"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="programa">
+                            <i class="fa-solid fa-brain"></i> Área de Conocimiento:
+                        </label>
+                        <input type="text" id="programa" name="programa" class="form-input"
+                               placeholder="Ej: Ciencias Básicas">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="asignatura">
+                            <i class="fa-solid fa-book"></i> Asignatura:
+                        </label>
+                        <input type="text" id="asignatura" name="asignatura" class="form-input"
+                               placeholder="Ej: Matemáticas I">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="horas_total">
+                            <i class="fa-solid fa-hourglass-half"></i> Total de Horas:
+                        </label>
+                        <input type="number" id="horas_total" name="horas_total" class="form-input"
+                               placeholder="Ej: 80" min="0">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="btn-agregar-asignatura" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i> Agregar Asignatura
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="btnLimpiar">
+                            <i class="fa-solid fa-broom"></i> Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Panel de Tabla -->
+            <div class="plan-display-panel">
+                <div class="panel-header">
+                    <div class="header-content">
+                        <div class="logo-section">
+                            <img id="logoImage" class="logo-img" src="../../img/SISCA C.png" alt="Logo">
+                            <h5 class="subtitle">Universidad Tecnológica Cadereyta</h5>
+                        </div>
+
+                        <div class="title-section">
+                            <h1 class="main-title">
+                                <i class="fa-solid fa-book"></i> Plan de Estudios
+                            </h1>
+                            <!-- Aquí se muestra la información dinámica -->
+                            <div id="informacion-carrera" class="info-carrera"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Plan de Estudios -->
+                <div class="table-container">
+                    <table id="tabla-plan" class="plan-table">
+                        <thead id="tabla-header">
+                            <tr>
+                                <th>Áreas del Conocimiento</th>
+                                <th>1°</th>
+                                <th>2°</th>
+                                <th>3°</th>
+                                <th>4°</th>
+                                <th>5°</th>
+                                <th>6°</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-body">
+                            <!-- Las filas se generarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pie de la tabla -->
+                <div id="footer" class="table-footer">
+                    <p><strong>PLAN DE ESTUDIOS VIGENTE EN SEPTIEMBRE</strong> <span id="anio-footer"></span></p>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="table-actions">
+                    <button class="btn btn-primary" onclick="imprimirPagina()">
+                        <i class="fa-solid fa-print"></i> Imprimir
+                    </button>
+                    <button class="btn btn-success" id="btn-guardar-plantilla" 
+                            onclick="guardarPlanDeEstudiosComoImagen()">
+                        <i class="fa-solid fa-save"></i> Guardar Plantilla
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Plantillas Guardadas -->
+        <div class="plantillas-container" id="contenedor-plantillas">
+            <h2 class="section-title">
+                <i class="fa-solid fa-folder-open"></i> Plantillas Guardadas
+            </h2>
+            
+            <div class="tabs-container">
+                <div class="tabs-header" id="tabs-plantillas">
+                    <button id="nueva-tab" class="tab-btn tab-new">
+                        <i class="fa-solid fa-plus"></i> Nueva
+                    </button>
+                </div>
+                <div class="tabs-content" id="contenido-plantillas">
+                    <!-- Aquí se mostrará el contenido de cada pestaña -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie de Página -->
+        <div class="footer-text">
+            <p>La presente publicación se plantea de manera incluyente y libre de estereotipos de género,
+               por lo que al referirse a una persona como "él" significa "él o ella".</p>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="../../fonts/js/all.min.js"></script>
+    <script src="../../js/js/sweetalert2.all.min.js"></script>
+    <script src="../../js/session_check.js"></script>
+    <script src="../../js/periodo_manager.js"></script>
+    <script src="../../js/planEstudios/menuLateral.js"></script>
+    <script src="../../js/planEstudios/plandeestudios.js"></script>
+</body>
+
+</html>
