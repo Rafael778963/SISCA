@@ -95,7 +95,7 @@ try {
     }
 
     $stmt_insert->bind_param(
-        'iiiisiis',
+        'iiiisiiis',
         $periodo_id,
         $docente_id,
         $grupo_id,
