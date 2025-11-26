@@ -968,7 +968,8 @@ async function editarCarga(id) {
         const administrativasInput = document.getElementById('administrativas');
 
         // Asignar valores con validación
-        turnoInput.value = carga.turno || '';
+        // Si turno está vacío, usar turno_docente como fallback
+        turnoInput.value = carga.turno || carga.turno_docente || '';
         grupoSelect.value = String(carga.grupo_id);
         materiaSelect.value = String(carga.materia_id);
         docenteSelect.value = String(carga.docente_id);
