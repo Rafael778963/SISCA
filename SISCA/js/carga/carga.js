@@ -909,84 +909,120 @@ function mostrarFeedbackGuardado(elemento) {
 async function editarCarga(id) {
     try {
         const carga = cargas.find(c => c.id === id);
-        
+
         if (!carga) {
             throw new Error('Carga no encontrada');
         }
-        
+
+        console.log('Editando carga:', carga);
+
         // ACTIVAR flag para ignorar filtros automaticos
         ignorarFiltros = true;
-        
+
         // Cargar TODOS los grupos sin filtrar
         const grupoSelect = document.getElementById('grupo');
         grupoSelect.innerHTML = '<option value="" disabled>Selecciona un grupo...</option>';
         datosCache.grupos.forEach(grupo => {
             const option = document.createElement('option');
-            option.value = grupo.id;
+            option.value = String(grupo.id);
             option.textContent = grupo.label;
             option.dataset.turno = grupo.turno;
             option.dataset.programa = grupo.programa;
             option.dataset.grado = grupo.grado;
             grupoSelect.appendChild(option);
         });
-        
+
         // Cargar TODAS las materias sin filtrar
         const materiaSelect = document.getElementById('asignatura');
         materiaSelect.innerHTML = '<option value="" disabled>Selecciona una asignatura...</option>';
         datosCache.materias.forEach(materia => {
             const option = document.createElement('option');
-            option.value = materia.id;
+            option.value = String(materia.id);
             option.textContent = materia.label;
             option.dataset.horas = materia.horas;
             option.dataset.programa = materia.programa;
             option.dataset.grado = materia.grado;
             materiaSelect.appendChild(option);
         });
-        
+
         // Cargar TODOS los docentes sin filtrar
         const docenteSelect = document.getElementById('docente');
         docenteSelect.innerHTML = '<option value="" disabled>Selecciona un docente...</option>';
         datosCache.docentes.forEach(docente => {
             const option = document.createElement('option');
-            option.value = docente.id;
+            option.value = String(docente.id);
             option.textContent = `${docente.nombre} (${docente.regimen})`;
             option.dataset.turno = docente.turno;
             option.dataset.regimen = docente.regimen;
             docenteSelect.appendChild(option);
         });
-        
-        // Ahora seleccionar los valores de la BD
-        document.getElementById('turno').value = carga.turno;
-        grupoSelect.value = carga.grupo_id;
-        materiaSelect.value = carga.materia_id;
-        docenteSelect.value = carga.docente_id;
-        document.getElementById('horas').value = carga.horas;
-        document.getElementById('tutoria').value = carga.horas_tutoria || '';
-        document.getElementById('estadia').value = carga.horas_estadia || '';
-        document.getElementById('administrativas').value = carga.administrativas || '';
-        
+
+        // Esperar un tick para que el DOM se actualice
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        // Ahora seleccionar los valores de la BD con conversión explícita
+        const turnoInput = document.getElementById('turno');
+        const horasInput = document.getElementById('horas');
+        const tutoriaInput = document.getElementById('tutoria');
+        const estadiaInput = document.getElementById('estadia');
+        const administrativasInput = document.getElementById('administrativas');
+
+        // Asignar valores con validación
+        turnoInput.value = carga.turno || '';
+        grupoSelect.value = String(carga.grupo_id);
+        materiaSelect.value = String(carga.materia_id);
+        docenteSelect.value = String(carga.docente_id);
+        horasInput.value = carga.horas || '';
+        tutoriaInput.value = carga.horas_tutoria || '';
+        estadiaInput.value = carga.horas_estadia || '';
+        administrativasInput.value = carga.administrativas || '';
+
+        // Verificar que los valores se asignaron correctamente
+        console.log('Valores asignados:', {
+            turno: turnoInput.value,
+            grupo: grupoSelect.value,
+            materia: materiaSelect.value,
+            docente: docenteSelect.value,
+            horas: horasInput.value,
+            tutoria: tutoriaInput.value,
+            estadia: estadiaInput.value,
+            administrativas: administrativasInput.value
+        });
+
+        // Alertar si algún select no se pudo asignar
+        if (!grupoSelect.value || grupoSelect.value === '') {
+            console.warn('No se pudo asignar el grupo. ID buscado:', carga.grupo_id);
+        }
+        if (!materiaSelect.value || materiaSelect.value === '') {
+            console.warn('No se pudo asignar la materia. ID buscado:', carga.materia_id);
+        }
+        if (!docenteSelect.value || docenteSelect.value === '') {
+            console.warn('No se pudo asignar el docente. ID buscado:', carga.docente_id);
+        }
+
         // Cambiar a modo edicion
         modoEdicion = true;
         idCargaEdicion = id;
-        
+
         const btnAgregar = document.getElementById('btnAgregar');
         btnAgregar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar';
         document.getElementById('btnCancelarEdicion').style.display = 'block';
-        
-        document.querySelector('.carga-form-panel').scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
+
+        document.querySelector('.carga-form-panel').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
         });
-        
+
         setTimeout(() => {
-            document.getElementById('turno').focus();
+            turnoInput.focus();
         }, 300);
-        
+
     } catch (error) {
+        console.error('Error al editar carga:', error);
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No se pudo cargar la informacion para editar'
+            text: 'No se pudo cargar la informacion para editar: ' + error.message
         });
     }
 }
