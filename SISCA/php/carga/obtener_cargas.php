@@ -40,11 +40,10 @@ try {
               pm.horas_semanales as horas_materia_plan,
               ca.turno,
               ca.horas,
-              ca.horas_clase,
               ca.horas_tutoria,
               ca.horas_estadia,
               ca.actividades_administrativas,
-              (ca.horas + ca.horas_clase + ca.horas_tutoria + ca.horas_estadia) as total_horas_asignadas,
+              (ca.horas + ca.horas_tutoria + ca.horas_estadia) as total_horas_asignadas,
               ca.fecha_creacion
             FROM carga_academica ca
             INNER JOIN periodos p ON ca.periodo_id = p.id
@@ -83,7 +82,6 @@ try {
             'horas_plan' => intval($row['horas_materia_plan']),
             'turno' => $row['turno'],
             'horas' => intval($row['horas']),
-            'horas_clase' => intval($row['horas_clase']),
             'horas_tutoria' => intval($row['horas_tutoria']),
             'horas_estadia' => intval($row['horas_estadia']),
             'administrativas' => $row['actividades_administrativas'],
@@ -100,10 +98,9 @@ try {
                     d.nombre_docente,
                     COUNT(*) as total_asignaturas,
                     SUM(ca.horas) as total_horas_materias,
-                    SUM(ca.horas_clase) as total_horas_clase,
                     SUM(ca.horas_tutoria) as total_horas_tutoria,
                     SUM(ca.horas_estadia) as total_horas_estadia,
-                    SUM(ca.horas + ca.horas_clase + ca.horas_tutoria + ca.horas_estadia) as total_horas_general,
+                    SUM(ca.horas + ca.horas_tutoria + ca.horas_estadia) as total_horas_general,
                     GROUP_CONCAT(DISTINCT ca.actividades_administrativas SEPARATOR ', ') as actividades_admin
                   FROM carga_academica ca
                   INNER JOIN docentes d ON ca.docente_id = d.id
@@ -126,7 +123,6 @@ try {
         $estadisticas[$row['docente_id']] = [
             'total_asignaturas' => intval($row['total_asignaturas']),
             'total_horas_materias' => intval($row['total_horas_materias']),
-            'total_horas_clase' => intval($row['total_horas_clase']),
             'total_horas_tutoria' => intval($row['total_horas_tutoria']),
             'total_horas_estadia' => intval($row['total_horas_estadia']),
             'total_horas_general' => intval($row['total_horas_general']),

@@ -24,7 +24,6 @@ try {
     $materia_id = intval($_POST['asignatura'] ?? 0);
     $docente_id = intval($_POST['docente'] ?? 0);
     $horas = intval($_POST['horas'] ?? 0);
-    $horas_clase = intval($_POST['hrsClase'] ?? 0);
     $horas_tutoria = intval($_POST['tutoria'] ?? 0);
     $horas_estadia = intval($_POST['estadia'] ?? 0);
     $actividades_admin = trim($_POST['administrativas'] ?? '');
@@ -51,10 +50,6 @@ try {
 
     if ($horas < 0) {
         $errores[] = 'Horas no puede ser negativo';
-    }
-
-    if ($horas_clase < 0) {
-        $errores[] = 'Horas de clase no puede ser negativo';
     }
 
     if ($horas_tutoria < 0) {
@@ -87,28 +82,26 @@ try {
                       materia_id,
                       turno,
                       horas,
-                      horas_clase,
                       horas_tutoria,
                       horas_estadia,
                       actividades_administrativas,
                       estado
-                   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'activo')";
+                   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'activo')";
 
     $stmt_insert = $conn->prepare($sql_insert);
-    
+
     if (!$stmt_insert) {
         throw new Exception('Error al preparar consulta: ' . $conn->error);
     }
-    
+
     $stmt_insert->bind_param(
-        'iiiisiiiiis',
+        'iiiisiis',
         $periodo_id,
         $docente_id,
         $grupo_id,
         $materia_id,
         $turno,
         $horas,
-        $horas_clase,
         $horas_tutoria,
         $horas_estadia,
         $actividades_admin
@@ -117,7 +110,7 @@ try {
     if ($stmt_insert->execute()) {
         $nuevo_id = $conn->insert_id;
 
-        $sql_get = "SELECT 
+        $sql_get = "SELECT
                       ca.id,
                       ca.periodo_id,
                       CONCAT(p.periodo, ' (', p.año, ')') as periodo_texto,
@@ -133,11 +126,10 @@ try {
                       pm.horas_semanales as horas_plan,
                       ca.turno,
                       ca.horas,
-                      ca.horas_clase,
                       ca.horas_tutoria,
                       ca.horas_estadia,
                       ca.actividades_administrativas as administrativas,
-                      (ca.horas + ca.horas_clase + ca.horas_tutoria + ca.horas_estadia) as total,
+                      (ca.horas + ca.horas_tutoria + ca.horas_estadia) as total,
                       ca.fecha_creacion
                     FROM carga_academica ca
                     INNER JOIN periodos p ON ca.periodo_id = p.id

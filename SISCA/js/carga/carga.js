@@ -481,7 +481,7 @@ function renderizarTabla() {
     if (!cargasFiltradas || cargasFiltradas.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="9" class="empty-state">
+                <td colspan="8" class="empty-state">
                     <i class="fa-solid fa-inbox"></i>
                     <p>No hay cargas académicas registradas</p>
                 </td>
@@ -525,7 +525,6 @@ function agruparPorDocente(cargas) {
                 cargas: [],
                 totales: {
                     horas: 0,
-                    horas_clase: 0,
                     tutoria: 0,
                     estadia: 0,
                     total: 0
@@ -535,7 +534,6 @@ function agruparPorDocente(cargas) {
         
         agrupado[docenteId].cargas.push(carga);
         agrupado[docenteId].totales.horas += parseInt(carga.horas) || 0;
-        agrupado[docenteId].totales.horas_clase += parseInt(carga.horas_clase) || 0;
         agrupado[docenteId].totales.tutoria += parseInt(carga.horas_tutoria) || 0;
         agrupado[docenteId].totales.estadia += parseInt(carga.horas_estadia) || 0;
         agrupado[docenteId].totales.total += parseInt(carga.total) || 0;
@@ -549,7 +547,7 @@ function renderizarDocenteConCargas(tbody, datos, docenteId) {
     const trDocente = document.createElement('tr');
     trDocente.className = 'docente-row';
     trDocente.innerHTML = `
-        <td colspan="9">
+        <td colspan="8">
             <strong>${datos.docente}</strong>
             <span class="docente-info">${datos.turno} - ${datos.regimen}</span>
         </td>
@@ -569,7 +567,6 @@ function renderizarDocenteConCargas(tbody, datos, docenteId) {
             </td>
             <td>${carga.horas || 0}</td>
             <td>${carga.grupo}</td>
-            <td>${carga.horas_clase || 0}</td>
             <td>${carga.horas_tutoria || 0}</td>
             <td>${carga.horas_estadia || 0}</td>
             <td>${carga.administrativas || '-'}</td>
@@ -595,7 +592,6 @@ function renderizarDocenteConCargas(tbody, datos, docenteId) {
         <td><strong>TOTAL:</strong></td>
         <td><strong>${datos.totales.horas}</strong></td>
         <td></td>
-        <td><strong>${datos.totales.horas_clase}</strong></td>
         <td><strong>${datos.totales.tutoria}</strong></td>
         <td><strong>${datos.totales.estadia}</strong></td>
         <td></td>
@@ -613,26 +609,26 @@ function renderizarDocenteConCargas(tbody, datos, docenteId) {
 // ============================================
 function agregarIndicadorCarga(tbody, docenteId, datosDocente) {
     const carga = calcularCargaDocente(docenteId, datosDocente);
-    
+
     const indicador = document.createElement('tr');
     indicador.className = 'indicador-carga';
     indicador.innerHTML = `
-        <td colspan="9" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.5);">
+        <td colspan="8" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.5);">
             <div style="display: flex; align-items: center; gap: 1rem;">
                 <span style="font-size: 0.85rem; color: #6b7480; min-width: 150px;">
                     <i class="fa-solid fa-gauge-high"></i> Carga: ${carga.totalHoras} / ${carga.horasMaximas} hrs
                 </span>
                 <div style="flex: 1; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; max-width: 300px;">
                     <div style="
-                        width: ${Math.min(carga.porcentaje, 100)}%; 
-                        height: 100%; 
-                        background: ${carga.estado === 'excedido' ? '#e74c3c' : 
+                        width: ${Math.min(carga.porcentaje, 100)}%;
+                        height: 100%;
+                        background: ${carga.estado === 'excedido' ? '#e74c3c' :
                                      carga.estado === 'casi-lleno' ? '#f39c12' : '#78B543'};
                         transition: width 0.3s ease;
                     "></div>
                 </div>
                 <span style="font-size: 0.85rem; font-weight: 600; min-width: 60px; color: ${
-                    carga.estado === 'excedido' ? '#e74c3c' : 
+                    carga.estado === 'excedido' ? '#e74c3c' :
                     carga.estado === 'casi-lleno' ? '#f39c12' : '#78B543'
                 };">
                     ${Math.round(carga.porcentaje)}%
@@ -641,7 +637,7 @@ function agregarIndicadorCarga(tbody, docenteId, datosDocente) {
             </div>
         </td>
     `;
-    
+
     tbody.appendChild(indicador);
 }
 
@@ -671,9 +667,9 @@ function agregarTotalesGenerales(tbody) {
     
     // Agregar fila separadora
     const trSeparador = document.createElement('tr');
-    trSeparador.innerHTML = '<td colspan="9" style="height: 10px; background: transparent;"></td>';
+    trSeparador.innerHTML = '<td colspan="8" style="height: 10px; background: transparent;"></td>';
     tbody.appendChild(trSeparador);
-    
+
     // Fila de totales generales
     const trTotalGeneral = document.createElement('tr');
     trTotalGeneral.className = 'total-general-row';
@@ -685,7 +681,6 @@ function agregarTotalesGenerales(tbody) {
         <td><strong>TOTAL GENERAL:</strong></td>
         <td><strong>${totalesGenerales.horas}</strong></td>
         <td></td>
-        <td><strong>${totalesGenerales.horas_clase}</strong></td>
         <td><strong>${totalesGenerales.tutoria}</strong></td>
         <td><strong>${totalesGenerales.estadia}</strong></td>
         <td></td>
@@ -698,20 +693,18 @@ function agregarTotalesGenerales(tbody) {
 function calcularTotalesGenerales(cargas) {
     const totales = {
         horas: 0,
-        horas_clase: 0,
         tutoria: 0,
         estadia: 0,
         total: 0
     };
-    
+
     cargas.forEach(carga => {
         totales.horas += parseInt(carga.horas) || 0;
-        totales.horas_clase += parseInt(carga.horas_clase) || 0;
         totales.tutoria += parseInt(carga.horas_tutoria) || 0;
         totales.estadia += parseInt(carga.horas_estadia) || 0;
         totales.total += parseInt(carga.total) || 0;
     });
-    
+
     return totales;
 }
 
@@ -794,7 +787,7 @@ async function manejarSubmitFormulario(e) {
         const btnSubmit = document.getElementById('btnAgregar');
         btnSubmit.disabled = false;
         if (modoEdicion) {
-            btnSubmit.innerHTML = '<i class="fa-solid fa-save"></i> Actualizar';
+            btnSubmit.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar';
         } else {
             btnSubmit.innerHTML = '<i class="fa-solid fa-plus"></i> Agregar Asignatura';
         }
@@ -830,8 +823,7 @@ function validarFormularioMejorado() {
         { id: 'grupo', nombre: 'Grupo' },
         { id: 'asignatura', nombre: 'Asignatura' },
         { id: 'docente', nombre: 'Docente' },
-        { id: 'horas', nombre: 'Horas' },
-        { id: 'hrsClase', nombre: 'Horas Clase' }
+        { id: 'horas', nombre: 'Horas' }
     ];
     
     camposRequeridos.forEach(campo => {
@@ -845,7 +837,7 @@ function validarFormularioMejorado() {
     });
     
     // Validar números específicos
-    const camposNumero = ['horas', 'hrsClase', 'tutoria', 'estadia'];
+    const camposNumero = ['horas', 'tutoria', 'estadia'];
     camposNumero.forEach(campoId => {
         const input = document.getElementById(campoId);
         if (input.value) {
@@ -969,7 +961,6 @@ async function editarCarga(id) {
         materiaSelect.value = carga.materia_id;
         docenteSelect.value = carga.docente_id;
         document.getElementById('horas').value = carga.horas;
-        document.getElementById('hrsClase').value = carga.horas_clase;
         document.getElementById('tutoria').value = carga.horas_tutoria || '';
         document.getElementById('estadia').value = carga.horas_estadia || '';
         document.getElementById('administrativas').value = carga.administrativas || '';
@@ -979,7 +970,7 @@ async function editarCarga(id) {
         idCargaEdicion = id;
         
         const btnAgregar = document.getElementById('btnAgregar');
-        btnAgregar.innerHTML = '<i class="fa-solid fa-save"></i> Actualizar';
+        btnAgregar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Actualizar';
         document.getElementById('btnCancelarEdicion').style.display = 'block';
         
         document.querySelector('.carga-form-panel').scrollIntoView({ 
@@ -1113,7 +1104,7 @@ async function guardarPlantillaComoImagen() {
             `,
             focusConfirm: false,
             showCancelButton: true,
-            confirmButtonText: '<i class="fa-solid fa-save"></i> Guardar',
+            confirmButtonText: '<i class="fa-solid fa-floppy-disk"></i> Guardar',
             cancelButtonText: 'Cancelar',
             preConfirm: () => {
                 const nombre = document.getElementById('swal-nombre').value;
@@ -1498,7 +1489,6 @@ function exportToExcel() {
                 'Materia': '',
                 'Grupo': '',
                 'Horas': '',
-                'Hrs Clase': '',
                 'Tutoría': '',
                 'Estadía': '',
                 'Administrativas': '',
@@ -1514,14 +1504,13 @@ function exportToExcel() {
                     'Materia': carga.materia,
                     'Grupo': carga.grupo,
                     'Horas': carga.horas,
-                    'Hrs Clase': carga.horas_clase,
                     'Tutoría': carga.horas_tutoria,
                     'Estadía': carga.horas_estadia,
                     'Administrativas': carga.administrativas || '',
                     'Total': carga.total
                 });
             });
-            
+
             // Agregar totales
             datosExportar.push({
                 'Docente': 'TOTAL',
@@ -1530,7 +1519,6 @@ function exportToExcel() {
                 'Materia': '',
                 'Grupo': '',
                 'Horas': datos.totales.horas,
-                'Hrs Clase': datos.totales.horas_clase,
                 'Tutoría': datos.totales.tutoria,
                 'Estadía': datos.totales.estadia,
                 'Administrativas': '',
