@@ -208,6 +208,70 @@
                     </div>
                 </div>
 
+                <!-- Barra de Filtros y Ordenamiento -->
+                <div class="filter-bar" style="margin: 1rem 0; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 1rem; align-items: end;">
+                        <!-- Campo de búsqueda -->
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: #6b7480; font-size: 0.9rem;">
+                                <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                            </label>
+                            <input type="text" id="filtro-buscar"
+                                   placeholder="Buscar por docente, materia, grupo..."
+                                   style="width: 100%; padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
+                        </div>
+
+                        <!-- Filtro por Turno -->
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: #6b7480; font-size: 0.9rem;">
+                                <i class="fa-solid fa-clock"></i> Turno
+                            </label>
+                            <select id="filtro-turno"
+                                    style="width: 100%; padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
+                                <option value="">Todos</option>
+                                <option value="Matutino">Matutino</option>
+                                <option value="Nocturno">Nocturno</option>
+                                <option value="Mixto">Mixto</option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Docente -->
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: #6b7480; font-size: 0.9rem;">
+                                <i class="fa-solid fa-user"></i> Docente
+                            </label>
+                            <select id="filtro-docente"
+                                    style="width: 100%; padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+
+                        <!-- Ordenar por -->
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: #6b7480; font-size: 0.9rem;">
+                                <i class="fa-solid fa-sort"></i> Ordenar por
+                            </label>
+                            <select id="ordenar-por"
+                                    style="width: 100%; padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
+                                <option value="docente-asc">Docente (A-Z)</option>
+                                <option value="docente-desc">Docente (Z-A)</option>
+                                <option value="horas-desc">Más horas</option>
+                                <option value="horas-asc">Menos horas</option>
+                                <option value="fecha-desc">Más reciente</option>
+                                <option value="fecha-asc">Más antiguo</option>
+                            </select>
+                        </div>
+
+                        <!-- Botón limpiar filtros -->
+                        <div>
+                            <button onclick="limpiarFiltros()"
+                                    style="padding: 0.6rem 1.2rem; background: #6b7480; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; white-space: nowrap;">
+                                <i class="fa-solid fa-filter-circle-xmark"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="table-container">
                     <table id="dataTable" class="carga-table">
                         <thead>

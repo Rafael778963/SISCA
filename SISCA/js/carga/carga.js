@@ -138,7 +138,7 @@ function buscarEnTabla(termino) {
     
     // Reiniciar paginación y renderizar
     if (window.PaginacionCarga) {
-        PaginacionCarga.inicializar(cargasFiltradas.length, 15);
+        PaginacionCarga.inicializar(cargasFiltradas.length, 10);
     }
     renderizarTabla();
 }
@@ -448,12 +448,15 @@ async function cargarCargas() {
         
         cargas = data.data || [];
         cargasFiltradas = [...cargas];
-        
+
+        // Inicializar filtros con los datos cargados
+        inicializarFiltros();
+
         // Inicializar paginación
         if (window.PaginacionCarga) {
-            PaginacionCarga.inicializar(cargasFiltradas.length, 15);
+            PaginacionCarga.inicializar(cargasFiltradas.length, 10);
         }
-        
+
         renderizarTabla();
         
         
@@ -755,25 +758,41 @@ async function manejarSubmitFormulario(e) {
         
         // NUEVO: Marcar formulario como guardado
         formularioModificado = false;
-        
+
+        // Actualizar array de cargas en tiempo real SIN recargar página
+        if (modoEdicion) {
+            // Actualizar registro existente
+            const index = cargas.findIndex(c => c.id === idCargaEdicion);
+            if (index !== -1) {
+                cargas[index] = data.data;
+            }
+        } else {
+            // Agregar nuevo registro
+            cargas.unshift(data.data); // Agregar al inicio
+        }
+
+        // Actualizar cargas filtradas
+        cargasFiltradas = [...cargas];
+
+        // Reinicializar paginación
+        if (window.PaginacionCarga) {
+            PaginacionCarga.inicializar(cargasFiltradas.length, 10);
+        }
+
+        // Renderizar tabla sin recargar página
+        renderizarTabla();
+
+        // Limpiar formulario
+        limpiarFormulario();
+
         // Mostrar mensaje de éxito
-        await Swal.fire({
+        Swal.fire({
             icon: 'success',
             title: '¡Éxito!',
             text: `Carga académica ${mensaje} correctamente`,
             timer: 1500,
             showConfirmButton: false
         });
-        
-        // Recargar datos y limpiar formulario
-        await cargarCargas();
-        limpiarFormulario();
-        
-        // NUEVO: Animar fila guardada
-        const filaGuardada = document.querySelector(`tr[data-id="${data.id}"]`);
-        if (filaGuardada) {
-            mostrarFeedbackGuardado(filaGuardada);
-        }
         
     } catch (error) {
         
@@ -914,8 +933,6 @@ async function editarCarga(id) {
             throw new Error('Carga no encontrada');
         }
 
-        console.log('Editando carga:', carga);
-
         // ACTIVAR flag para ignorar filtros automaticos
         ignorarFiltros = true;
 
@@ -978,29 +995,6 @@ async function editarCarga(id) {
         estadiaInput.value = carga.horas_estadia || '';
         administrativasInput.value = carga.administrativas || '';
 
-        // Verificar que los valores se asignaron correctamente
-        console.log('Valores asignados:', {
-            turno: turnoInput.value,
-            grupo: grupoSelect.value,
-            materia: materiaSelect.value,
-            docente: docenteSelect.value,
-            horas: horasInput.value,
-            tutoria: tutoriaInput.value,
-            estadia: estadiaInput.value,
-            administrativas: administrativasInput.value
-        });
-
-        // Alertar si algún select no se pudo asignar
-        if (!grupoSelect.value || grupoSelect.value === '') {
-            console.warn('No se pudo asignar el grupo. ID buscado:', carga.grupo_id);
-        }
-        if (!materiaSelect.value || materiaSelect.value === '') {
-            console.warn('No se pudo asignar la materia. ID buscado:', carga.materia_id);
-        }
-        if (!docenteSelect.value || docenteSelect.value === '') {
-            console.warn('No se pudo asignar el docente. ID buscado:', carga.docente_id);
-        }
-
         // Cambiar a modo edicion
         modoEdicion = true;
         idCargaEdicion = id;
@@ -1019,7 +1013,6 @@ async function editarCarga(id) {
         }, 300);
 
     } catch (error) {
-        console.error('Error al editar carga:', error);
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -1060,6 +1053,23 @@ async function eliminarCarga(id) {
             throw new Error(data.message || 'Error al eliminar');
         }
         
+        // Eliminar del array de cargas en tiempo real SIN recargar página
+        const index = cargas.findIndex(c => c.id === id);
+        if (index !== -1) {
+            cargas.splice(index, 1);
+        }
+
+        // Actualizar cargas filtradas
+        cargasFiltradas = [...cargas];
+
+        // Reinicializar paginación
+        if (window.PaginacionCarga) {
+            PaginacionCarga.inicializar(cargasFiltradas.length, 10);
+        }
+
+        // Renderizar tabla sin recargar página
+        renderizarTabla();
+
         Swal.fire({
             icon: 'success',
             title: '¡Eliminado!',
@@ -1067,8 +1077,6 @@ async function eliminarCarga(id) {
             timer: 1500,
             showConfirmButton: false
         });
-        
-        await cargarCargas();
         
     } catch (error) {
         
@@ -1307,7 +1315,7 @@ async function cargarPlantilla(id) {
             
             // Actualizar paginación y tabla
             if (window.PaginacionCarga) {
-                PaginacionCarga.inicializar(cargasFiltradas.length, 15);
+                PaginacionCarga.inicializar(cargasFiltradas.length, 10);
             }
             
             renderizarTabla();
@@ -1410,7 +1418,7 @@ function regresarDePlantilla() {
             
             // Actualizar paginación y tabla
             if (window.PaginacionCarga) {
-                PaginacionCarga.inicializar(cargasFiltradas.length, 15);
+                PaginacionCarga.inicializar(cargasFiltradas.length, 10);
             }
             
             renderizarTabla();
@@ -1662,6 +1670,111 @@ function mostrarError(mensaje) {
 }
 
 // ============================================
+// FILTROS Y ORDENAMIENTO
+// ============================================
+function inicializarFiltros() {
+    // Llenar select de docentes
+    const filtroDocente = document.getElementById('filtro-docente');
+    if (filtroDocente && datosCache.docentes) {
+        filtroDocente.innerHTML = '<option value="">Todos</option>';
+
+        // Obtener docentes únicos de las cargas
+        const docentesUnicos = [...new Set(cargas.map(c => c.docente_id))];
+        const docentesFiltrados = datosCache.docentes.filter(d => docentesUnicos.includes(d.id));
+
+        docentesFiltrados.forEach(docente => {
+            const option = document.createElement('option');
+            option.value = docente.id;
+            option.textContent = docente.nombre;
+            filtroDocente.appendChild(option);
+        });
+    }
+
+    // Event listeners para filtros
+    document.getElementById('filtro-buscar')?.addEventListener('input', aplicarFiltros);
+    document.getElementById('filtro-turno')?.addEventListener('change', aplicarFiltros);
+    document.getElementById('filtro-docente')?.addEventListener('change', aplicarFiltros);
+    document.getElementById('ordenar-por')?.addEventListener('change', aplicarFiltros);
+}
+
+function aplicarFiltros() {
+    const textoBusqueda = document.getElementById('filtro-buscar')?.value.toLowerCase() || '';
+    const turnoSeleccionado = document.getElementById('filtro-turno')?.value || '';
+    const docenteSeleccionado = document.getElementById('filtro-docente')?.value || '';
+    const ordenSeleccionado = document.getElementById('ordenar-por')?.value || 'docente-asc';
+
+    // Aplicar filtros
+    cargasFiltradas = cargas.filter(carga => {
+        // Filtro de búsqueda por texto
+        const cumpleBusqueda = !textoBusqueda ||
+            carga.docente.toLowerCase().includes(textoBusqueda) ||
+            carga.materia.toLowerCase().includes(textoBusqueda) ||
+            carga.grupo.toLowerCase().includes(textoBusqueda) ||
+            carga.clave_materia.toLowerCase().includes(textoBusqueda);
+
+        // Filtro por turno
+        const cumpleTurno = !turnoSeleccionado || carga.turno === turnoSeleccionado || carga.turno_docente === turnoSeleccionado;
+
+        // Filtro por docente
+        const cumpleDocente = !docenteSeleccionado || carga.docente_id == docenteSeleccionado;
+
+        return cumpleBusqueda && cumpleTurno && cumpleDocente;
+    });
+
+    // Aplicar ordenamiento
+    aplicarOrdenamiento(ordenSeleccionado);
+
+    // Reiniciar paginación
+    if (window.PaginacionCarga) {
+        PaginacionCarga.inicializar(cargasFiltradas.length, 10);
+    }
+
+    // Renderizar tabla
+    renderizarTabla();
+}
+
+function aplicarOrdenamiento(tipo) {
+    switch (tipo) {
+        case 'docente-asc':
+            cargasFiltradas.sort((a, b) => a.docente.localeCompare(b.docente));
+            break;
+        case 'docente-desc':
+            cargasFiltradas.sort((a, b) => b.docente.localeCompare(a.docente));
+            break;
+        case 'horas-desc':
+            cargasFiltradas.sort((a, b) => (b.total || 0) - (a.total || 0));
+            break;
+        case 'horas-asc':
+            cargasFiltradas.sort((a, b) => (a.total || 0) - (b.total || 0));
+            break;
+        case 'fecha-desc':
+            cargasFiltradas.sort((a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion));
+            break;
+        case 'fecha-asc':
+            cargasFiltradas.sort((a, b) => new Date(a.fecha_creacion) - new Date(b.fecha_creacion));
+            break;
+    }
+}
+
+function limpiarFiltros() {
+    document.getElementById('filtro-buscar').value = '';
+    document.getElementById('filtro-turno').value = '';
+    document.getElementById('filtro-docente').value = '';
+    document.getElementById('ordenar-por').value = 'docente-asc';
+
+    // Recargar todos los datos
+    cargasFiltradas = [...cargas];
+
+    // Reiniciar paginación
+    if (window.PaginacionCarga) {
+        PaginacionCarga.inicializar(cargasFiltradas.length, 10);
+    }
+
+    // Renderizar tabla
+    renderizarTabla();
+}
+
+// ============================================
 // HACER FUNCIONES DISPONIBLES GLOBALMENTE
 // ============================================
 window.editarCarga = editarCarga;
@@ -1672,4 +1785,5 @@ window.cargarPlantilla = cargarPlantilla;
 window.eliminarPlantilla = eliminarPlantilla;
 window.regresarDePlantilla = regresarDePlantilla;
 window.exportToExcel = exportToExcel;
+window.limpiarFiltros = limpiarFiltros;
 window.imprimirPagina = imprimirPagina;
