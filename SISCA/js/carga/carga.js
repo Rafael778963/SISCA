@@ -47,15 +47,25 @@ document.addEventListener('DOMContentLoaded', function() {
 async function inicializarModulo() {
     try {
         mostrarCargando();
-        
+
+        // Inicializar gestor de periodo
+        await inicializarPeriodoManager();
+
+        // Validar que haya un periodo activo
+        if (!hayPeriodoActivo()) {
+            ocultarCargando();
+            validarPeriodoActivo('cargar el módulo de Carga Académica');
+            return;
+        }
+
         await cargarDatosFiltros();
         await cargarCargas();
-        
+
         configurarEventListeners();
         configurarBusqueda();
         configurarAtajosTeclado();
         monitorearCambiosFormulario();
-        
+
     } catch (error) {
         Swal.fire({
             icon: 'error',
@@ -438,14 +448,21 @@ function filtrarMateriasPorGrupo() {
 async function cargarCargas() {
     try {
         mostrarCargando();
-        
-        const response = await fetch('../../php/carga/obtener_cargas.php');
+
+        // Obtener el periodo activo
+        const periodo_id = obtenerPeriodoActivoId();
+        if (!periodo_id) {
+            throw new Error('No hay un periodo activo seleccionado');
+        }
+
+        // Hacer petición con periodo_id
+        const response = await fetch(`../../php/carga/obtener_cargas.php?periodo_id=${periodo_id}`);
         const data = await response.json();
-        
+
         if (!data.success) {
             throw new Error(data.message || 'Error al cargar cargas');
         }
-        
+
         cargas = data.data || [];
         cargasFiltradas = [...cargas];
 
@@ -458,11 +475,11 @@ async function cargarCargas() {
         }
 
         renderizarTabla();
-        
-        
-        
+
+
+
     } catch (error) {
-        
+
         mostrarError('Error al cargar datos: ' + error.message);
     } finally {
         ocultarCargando();
@@ -750,10 +767,15 @@ function calcularTotalesGenerales(cargas) {
 // ============================================
 async function manejarSubmitFormulario(e) {
     e.preventDefault();
-    
+
+    // Validar que haya un periodo activo antes de guardar
+    if (!validarPeriodoActivo('guardar una carga académica')) {
+        return;
+    }
+
     // Limpiar errores previos
     limpiarErrores();
-    
+
     // Validar formulario (versión mejorada)
     if (!validarFormularioMejorado()) {
         return;
@@ -1772,6 +1794,284 @@ function limpiarFiltros() {
 }
 
 // ============================================
+// GESTIÓN DE ELEMENTOS INDIVIDUALES DE PLANTILLAS
+// ============================================
+
+/**
+ * Editar un elemento específico de una plantilla
+ * @param {number} plantillaId - ID de la plantilla
+ * @param {number} elementoIndex - Índice del elemento en el array
+ */
+async function editarElementoPlantilla(plantillaId, elementoIndex) {
+    try {
+        // Obtener datos actuales del elemento
+        const response = await fetch(`../../php/carga/cargar_plantilla.php?id=${plantillaId}`);
+        const data = await response.json();
+
+        if (!data.success || !data.datos || !data.datos.cargas[elementoIndex]) {
+            throw new Error('No se pudo obtener el elemento');
+        }
+
+        const elemento = data.datos.cargas[elementoIndex];
+
+        // Mostrar formulario de edición
+        const { value: formValues } = await Swal.fire({
+            title: 'Editar Elemento de Plantilla',
+            html: `
+                <div style="text-align: left;">
+                    <label>Docente: <strong>${elemento.docente}</strong></label><br><br>
+                    <label>Materia: <strong>${elemento.materia}</strong></label><br><br>
+                    <label>Grupo: <strong>${elemento.grupo}</strong></label><br><br>
+
+                    <label for="swal-horas">Horas:</label>
+                    <input id="swal-horas" type="number" class="swal2-input" value="${elemento.horas || 0}" min="0" max="100">
+
+                    <label for="swal-tutoria">Tutoría:</label>
+                    <input id="swal-tutoria" type="number" class="swal2-input" value="${elemento.horas_tutoria || 0}" min="0" max="100">
+
+                    <label for="swal-estadia">Estadía:</label>
+                    <input id="swal-estadia" type="number" class="swal2-input" value="${elemento.horas_estadia || 0}" min="0" max="100">
+
+                    <label for="swal-admin">Administrativas:</label>
+                    <input id="swal-admin" type="text" class="swal2-input" value="${elemento.administrativas || ''}">
+                </div>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Guardar Cambios',
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                return {
+                    horas: parseInt(document.getElementById('swal-horas').value) || 0,
+                    horas_tutoria: parseInt(document.getElementById('swal-tutoria').value) || 0,
+                    horas_estadia: parseInt(document.getElementById('swal-estadia').value) || 0,
+                    administrativas: document.getElementById('swal-admin').value || ''
+                };
+            }
+        });
+
+        if (!formValues) return;
+
+        // Enviar actualización al servidor
+        const updateResponse = await fetch('../../php/carga/editar_elemento_plantilla.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                plantilla_id: plantillaId,
+                elemento_index: elementoIndex,
+                elemento_datos: formValues
+            })
+        });
+
+        const updateData = await updateResponse.json();
+
+        if (!updateData.success) {
+            throw new Error(updateData.message || 'Error al actualizar');
+        }
+
+        await Swal.fire({
+            icon: 'success',
+            title: '¡Actualizado!',
+            text: 'Elemento actualizado correctamente',
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        // Recargar plantilla si se está visualizando
+        if (viendoPlantilla) {
+            await cargarPlantilla(plantillaId);
+        }
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'No se pudo editar el elemento'
+        });
+    }
+}
+
+/**
+ * Agregar un nuevo elemento a una plantilla
+ * @param {number} plantillaId - ID de la plantilla
+ */
+async function agregarElementoPlantilla(plantillaId) {
+    try {
+        // Mostrar formulario para agregar elemento
+        const { value: formValues } = await Swal.fire({
+            title: 'Agregar Elemento a Plantilla',
+            html: `
+                <div style="text-align: left;">
+                    <label for="swal-docente">Docente:</label>
+                    <select id="swal-docente" class="swal2-input" style="width: 100%;">
+                        <option value="">Seleccione...</option>
+                        ${datosCache.docentes.map(d =>
+                            `<option value="${d.id}">${d.nombre} (${d.turno})</option>`
+                        ).join('')}
+                    </select>
+
+                    <label for="swal-grupo">Grupo:</label>
+                    <select id="swal-grupo" class="swal2-input" style="width: 100%;">
+                        <option value="">Seleccione...</option>
+                        ${datosCache.grupos.map(g =>
+                            `<option value="${g.id}">${g.codigo} (${g.turno})</option>`
+                        ).join('')}
+                    </select>
+
+                    <label for="swal-materia">Materia:</label>
+                    <select id="swal-materia" class="swal2-input" style="width: 100%;">
+                        <option value="">Seleccione...</option>
+                        ${datosCache.materias.map(m =>
+                            `<option value="${m.id}">${m.clave} - ${m.nombre}</option>`
+                        ).join('')}
+                    </select>
+
+                    <label for="swal-turno">Turno:</label>
+                    <select id="swal-turno" class="swal2-input" style="width: 100%;">
+                        <option value="Matutino">Matutino</option>
+                        <option value="Nocturno">Nocturno</option>
+                        <option value="Mixto">Mixto</option>
+                    </select>
+
+                    <label for="swal-horas">Horas:</label>
+                    <input id="swal-horas" type="number" class="swal2-input" value="0" min="0" max="100">
+
+                    <label for="swal-tutoria">Tutoría:</label>
+                    <input id="swal-tutoria" type="number" class="swal2-input" value="0" min="0" max="100">
+
+                    <label for="swal-estadia">Estadía:</label>
+                    <input id="swal-estadia" type="number" class="swal2-input" value="0" min="0" max="100">
+
+                    <label for="swal-admin">Administrativas:</label>
+                    <input id="swal-admin" type="text" class="swal2-input" value="">
+                </div>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Agregar',
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                const docenteId = document.getElementById('swal-docente').value;
+                const grupoId = document.getElementById('swal-grupo').value;
+                const materiaId = document.getElementById('swal-materia').value;
+
+                if (!docenteId || !grupoId || !materiaId) {
+                    Swal.showValidationMessage('Por favor complete todos los campos requeridos');
+                    return false;
+                }
+
+                return {
+                    docente_id: parseInt(docenteId),
+                    grupo_id: parseInt(grupoId),
+                    materia_id: parseInt(materiaId),
+                    turno: document.getElementById('swal-turno').value,
+                    horas: parseInt(document.getElementById('swal-horas').value) || 0,
+                    horas_tutoria: parseInt(document.getElementById('swal-tutoria').value) || 0,
+                    horas_estadia: parseInt(document.getElementById('swal-estadia').value) || 0,
+                    administrativas: document.getElementById('swal-admin').value || ''
+                };
+            }
+        });
+
+        if (!formValues) return;
+
+        // Enviar al servidor
+        const response = await fetch('../../php/carga/agregar_elemento_plantilla.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                plantilla_id: plantillaId,
+                elemento_datos: formValues
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || 'Error al agregar');
+        }
+
+        await Swal.fire({
+            icon: 'success',
+            title: '¡Agregado!',
+            text: 'Elemento agregado correctamente',
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        // Recargar plantilla si se está visualizando
+        if (viendoPlantilla) {
+            await cargarPlantilla(plantillaId);
+        }
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'No se pudo agregar el elemento'
+        });
+    }
+}
+
+/**
+ * Eliminar un elemento específico de una plantilla
+ * @param {number} plantillaId - ID de la plantilla
+ * @param {number} elementoIndex - Índice del elemento en el array
+ */
+async function eliminarElementoPlantilla(plantillaId, elementoIndex) {
+    try {
+        const result = await Swal.fire({
+            title: '¿Eliminar elemento?',
+            text: 'Se eliminará este registro de la plantilla',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#6b7480',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (!result.isConfirmed) return;
+
+        // Enviar solicitud al servidor
+        const response = await fetch('../../php/carga/eliminar_elemento_plantilla.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                plantilla_id: plantillaId,
+                elemento_index: elementoIndex
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || 'Error al eliminar');
+        }
+
+        await Swal.fire({
+            icon: 'success',
+            title: '¡Eliminado!',
+            text: 'Elemento eliminado correctamente',
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        // Recargar plantilla si se está visualizando
+        if (viendoPlantilla) {
+            await cargarPlantilla(plantillaId);
+        }
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'No se pudo eliminar el elemento'
+        });
+    }
+}
+
+// ============================================
 // HACER FUNCIONES DISPONIBLES GLOBALMENTE
 // ============================================
 window.editarCarga = editarCarga;
@@ -1781,6 +2081,9 @@ window.verPlantillas = verPlantillas;
 window.cargarPlantilla = cargarPlantilla;
 window.eliminarPlantilla = eliminarPlantilla;
 window.regresarDePlantilla = regresarDePlantilla;
+window.editarElementoPlantilla = editarElementoPlantilla;
+window.agregarElementoPlantilla = agregarElementoPlantilla;
+window.eliminarElementoPlantilla = eliminarElementoPlantilla;
 window.exportToExcel = exportToExcel;
 window.limpiarFiltros = limpiarFiltros;
 window.imprimirPagina = imprimirPagina;

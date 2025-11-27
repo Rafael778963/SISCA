@@ -21,18 +21,23 @@ try {
     // Obtener periodo activo de la sesión
     $periodo_id = isset($_SESSION['periodo_activo']) ? $_SESSION['periodo_activo'] : null;
 
-    // 1. OBTENER DOCENTES ACTIVOS
-    $sql_docentes = "SELECT
-                        id,
-                        nombre_docente,
-                        turno,
-                        regimen
-                     FROM docentes
-                     WHERE estado = 'activo'
-                     ORDER BY nombre_docente ASC";
+    // 1. OBTENER DOCENTES ACTIVOS (filtrados por periodo si existe)
+    if ($periodo_id) {
+        $sql_docentes = "SELECT
+                            id,
+                            nombre_docente,
+                            turno,
+                            regimen
+                         FROM docentes
+                         WHERE estado = 'activo'
+                           AND periodo_id = ?
+                         ORDER BY nombre_docente ASC";
 
-    $result_docentes = $conn->query($sql_docentes);
-    if ($result_docentes) {
+        $stmt_docentes = $conn->prepare($sql_docentes);
+        $stmt_docentes->bind_param('i', $periodo_id);
+        $stmt_docentes->execute();
+        $result_docentes = $stmt_docentes->get_result();
+
         while ($row = $result_docentes->fetch_assoc()) {
             $response['docentes'][] = [
                 'id' => $row['id'],
@@ -41,6 +46,30 @@ try {
                 'regimen' => $row['regimen'],
                 'label' => $row['nombre_docente'] . ' (' . $row['turno'] . ' - ' . $row['regimen'] . ')'
             ];
+        }
+        $stmt_docentes->close();
+    } else {
+        // Si no hay periodo activo, traer todos los docentes activos
+        $sql_docentes = "SELECT
+                            id,
+                            nombre_docente,
+                            turno,
+                            regimen
+                         FROM docentes
+                         WHERE estado = 'activo'
+                         ORDER BY nombre_docente ASC";
+
+        $result_docentes = $conn->query($sql_docentes);
+        if ($result_docentes) {
+            while ($row = $result_docentes->fetch_assoc()) {
+                $response['docentes'][] = [
+                    'id' => $row['id'],
+                    'nombre' => $row['nombre_docente'],
+                    'turno' => $row['turno'],
+                    'regimen' => $row['regimen'],
+                    'label' => $row['nombre_docente'] . ' (' . $row['turno'] . ' - ' . $row['regimen'] . ')'
+                ];
+            }
         }
     }
 
