@@ -1704,19 +1704,17 @@ function mostrarError(mensaje) {
 }
 
 // ============================================
-// FILTROS Y ORDENAMIENTO
+// FILTROS
 // ============================================
 function inicializarFiltros() {
     // Event listeners para filtros
     document.getElementById('filtro-buscar')?.addEventListener('input', aplicarFiltros);
     document.getElementById('filtro-turno')?.addEventListener('change', aplicarFiltros);
-    document.getElementById('ordenar-por')?.addEventListener('change', aplicarFiltros);
 }
 
 function aplicarFiltros() {
     const textoBusqueda = document.getElementById('filtro-buscar')?.value.toLowerCase() || '';
     const turnoSeleccionado = document.getElementById('filtro-turno')?.value || '';
-    const ordenSeleccionado = document.getElementById('ordenar-por')?.value || 'docente-asc';
 
     // Aplicar filtros
     cargasFiltradas = cargas.filter(carga => {
@@ -1733,9 +1731,6 @@ function aplicarFiltros() {
         return cumpleBusqueda && cumpleTurno;
     });
 
-    // Aplicar ordenamiento
-    aplicarOrdenamiento(ordenSeleccionado);
-
     // Reiniciar paginación
     if (window.PaginacionCarga) {
         PaginacionCarga.inicializar(cargasFiltradas.length, 10);
@@ -1745,19 +1740,9 @@ function aplicarFiltros() {
     renderizarTabla();
 }
 
-function aplicarOrdenamiento(tipo) {
-    if (tipo === 'docente-desc') {
-        cargasFiltradas.sort((a, b) => b.docente.localeCompare(a.docente));
-    } else {
-        // Por defecto ordena A-Z (docente-asc)
-        cargasFiltradas.sort((a, b) => a.docente.localeCompare(b.docente));
-    }
-}
-
 function limpiarFiltros() {
     document.getElementById('filtro-buscar').value = '';
     document.getElementById('filtro-turno').value = '';
-    document.getElementById('ordenar-por').value = 'docente-asc';
 
     // Recargar todos los datos
     cargasFiltradas = [...cargas];
