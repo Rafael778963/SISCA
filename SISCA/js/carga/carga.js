@@ -1673,34 +1673,15 @@ function mostrarError(mensaje) {
 // FILTROS Y ORDENAMIENTO
 // ============================================
 function inicializarFiltros() {
-    // Llenar select de docentes
-    const filtroDocente = document.getElementById('filtro-docente');
-    if (filtroDocente && datosCache.docentes) {
-        filtroDocente.innerHTML = '<option value="">Todos</option>';
-
-        // Obtener docentes únicos de las cargas
-        const docentesUnicos = [...new Set(cargas.map(c => c.docente_id))];
-        const docentesFiltrados = datosCache.docentes.filter(d => docentesUnicos.includes(d.id));
-
-        docentesFiltrados.forEach(docente => {
-            const option = document.createElement('option');
-            option.value = docente.id;
-            option.textContent = docente.nombre;
-            filtroDocente.appendChild(option);
-        });
-    }
-
     // Event listeners para filtros
     document.getElementById('filtro-buscar')?.addEventListener('input', aplicarFiltros);
     document.getElementById('filtro-turno')?.addEventListener('change', aplicarFiltros);
-    document.getElementById('filtro-docente')?.addEventListener('change', aplicarFiltros);
     document.getElementById('ordenar-por')?.addEventListener('change', aplicarFiltros);
 }
 
 function aplicarFiltros() {
     const textoBusqueda = document.getElementById('filtro-buscar')?.value.toLowerCase() || '';
     const turnoSeleccionado = document.getElementById('filtro-turno')?.value || '';
-    const docenteSeleccionado = document.getElementById('filtro-docente')?.value || '';
     const ordenSeleccionado = document.getElementById('ordenar-por')?.value || 'docente-asc';
 
     // Aplicar filtros
@@ -1712,13 +1693,23 @@ function aplicarFiltros() {
             carga.grupo.toLowerCase().includes(textoBusqueda) ||
             carga.clave_materia.toLowerCase().includes(textoBusqueda);
 
-        // Filtro por turno
-        const cumpleTurno = !turnoSeleccionado || carga.turno === turnoSeleccionado || carga.turno_docente === turnoSeleccionado;
+        // Filtro por turno usando turno_docente
+        let cumpleTurno = true;
+        if (turnoSeleccionado) {
+            if (turnoSeleccionado === 'Mixto') {
+                // Para Mixto, buscar docentes que tengan al menos una carga en Matutino Y una en Nocturno
+                const docenteId = carga.docente_id;
+                const cargasDocente = cargas.filter(c => c.docente_id === docenteId);
+                const tieneMatutino = cargasDocente.some(c => c.turno_docente === 'Matutino' || c.turno === 'Matutino');
+                const tieneNocturno = cargasDocente.some(c => c.turno_docente === 'Nocturno' || c.turno === 'Nocturno');
+                cumpleTurno = tieneMatutino && tieneNocturno;
+            } else {
+                // Para Matutino o Nocturno, usar turno_docente como referencia
+                cumpleTurno = carga.turno_docente === turnoSeleccionado;
+            }
+        }
 
-        // Filtro por docente
-        const cumpleDocente = !docenteSeleccionado || carga.docente_id == docenteSeleccionado;
-
-        return cumpleBusqueda && cumpleTurno && cumpleDocente;
+        return cumpleBusqueda && cumpleTurno;
     });
 
     // Aplicar ordenamiento
@@ -1759,7 +1750,6 @@ function aplicarOrdenamiento(tipo) {
 function limpiarFiltros() {
     document.getElementById('filtro-buscar').value = '';
     document.getElementById('filtro-turno').value = '';
-    document.getElementById('filtro-docente').value = '';
     document.getElementById('ordenar-por').value = 'docente-asc';
 
     // Recargar todos los datos
