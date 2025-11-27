@@ -1712,25 +1712,11 @@ function aplicarFiltros() {
 }
 
 function aplicarOrdenamiento(tipo) {
-    switch (tipo) {
-        case 'docente-asc':
-            cargasFiltradas.sort((a, b) => a.docente.localeCompare(b.docente));
-            break;
-        case 'docente-desc':
-            cargasFiltradas.sort((a, b) => b.docente.localeCompare(a.docente));
-            break;
-        case 'horas-desc':
-            cargasFiltradas.sort((a, b) => (b.total || 0) - (a.total || 0));
-            break;
-        case 'horas-asc':
-            cargasFiltradas.sort((a, b) => (a.total || 0) - (b.total || 0));
-            break;
-        case 'fecha-desc':
-            cargasFiltradas.sort((a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion));
-            break;
-        case 'fecha-asc':
-            cargasFiltradas.sort((a, b) => new Date(a.fecha_creacion) - new Date(b.fecha_creacion));
-            break;
+    if (tipo === 'docente-desc') {
+        cargasFiltradas.sort((a, b) => b.docente.localeCompare(a.docente));
+    } else {
+        // Por defecto ordena A-Z (docente-asc)
+        cargasFiltradas.sort((a, b) => a.docente.localeCompare(b.docente));
     }
 }
 
