@@ -475,12 +475,12 @@ async function cargarCargas() {
 function renderizarTabla() {
     const tbody = document.querySelector('#dataTable tbody');
     if (!tbody) return;
-    
+
     // Mostrar/ocultar botón de regresar según si estamos viendo plantilla
     actualizarBotonRegresar();
-    
+
     tbody.innerHTML = '';
-    
+
     if (!cargasFiltradas || cargasFiltradas.length === 0) {
         tbody.innerHTML = `
             <tr>
@@ -492,24 +492,23 @@ function renderizarTabla() {
         `;
         return;
     }
-    
+
     // Obtener rango de registros para la página actual
     let registrosMostrar = cargasFiltradas;
-    
+
     if (window.PaginacionCarga) {
         const rango = PaginacionCarga.obtenerRango();
         registrosMostrar = cargasFiltradas.slice(rango.inicio, rango.fin);
     }
-    
-    // Agrupar por docente
-    const cargasPorDocente = agruparPorDocente(registrosMostrar);
-    
+
+    // Agrupar por docente manteniendo el orden
+    const cargasPorDocente = agruparPorDocenteOrdenado(registrosMostrar);
+
     // Renderizar cada docente con sus cargas
-    Object.keys(cargasPorDocente).forEach(docenteId => {
-        const datos = cargasPorDocente[docenteId];
-        renderizarDocenteConCargas(tbody, datos, docenteId);
+    cargasPorDocente.forEach(datos => {
+        renderizarDocenteConCargas(tbody, datos, datos.docenteId);
     });
-    
+
     // Agregar fila de TOTALES GENERALES al final
     agregarTotalesGenerales(tbody);
 }
@@ -543,6 +542,41 @@ function agruparPorDocente(cargas) {
     });
     
     return agrupado;
+}
+
+function agruparPorDocenteOrdenado(cargas) {
+    const agrupado = {};
+    const orden = []; // Array para mantener el orden de aparición
+
+    cargas.forEach(carga => {
+        const docenteId = carga.docente_id;
+
+        if (!agrupado[docenteId]) {
+            agrupado[docenteId] = {
+                docenteId: docenteId,
+                docente: carga.docente,
+                turno: carga.turno_docente,
+                regimen: carga.regimen,
+                cargas: [],
+                totales: {
+                    horas: 0,
+                    tutoria: 0,
+                    estadia: 0,
+                    total: 0
+                }
+            };
+            orden.push(docenteId); // Guardar orden de aparición
+        }
+
+        agrupado[docenteId].cargas.push(carga);
+        agrupado[docenteId].totales.horas += parseInt(carga.horas) || 0;
+        agrupado[docenteId].totales.tutoria += parseInt(carga.horas_tutoria) || 0;
+        agrupado[docenteId].totales.estadia += parseInt(carga.horas_estadia) || 0;
+        agrupado[docenteId].totales.total += parseInt(carga.total) || 0;
+    });
+
+    // Devolver array en el orden correcto
+    return orden.map(docenteId => agrupado[docenteId]);
 }
 
 function renderizarDocenteConCargas(tbody, datos, docenteId) {
