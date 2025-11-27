@@ -1693,21 +1693,8 @@ function aplicarFiltros() {
             carga.grupo.toLowerCase().includes(textoBusqueda) ||
             carga.clave_materia.toLowerCase().includes(textoBusqueda);
 
-        // Filtro por turno usando turno_docente
-        let cumpleTurno = true;
-        if (turnoSeleccionado) {
-            if (turnoSeleccionado === 'Mixto') {
-                // Para Mixto, buscar docentes que tengan al menos una carga en Matutino Y una en Nocturno
-                const docenteId = carga.docente_id;
-                const cargasDocente = cargas.filter(c => c.docente_id === docenteId);
-                const tieneMatutino = cargasDocente.some(c => c.turno_docente === 'Matutino' || c.turno === 'Matutino');
-                const tieneNocturno = cargasDocente.some(c => c.turno_docente === 'Nocturno' || c.turno === 'Nocturno');
-                cumpleTurno = tieneMatutino && tieneNocturno;
-            } else {
-                // Para Matutino o Nocturno, usar turno_docente como referencia
-                cumpleTurno = carga.turno_docente === turnoSeleccionado;
-            }
-        }
+        // Filtro por turno usando turno_docente (turno del docente en la base de datos)
+        const cumpleTurno = !turnoSeleccionado || carga.turno_docente === turnoSeleccionado;
 
         return cumpleBusqueda && cumpleTurno;
     });
