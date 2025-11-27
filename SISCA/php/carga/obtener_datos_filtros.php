@@ -21,7 +21,10 @@ try {
     // Obtener periodo activo de la sesión
     $periodo_id = isset($_SESSION['periodo_activo']) ? $_SESSION['periodo_activo'] : null;
 
-    // 1. OBTENER DOCENTES ACTIVOS (filtrados por periodo si existe)
+    // FILTRADO ESTRICTO: Solo mostrar datos si hay periodo activo
+    // Si no hay periodo, los arrays quedan vacíos
+
+    // 1. OBTENER DOCENTES ACTIVOS (solo del periodo activo)
     if ($periodo_id) {
         $sql_docentes = "SELECT
                             id,
@@ -48,32 +51,9 @@ try {
             ];
         }
         $stmt_docentes->close();
-    } else {
-        // Si no hay periodo activo, traer todos los docentes activos
-        $sql_docentes = "SELECT
-                            id,
-                            nombre_docente,
-                            turno,
-                            regimen
-                         FROM docentes
-                         WHERE estado = 'activo'
-                         ORDER BY nombre_docente ASC";
-
-        $result_docentes = $conn->query($sql_docentes);
-        if ($result_docentes) {
-            while ($row = $result_docentes->fetch_assoc()) {
-                $response['docentes'][] = [
-                    'id' => $row['id'],
-                    'nombre' => $row['nombre_docente'],
-                    'turno' => $row['turno'],
-                    'regimen' => $row['regimen'],
-                    'label' => $row['nombre_docente'] . ' (' . $row['turno'] . ' - ' . $row['regimen'] . ')'
-                ];
-            }
-        }
     }
 
-    // 2. OBTENER GRUPOS ACTIVOS (filtrados por periodo si existe)
+    // 2. OBTENER GRUPOS ACTIVOS (solo del periodo activo)
     if ($periodo_id) {
         $sql_grupos = "SELECT
                           id,
@@ -105,34 +85,6 @@ try {
             ];
         }
         $stmt_grupos->close();
-    } else {
-        // Si no hay periodo activo, traer todos los grupos activos
-        $sql_grupos = "SELECT
-                          id,
-                          codigo_grupo,
-                          programa_educativo,
-                          grado,
-                          turno,
-                          nivel_educativo
-                       FROM grupos
-                       WHERE estado = 'activo'
-                       ORDER BY codigo_grupo ASC";
-
-        $result_grupos = $conn->query($sql_grupos);
-        if ($result_grupos) {
-            while ($row = $result_grupos->fetch_assoc()) {
-                $turno_letra = $row['turno'] === 'M' ? 'Matutino' : 'Nocturno';
-                $response['grupos'][] = [
-                    'id' => $row['id'],
-                    'codigo' => $row['codigo_grupo'],
-                    'programa' => $row['programa_educativo'],
-                    'grado' => $row['grado'],
-                    'turno' => $turno_letra,
-                    'nivel' => $row['nivel_educativo'],
-                    'label' => $row['codigo_grupo'] . ' (' . $turno_letra . ')'
-                ];
-            }
-        }
     }
 
     // 3. OBTENER MATERIAS ACTIVAS

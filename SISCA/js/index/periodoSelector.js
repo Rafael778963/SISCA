@@ -237,4 +237,10 @@ function actualizarEstadisticasDashboard(data) {
     if (docentesElement) {
         docentesElement.textContent = data.docentes || 0;
     }
+
+    // Actualizar docentes capturados (en Carga)
+    const cargaDocentesElement = document.getElementById('total-carga-docentes');
+    if (cargaDocentesElement) {
+        cargaDocentesElement.textContent = data.carga_docentes || 0;
+    }
 }

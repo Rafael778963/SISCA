@@ -26,6 +26,13 @@ try {
         $sql_docentes = "SELECT COUNT(*) as total FROM docentes WHERE estado = 'activo'";
         $result_docentes = $conn->query($sql_docentes);
         $total_docentes = $result_docentes->fetch_assoc()['total'];
+
+        // Contar docentes con cargas (sin filtro de periodo)
+        $sql_carga_docentes = "SELECT COUNT(DISTINCT docente_id) as total
+                               FROM carga_academica
+                               WHERE estado = 'activo'";
+        $result_carga = $conn->query($sql_carga_docentes);
+        $total_carga_docentes = $result_carga->fetch_assoc()['total'];
     } else {
         // Contar grupos del periodo específico
         $sql_grupos = "SELECT COUNT(*) as total FROM grupos WHERE periodo_id = ? AND estado = 'activo'";
@@ -44,6 +51,17 @@ try {
         $result_docentes = $stmt_docentes->get_result();
         $total_docentes = $result_docentes->fetch_assoc()['total'];
         $stmt_docentes->close();
+
+        // Contar docentes con cargas en el periodo específico
+        $sql_carga_docentes = "SELECT COUNT(DISTINCT docente_id) as total
+                               FROM carga_academica
+                               WHERE periodo_id = ? AND estado = 'activo'";
+        $stmt_carga = $conn->prepare($sql_carga_docentes);
+        $stmt_carga->bind_param("i", $periodo_id);
+        $stmt_carga->execute();
+        $result_carga = $stmt_carga->get_result();
+        $total_carga_docentes = $result_carga->fetch_assoc()['total'];
+        $stmt_carga->close();
     }
 
     $response = array(
@@ -51,7 +69,8 @@ try {
         'data' => array(
             'periodos' => $total_periodos,
             'grupos' => $total_grupos,
-            'docentes' => $total_docentes
+            'docentes' => $total_docentes,
+            'carga_docentes' => $total_carga_docentes
         )
     );
 
