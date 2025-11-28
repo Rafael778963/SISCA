@@ -606,10 +606,39 @@ function validarPeriodosDiferentes() {
 // INICIALIZACIÓN
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Inicializar gestor de periodo
+    await inicializarPeriodoManager();
+
+    // Validar que haya un periodo activo
+    if (!hayPeriodoActivo()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Periodo no seleccionado',
+            html: `
+                <p>Debes seleccionar un periodo activo antes de cargar el módulo de Reportes.</p>
+                <p>Ve al <strong>inicio</strong> y selecciona un período.</p>
+            `,
+            confirmButtonText: 'Ir al inicio',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#22c55e',
+            cancelButtonColor: '#6b7480',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '../../index.html';
+            } else {
+                window.location.href = '../../index.html';
+            }
+        });
+        return;
+    }
+
     // Cargar períodos (esto se conectaría a tu API)
     cargarPeriodos();
-    
+
     // Deshabilitar botones de exportación al inicio
     deshabilitarBotonesExportacion();
 });
