@@ -114,28 +114,6 @@
 
                 <form class="plan-form" id="planEstudiosForm">
                     <div class="form-group">
-                        <label for="periodo">
-                            <i class="fa-solid fa-calendar"></i> Periodo:
-                            <span class="required">*</span>
-                        </label>
-                        <select id="periodo" name="periodo" class="form-select" required>
-                            <option value="" disabled selected>Cargando períodos...</option>
-                        </select>
-                        <span class="error-message" id="error-periodo"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="anio">
-                            <i class="fa-solid fa-calendar-check"></i> Año Académico:
-                            <span class="required">*</span>
-                        </label>
-                        <input type="number" id="anio" name="anio" class="form-input" 
-                               placeholder="Ej: 2024" min="2000" max="2100" 
-                               onchange="actualizarFooter()" required>
-                        <span class="error-message" id="error-anio"></span>
-                    </div>
-
-                    <div class="form-group">
                         <label for="nivel">
                             <i class="fa-solid fa-layer-group"></i> Nivel:
                             <span class="required">*</span>
@@ -272,8 +250,8 @@
                 </div>
 
                 <!-- Pie de la tabla -->
-                <div id="footer" class="table-footer">
-                    <p><strong>PLAN DE ESTUDIOS VIGENTE EN SEPTIEMBRE</strong> <span id="anio-footer"></span></p>
+                <div id="footer" class="table-footer" style="display: none;">
+                    <p><strong>PLAN DE ESTUDIOS</strong></p>
                 </div>
 
                 <!-- Botones de Acción -->
