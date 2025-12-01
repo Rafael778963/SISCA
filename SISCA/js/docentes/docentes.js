@@ -1,19 +1,19 @@
-// ============================================
-// VARIABLES GLOBALES
-// ============================================
+
+
+
 let paginaActual = 1;
 let docenteEditando = null;
 let filtrosActivos = {};
 let mostrandoInactivos = false;
 let totalRegistros = 0;
 
-// ============================================
-// INICIALIZACIÓN
-// ============================================
+
+
+
 document.addEventListener('DOMContentLoaded', async () => {
     await inicializarPeriodoManager();
 
-    // Validar que haya un periodo activo
+    
     if (!hayPeriodoActivo()) {
         Swal.fire({
             icon: 'warning',
@@ -59,7 +59,7 @@ function inicializarRegimenCheckboxes() {
         checkbox.addEventListener('change', function () {
             const seleccionados = Array.from(checkboxes).filter(cb => cb.checked);
 
-            // Permitir máximo 2 selecciones
+            
             if (seleccionados.length > 2) {
                 this.checked = false;
                 Swal.fire({
@@ -78,9 +78,9 @@ function inicializarRegimenCheckboxes() {
     });
 }
 
-// ============================================
-// GESTIÓN DE RÉGIMEN
-// ============================================
+
+
+
 function obtenerRegimenSeleccionado() {
     const checkboxes = document.querySelectorAll('input[name="regimen"]:checked');
     const regimenes = Array.from(checkboxes).map(cb => cb.value);
@@ -89,21 +89,21 @@ function obtenerRegimenSeleccionado() {
         return '';
     }
 
-    // Ordenar alfabéticamente para consistencia (PA, PH, PTC)
+    
     regimenes.sort();
 
     return regimenes.join('/');
 }
 
 function establecerRegimenEnFormulario(regimen) {
-    // Limpiar todas las selecciones primero
+    
     document.querySelectorAll('input[name="regimen"]').forEach(cb => {
         cb.checked = false;
     });
 
     if (!regimen) return;
 
-    // Dividir el régimen si contiene "/"
+    
     const regimenes = regimen.split('/');
 
     regimenes.forEach(reg => {
@@ -114,11 +114,11 @@ function establecerRegimenEnFormulario(regimen) {
     });
 }
 
-// ============================================
-// CRUD - CREAR Y ACTUALIZAR
-// ============================================
+
+
+
 async function guardarDocente() {
-    // Validar que hay un periodo activo
+    
     if (!validarPeriodoActivo('guardar un docente')) {
         return;
     }
@@ -188,15 +188,15 @@ async function guardarDocente() {
     }
 }
 
-// ============================================
-// CRUD - EDITAR
-// ============================================
+
+
+
 async function editarDocente(id) {
     const tbody = document.querySelector('.docentes-table tbody');
     const filas = tbody.querySelectorAll('tr');
     let docenteEncontrado = false;
 
-    // Intentar obtener datos directamente de la tabla visible
+    
     filas.forEach(fila => {
         const btnEditar = fila.querySelector(`button[onclick="editarDocente(${id})"]`);
         if (btnEditar) {
@@ -213,7 +213,7 @@ async function editarDocente(id) {
         }
     });
 
-    // Respaldo: consultar al servidor si no se encontró en la tabla
+    
     if (!docenteEncontrado) {
         const filtrosConEstado = {
             estado: mostrandoInactivos ? 'inactivo' : 'activo'
@@ -234,9 +234,9 @@ async function editarDocente(id) {
     }
 }
 
-// ============================================
-// CRUD - CAMBIAR ESTADO (ALTA/BAJA)
-// ============================================
+
+
+
 async function bajaDocente(id) {
     const { value: confirmar } = await Swal.fire({
         title: 'CONFIRMAR BAJA',
@@ -338,9 +338,9 @@ async function altaDocente(id) {
     }
 }
 
-// ============================================
-// CRUD - ELIMINAR
-// ============================================
+
+
+
 function eliminarDocente(id) {
     Swal.fire({
         title: 'ELIMINACIÓN PERMANENTE',
@@ -399,9 +399,9 @@ function eliminarDocente(id) {
     });
 }
 
-// ============================================
-// CARGAR DOCENTES
-// ============================================
+
+
+
 async function cargarDocentes(page = 1) {
     paginaActual = page;
 
@@ -422,9 +422,9 @@ async function cargarDocentes(page = 1) {
     }
 }
 
-// ============================================
-// RENDERIZADO DE TABLA
-// ============================================
+
+
+
 function mostrarDocentes(docentes) {
     const tbody = document.querySelector('.docentes-table tbody');
 
@@ -456,7 +456,7 @@ function generarFilaDocente(docente) {
             </button>
           `;
 
-    // Determinar clase del turno
+    
     let clasesTurno = 'turno-badge';
     const turnoLower = docente.turno.toLowerCase();
     
@@ -478,9 +478,9 @@ function generarFilaDocente(docente) {
     `;
 }
 
-// ============================================
-// PAGINACIÓN
-// ============================================
+
+
+
 function actualizarPaginacion(totalPaginas) {
     const paginacionDiv = document.getElementById('paginacion');
 
@@ -496,12 +496,12 @@ function actualizarPaginacion(totalPaginas) {
 function generarHTMLPaginacion(totalPaginas) {
     let html = '';
 
-    // Botón anterior
+    
     html += `<button class="btn-pag" onclick="cambiarPagina(${paginaActual - 1})" ${paginaActual === 1 ? 'disabled' : ''}>
                 <i class="fa-solid fa-chevron-left"></i>
             </button>`;
 
-    // Números de página
+    
     for (let i = 1; i <= totalPaginas; i++) {
         if (i === 1 || i === totalPaginas || (i >= paginaActual - 1 && i <= paginaActual + 1)) {
             html += `<button class="btn-pag ${i === paginaActual ? 'active' : ''}" onclick="cambiarPagina(${i})">${i}</button>`;
@@ -510,12 +510,12 @@ function generarHTMLPaginacion(totalPaginas) {
         }
     }
 
-    // Botón siguiente
+    
     html += `<button class="btn-pag" onclick="cambiarPagina(${paginaActual + 1})" ${paginaActual === totalPaginas ? 'disabled' : ''}>
                 <i class="fa-solid fa-chevron-right"></i>
             </button>`;
 
-    // Información de registros
+    
     const registrosPorPagina = 10;
     const inicio = (paginaActual - 1) * registrosPorPagina + 1;
     const fin = Math.min(paginaActual * registrosPorPagina, totalRegistros);
@@ -532,7 +532,7 @@ function cambiarPagina(nuevaPagina) {
 
     cargarDocentes(nuevaPagina);
 
-    // Scroll suave hacia la tabla
+    
     document.querySelector('.docentes-table-panel').scrollIntoView({
         behavior: 'smooth',
         block: 'start'
@@ -544,18 +544,18 @@ function resetearPaginacion() {
     totalRegistros = 0;
 }
 
-// ============================================
-// UTILIDADES DEL FORMULARIO
-// ============================================
+
+
+
 function limpiarFormulario() {
     document.querySelector('.docentes-form').reset();
     docenteEditando = null;
     actualizarBotonFormulario('Guardar/Actualizar');
 
-    // Asegurar que los selects vuelvan a su estado inicial
+    
     document.getElementById('turno').selectedIndex = 0;
 
-    // Limpiar checkboxes de régimen
+    
     document.querySelectorAll('input[name="regimen"]').forEach(cb => {
         cb.checked = false;
     });

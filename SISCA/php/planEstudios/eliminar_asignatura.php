@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('ID inválido');
         }
 
-        // Eliminación lógica (cambiar estado a inactivo)
+        
         $sql = "UPDATE plan_estudios_asignaturas
                 SET estado = 'inactivo'
                 WHERE id = ?";

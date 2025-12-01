@@ -4,7 +4,7 @@ include '../conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        // Filtro de período - CRÍTICO para separar asignaturas por período académico
+        
         $periodo_id = isset($_GET['periodo_id']) ? (int)$_GET['periodo_id'] : null;
 
         if ($periodo_id === null) {

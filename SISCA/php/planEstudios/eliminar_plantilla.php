@@ -1,7 +1,5 @@
 <?php
-/**
- * Eliminar una plantilla de plan de estudios (eliminación lógica)
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -31,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Eliminación lógica (solo del usuario actual)
+        
         $sql = "UPDATE plan_estudios_plantillas
                 SET estado = 'eliminado',
                     fecha_modificacion = CURRENT_TIMESTAMP

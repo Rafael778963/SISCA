@@ -1,8 +1,5 @@
 <?php
-/**
- * Obtener datos para filtros del módulo de carga
- * Retorna: docentes, grupos, materias según el periodo activo
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -18,13 +15,13 @@ try {
         'turnos' => ['Matutino', 'Nocturno', 'Mixto']
     ];
 
-    // Obtener periodo activo de la sesión
+    
     $periodo_id = isset($_SESSION['periodo_activo']) ? $_SESSION['periodo_activo'] : null;
 
-    // FILTRADO ESTRICTO: Solo mostrar datos si hay periodo activo
-    // Si no hay periodo, los arrays quedan vacíos
+    
+    
 
-    // 1. OBTENER DOCENTES ACTIVOS (solo del periodo activo)
+    
     if ($periodo_id) {
         $sql_docentes = "SELECT
                             id,
@@ -53,7 +50,7 @@ try {
         $stmt_docentes->close();
     }
 
-    // 2. OBTENER GRUPOS ACTIVOS (solo del periodo activo)
+    
     if ($periodo_id) {
         $sql_grupos = "SELECT
                           id,
@@ -87,7 +84,7 @@ try {
         $stmt_grupos->close();
     }
 
-    // 3. OBTENER MATERIAS ACTIVAS
+    
     $sql_materias = "SELECT
                         pm.id,
                         pm.cve_materia,

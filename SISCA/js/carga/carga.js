@@ -1,17 +1,13 @@
-/**
- * SISCA - Sistema de Carga Académica
- * Módulo principal para gestión de cargas académicas
- * VERSIÓN MEJORADA con optimizaciones y nuevas funcionalidades
- */
 
-// ============================================
-// VARIABLES GLOBALES
-// ============================================
-let cargas = []; // Array global de todas las cargas
-let cargasFiltradas = []; // Cargas después de aplicar filtros
-let cargasOriginales = []; // Backup de cargas originales antes de cargar plantilla
-let viendoPlantilla = false; // Bandera para saber si estamos viendo una plantilla
-let nombrePlantillaActual = ''; // Nombre de la plantilla que se está viendo
+
+
+
+
+let cargas = []; 
+let cargasFiltradas = []; 
+let cargasOriginales = []; 
+let viendoPlantilla = false; 
+let nombrePlantillaActual = ''; 
 let datosCache = {
     docentes: [],
     grupos: [],
@@ -22,9 +18,9 @@ let idCargaEdicion = null;
 let formularioModificado = false;
 let ignorarFiltros = false;
 
-// ============================================
-// UTILIDAD: DEBOUNCE
-// ============================================
+
+
+
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -37,9 +33,9 @@ function debounce(func, wait) {
     };
 }
 
-// ============================================
-// INICIALIZACIÓN
-// ============================================
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     inicializarModulo();
 });
@@ -48,10 +44,10 @@ async function inicializarModulo() {
     try {
         mostrarCargando();
 
-        // Inicializar gestor de periodo
+        
         await inicializarPeriodoManager();
 
-        // Validar que haya un periodo activo
+        
         if (!hayPeriodoActivo()) {
             ocultarCargando();
             validarPeriodoActivo('cargar el módulo de Carga Académica');
@@ -76,9 +72,9 @@ async function inicializarModulo() {
     }
 }
 
-// ============================================
-// CONFIGURACIÓN DE EVENT LISTENERS
-// ============================================
+
+
+
 function configurarEventListeners() {
     const form = document.getElementById('cargaForm');
     const btnLimpiar = document.getElementById('btnLimpiar');
@@ -86,22 +82,22 @@ function configurarEventListeners() {
     const turnoSelect = document.getElementById('turno');
     const grupoSelect = document.getElementById('grupo');
     
-    // Evento submit del formulario
+    
     if (form) {
         form.addEventListener('submit', manejarSubmitFormulario);
     }
     
-    // Botón limpiar
+    
     if (btnLimpiar) {
         btnLimpiar.addEventListener('click', limpiarFormulario);
     }
     
-    // Botón cancelar edición
+    
     if (btnCancelarEdicion) {
         btnCancelarEdicion.addEventListener('click', cancelarEdicion);
     }
     
-    // Filtros dependientes
+    
     if (turnoSelect) {
         turnoSelect.addEventListener('change', filtrarGruposPorTurno);
     }
@@ -110,15 +106,15 @@ function configurarEventListeners() {
         grupoSelect.addEventListener('change', filtrarMateriasPorGrupo);
     }
     
-    // Listener para cambio de paginación
+    
     document.addEventListener('paginaCambiada', function(e) {
         renderizarTabla();
     });
 }
 
-// ============================================
-// NUEVO: CONFIGURAR BÚSQUEDA EN TABLA
-// ============================================
+
+
+
 function configurarBusqueda() {
     const inputBusqueda = document.getElementById('busquedaTabla');
     if (inputBusqueda) {
@@ -146,19 +142,19 @@ function buscarEnTabla(termino) {
         });
     }
     
-    // Reiniciar paginación y renderizar
+    
     if (window.PaginacionCarga) {
         PaginacionCarga.inicializar(cargasFiltradas.length, 10);
     }
     renderizarTabla();
 }
 
-// ============================================
-// NUEVO: ATAJOS DE TECLADO
-// ============================================
+
+
+
 function configurarAtajosTeclado() {
     document.addEventListener('keydown', (e) => {
-        // Ctrl/Cmd + S = Guardar
+        
         if ((e.ctrlKey || e.metaKey) && e.key === 's') {
             e.preventDefault();
             const form = document.getElementById('cargaForm');
@@ -167,13 +163,13 @@ function configurarAtajosTeclado() {
             }
         }
         
-        // Ctrl/Cmd + K = Limpiar formulario
+        
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
             e.preventDefault();
             limpiarFormulario();
         }
         
-        // Escape = Cancelar edición
+        
         if (e.key === 'Escape' && modoEdicion) {
             e.preventDefault();
             cancelarEdicion();
@@ -181,9 +177,9 @@ function configurarAtajosTeclado() {
     });
 }
 
-// ============================================
-// NUEVO: MONITOREAR CAMBIOS EN FORMULARIO
-// ============================================
+
+
+
 function monitorearCambiosFormulario() {
     const form = document.getElementById('cargaForm');
     if (!form) return;
@@ -196,7 +192,7 @@ function monitorearCambiosFormulario() {
         });
     });
     
-    // Advertir antes de salir
+    
     window.addEventListener('beforeunload', (e) => {
         if (formularioModificado && !modoEdicion) {
             e.preventDefault();
@@ -206,12 +202,12 @@ function monitorearCambiosFormulario() {
     });
 }
 
-// ============================================
-// CARGAR DATOS INICIALES (MEJORADO CON CACHÉ)
-// ============================================
+
+
+
 async function cargarDatosFiltros() {
     try {
-        // NUEVO: Intentar cargar desde caché primero
+        
         const cacheDatos = cargarDatosCacheLocal();
         
         if (cacheDatos) {
@@ -227,7 +223,7 @@ async function cargarDatosFiltros() {
             return;
         }
         
-        // Si no hay caché, cargar desde servidor
+        
         const response = await fetch('../../php/carga/obtener_datos_filtros.php');
         const data = await response.json();
         
@@ -235,17 +231,17 @@ async function cargarDatosFiltros() {
             throw new Error(data.message || 'Error al cargar datos');
         }
         
-        // Guardar en caché
+        
         datosCache.docentes = data.docentes || [];
         datosCache.grupos = data.grupos || [];
         datosCache.materias = data.materias || [];
         
-        // Llenar selectores
+        
         llenarSelectDocentes(datosCache.docentes);
         llenarSelectGrupos(datosCache.grupos);
         llenarSelectMaterias(datosCache.materias);
         
-        // NUEVO: Guardar en caché local
+        
         guardarDatosCacheLocal();
         
         
@@ -256,9 +252,9 @@ async function cargarDatosFiltros() {
     }
 }
 
-// ============================================
-// FUNCIONES DE CACHÉ LOCAL
-// ============================================
+
+
+
 function guardarDatosCacheLocal() {
     try {
         const cacheData = {
@@ -269,7 +265,7 @@ function guardarDatosCacheLocal() {
         };
         localStorage.setItem('sisca_carga_cache', JSON.stringify(cacheData));
     } catch (e) {
-        // Error silencioso
+        
     }
 }
 
@@ -280,7 +276,7 @@ function cargarDatosCacheLocal() {
         
         const datos = JSON.parse(cache);
         const ahora = new Date().getTime();
-        const CACHE_EXPIRATION = 1000 * 60 * 30; // 30 minutos
+        const CACHE_EXPIRATION = 1000 * 60 * 30; 
         
         if (ahora - datos.timestamp < CACHE_EXPIRATION) {
             return datos;
@@ -293,17 +289,17 @@ function cargarDatosCacheLocal() {
     }
 }
 
-// ============================================
-// LLENAR SELECTORES
-// ============================================
+
+
+
 function llenarSelectDocentes(docentes) {
     const select = document.getElementById('docente');
     if (!select) return;
     
-    // Limpiar opciones existentes (excepto la primera)
+    
     select.innerHTML = '<option value="" disabled selected>Selecciona un docente...</option>';
     
-    // Agrupar docentes por turno
+    
     const docentesPorTurno = {
         'Matutino': [],
         'Nocturno': [],
@@ -319,19 +315,19 @@ function llenarSelectDocentes(docentes) {
         }
     });
     
-    // Agregar docentes agrupados por turno
+    
     Object.keys(docentesPorTurno).forEach(turno => {
         if (docentesPorTurno[turno].length > 0) {
-            // Crear optgroup
+            
             const optgroup = document.createElement('optgroup');
             optgroup.label = `━━━ ${turno} ━━━`;
             
-            // Ordenar docentes alfabéticamente
+            
             docentesPorTurno[turno].sort((a, b) => 
                 a.nombre.localeCompare(b.nombre)
             );
             
-            // Agregar opciones
+            
             docentesPorTurno[turno].forEach(docente => {
                 const option = document.createElement('option');
                 option.value = docente.id;
@@ -380,11 +376,11 @@ function llenarSelectMaterias(materias) {
     });
 }
 
-// ============================================
-// FILTROS DEPENDIENTES
-// ============================================
+
+
+
 function filtrarGruposPorTurno() {
-    // Si estamos en modo edicion, ignorar filtros
+    
     if (ignorarFiltros) return;
     
     const turnoSelect = document.getElementById('turno');
@@ -411,7 +407,7 @@ function filtrarGruposPorTurno() {
 }
 
 function filtrarMateriasPorGrupo() {
-    // Si estamos en modo edicion, ignorar filtros
+    
     if (ignorarFiltros) return;
     
     const grupoSelect = document.getElementById('grupo');
@@ -442,20 +438,20 @@ function filtrarMateriasPorGrupo() {
     }
 }
 
-// ============================================
-// CARGAR CARGAS ACADÉMICAS
-// ============================================
+
+
+
 async function cargarCargas() {
     try {
         mostrarCargando();
 
-        // Obtener el periodo activo
+        
         const periodo_id = obtenerPeriodoActivoId();
         if (!periodo_id) {
             throw new Error('No hay un periodo activo seleccionado');
         }
 
-        // Hacer petición con periodo_id
+        
         const response = await fetch(`../../php/carga/obtener_cargas.php?periodo_id=${periodo_id}`);
         const data = await response.json();
 
@@ -466,10 +462,10 @@ async function cargarCargas() {
         cargas = data.data || [];
         cargasFiltradas = [...cargas];
 
-        // Inicializar filtros con los datos cargados
+        
         inicializarFiltros();
 
-        // Inicializar paginación
+        
         if (window.PaginacionCarga) {
             PaginacionCarga.inicializar(cargasFiltradas.length, 10);
         }
@@ -486,14 +482,14 @@ async function cargarCargas() {
     }
 }
 
-// ============================================
-// RENDERIZAR TABLA
-// ============================================
+
+
+
 function renderizarTabla() {
     const tbody = document.querySelector('#dataTable tbody');
     if (!tbody) return;
 
-    // Mostrar/ocultar botón de regresar según si estamos viendo plantilla
+    
     actualizarBotonRegresar();
 
     tbody.innerHTML = '';
@@ -510,7 +506,7 @@ function renderizarTabla() {
         return;
     }
 
-    // Obtener rango de registros para la página actual
+    
     let registrosMostrar = cargasFiltradas;
 
     if (window.PaginacionCarga) {
@@ -518,15 +514,15 @@ function renderizarTabla() {
         registrosMostrar = cargasFiltradas.slice(rango.inicio, rango.fin);
     }
 
-    // Agrupar por docente manteniendo el orden
+    
     const cargasPorDocente = agruparPorDocenteOrdenado(registrosMostrar);
 
-    // Renderizar cada docente con sus cargas
+    
     cargasPorDocente.forEach(datos => {
         renderizarDocenteConCargas(tbody, datos, datos.docenteId);
     });
 
-    // Agregar fila de TOTALES GENERALES al final
+    
     agregarTotalesGenerales(tbody);
 }
 
@@ -563,7 +559,7 @@ function agruparPorDocente(cargas) {
 
 function agruparPorDocenteOrdenado(cargas) {
     const agrupado = {};
-    const orden = []; // Array para mantener el orden de aparición
+    const orden = []; 
 
     cargas.forEach(carga => {
         const docenteId = carga.docente_id;
@@ -582,7 +578,7 @@ function agruparPorDocenteOrdenado(cargas) {
                     total: 0
                 }
             };
-            orden.push(docenteId); // Guardar orden de aparición
+            orden.push(docenteId); 
         }
 
         agrupado[docenteId].cargas.push(carga);
@@ -592,12 +588,12 @@ function agruparPorDocenteOrdenado(cargas) {
         agrupado[docenteId].totales.total += parseInt(carga.total) || 0;
     });
 
-    // Devolver array en el orden correcto
+    
     return orden.map(docenteId => agrupado[docenteId]);
 }
 
 function renderizarDocenteConCargas(tbody, datos, docenteId) {
-    // Fila de encabezado del docente
+    
     const trDocente = document.createElement('tr');
     trDocente.className = 'docente-row';
     trDocente.innerHTML = `
@@ -608,7 +604,7 @@ function renderizarDocenteConCargas(tbody, datos, docenteId) {
     `;
     tbody.appendChild(trDocente);
     
-    // Filas de materias/cargas
+    
     datos.cargas.forEach(carga => {
         const trMateria = document.createElement('tr');
         trMateria.className = 'materia-row';
@@ -639,7 +635,7 @@ function renderizarDocenteConCargas(tbody, datos, docenteId) {
         tbody.appendChild(trMateria);
     });
     
-    // Fila de totales del docente
+    
     const trTotal = document.createElement('tr');
     trTotal.className = 'total-row';
     trTotal.innerHTML = `
@@ -654,13 +650,13 @@ function renderizarDocenteConCargas(tbody, datos, docenteId) {
     `;
     tbody.appendChild(trTotal);
     
-    // NUEVO: Agregar indicador de carga del docente
+    
     agregarIndicadorCarga(tbody, docenteId, datos);
 }
 
-// ============================================
-// NUEVO: INDICADOR DE CARGA DOCENTE
-// ============================================
+
+
+
 function agregarIndicadorCarga(tbody, docenteId, datosDocente) {
     const carga = calcularCargaDocente(docenteId, datosDocente);
 
@@ -698,7 +694,7 @@ function agregarIndicadorCarga(tbody, docenteId, datosDocente) {
 function calcularCargaDocente(docenteId, datosDocente) {
     const totalHoras = datosDocente.totales.total;
     
-    // Determinar horas máximas según régimen
+    
     const horasMaximas = datosDocente.regimen === 'TC' ? 40 : 
                         datosDocente.regimen === 'MT' ? 20 : 30;
     
@@ -712,19 +708,19 @@ function calcularCargaDocente(docenteId, datosDocente) {
     };
 }
 
-// ============================================
-// TOTALES GENERALES
-// ============================================
+
+
+
 function agregarTotalesGenerales(tbody) {
-    // Calcular totales de TODAS las cargas filtradas (no solo la página actual)
+    
     const totalesGenerales = calcularTotalesGenerales(cargasFiltradas);
     
-    // Agregar fila separadora
+    
     const trSeparador = document.createElement('tr');
     trSeparador.innerHTML = '<td colspan="8" style="height: 10px; background: transparent;"></td>';
     tbody.appendChild(trSeparador);
 
-    // Fila de totales generales
+    
     const trTotalGeneral = document.createElement('tr');
     trTotalGeneral.className = 'total-general-row';
     trTotalGeneral.style.background = 'linear-gradient(135deg, #78B543, #3B7D2F)';
@@ -762,30 +758,30 @@ function calcularTotalesGenerales(cargas) {
     return totales;
 }
 
-// ============================================
-// MANEJO DEL FORMULARIO (MEJORADO)
-// ============================================
+
+
+
 async function manejarSubmitFormulario(e) {
     e.preventDefault();
 
-    // Validar que haya un periodo activo antes de guardar
+    
     if (!validarPeriodoActivo('guardar una carga académica')) {
         return;
     }
 
-    // Limpiar errores previos
+    
     limpiarErrores();
 
-    // Validar formulario (versión mejorada)
+    
     if (!validarFormularioMejorado()) {
         return;
     }
     
-    // Obtener datos del formulario
+    
     const formData = new FormData(e.target);
     
     try {
-        // Deshabilitar botón mientras se procesa
+        
         const btnSubmit = document.getElementById('btnAgregar');
         btnSubmit.disabled = true;
         btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
@@ -812,36 +808,36 @@ async function manejarSubmitFormulario(e) {
             throw new Error(data.message || 'Error al guardar');
         }
         
-        // NUEVO: Marcar formulario como guardado
+        
         formularioModificado = false;
 
-        // Actualizar array de cargas en tiempo real SIN recargar página
+        
         if (modoEdicion) {
-            // Actualizar registro existente
+            
             const index = cargas.findIndex(c => c.id === idCargaEdicion);
             if (index !== -1) {
                 cargas[index] = data.data;
             }
         } else {
-            // Agregar nuevo registro
-            cargas.unshift(data.data); // Agregar al inicio
+            
+            cargas.unshift(data.data); 
         }
 
-        // Actualizar cargas filtradas
+        
         cargasFiltradas = [...cargas];
 
-        // Reinicializar paginación
+        
         if (window.PaginacionCarga) {
             PaginacionCarga.inicializar(cargasFiltradas.length, 10);
         }
 
-        // Renderizar tabla sin recargar página
+        
         renderizarTabla();
 
-        // Limpiar formulario
+        
         limpiarFormulario();
 
-        // Mostrar mensaje de éxito
+        
         Swal.fire({
             icon: 'success',
             title: '¡Éxito!',
@@ -858,7 +854,7 @@ async function manejarSubmitFormulario(e) {
             text: error.message || 'No se pudo guardar la carga académica'
         });
     } finally {
-        // Rehabilitar botón
+        
         const btnSubmit = document.getElementById('btnAgregar');
         btnSubmit.disabled = false;
         if (modoEdicion) {
@@ -869,9 +865,9 @@ async function manejarSubmitFormulario(e) {
     }
 }
 
-// ============================================
-// NUEVO: VALIDACIÓN MEJORADA
-// ============================================
+
+
+
 const validaciones = {
     administrativas: (valor) => {
         if (!valor) return true;
@@ -892,7 +888,7 @@ function validarFormularioMejorado() {
     let valido = true;
     limpiarErrores();
     
-    // Validar campos requeridos
+    
     const camposRequeridos = [
         { id: 'turno', nombre: 'Turno' },
         { id: 'grupo', nombre: 'Grupo' },
@@ -911,7 +907,7 @@ function validarFormularioMejorado() {
         }
     });
     
-    // Validar números específicos
+    
     const camposNumero = ['horas', 'tutoria', 'estadia'];
     camposNumero.forEach(campoId => {
         const input = document.getElementById(campoId);
@@ -934,7 +930,7 @@ function validarFormularioMejorado() {
         }
     });
     
-    // Validar administrativas
+    
     const admInput = document.getElementById('administrativas');
     if (admInput.value && !validaciones.administrativas(admInput.value)) {
         mostrarErrorCampo(
@@ -965,9 +961,9 @@ function limpiarErrores() {
     });
 }
 
-// ============================================
-// NUEVO: FEEDBACK VISUAL
-// ============================================
+
+
+
 function mostrarFeedbackGuardado(elemento) {
     if (!elemento) return;
     
@@ -978,9 +974,9 @@ function mostrarFeedbackGuardado(elemento) {
     }, 2000);
 }
 
-// ============================================
-// EDITAR CARGA
-// ============================================
+
+
+
 async function editarCarga(id) {
     try {
         const carga = cargas.find(c => c.id === id);
@@ -989,10 +985,10 @@ async function editarCarga(id) {
             throw new Error('Carga no encontrada');
         }
 
-        // ACTIVAR flag para ignorar filtros automaticos
+        
         ignorarFiltros = true;
 
-        // Cargar TODOS los grupos sin filtrar
+        
         const grupoSelect = document.getElementById('grupo');
         grupoSelect.innerHTML = '<option value="" disabled>Selecciona un grupo...</option>';
         datosCache.grupos.forEach(grupo => {
@@ -1005,7 +1001,7 @@ async function editarCarga(id) {
             grupoSelect.appendChild(option);
         });
 
-        // Cargar TODAS las materias sin filtrar
+        
         const materiaSelect = document.getElementById('asignatura');
         materiaSelect.innerHTML = '<option value="" disabled>Selecciona una asignatura...</option>';
         datosCache.materias.forEach(materia => {
@@ -1018,7 +1014,7 @@ async function editarCarga(id) {
             materiaSelect.appendChild(option);
         });
 
-        // Cargar TODOS los docentes sin filtrar
+        
         const docenteSelect = document.getElementById('docente');
         docenteSelect.innerHTML = '<option value="" disabled>Selecciona un docente...</option>';
         datosCache.docentes.forEach(docente => {
@@ -1030,18 +1026,18 @@ async function editarCarga(id) {
             docenteSelect.appendChild(option);
         });
 
-        // Esperar un tick para que el DOM se actualice
+        
         await new Promise(resolve => setTimeout(resolve, 50));
 
-        // Ahora seleccionar los valores de la BD con conversión explícita
+        
         const turnoInput = document.getElementById('turno');
         const horasInput = document.getElementById('horas');
         const tutoriaInput = document.getElementById('tutoria');
         const estadiaInput = document.getElementById('estadia');
         const administrativasInput = document.getElementById('administrativas');
 
-        // Asignar valores con validación
-        // Si turno está vacío, usar turno_docente como fallback
+        
+        
         turnoInput.value = carga.turno || carga.turno_docente || '';
         grupoSelect.value = String(carga.grupo_id);
         materiaSelect.value = String(carga.materia_id);
@@ -1051,7 +1047,7 @@ async function editarCarga(id) {
         estadiaInput.value = carga.horas_estadia || '';
         administrativasInput.value = carga.administrativas || '';
 
-        // Cambiar a modo edicion
+        
         modoEdicion = true;
         idCargaEdicion = id;
 
@@ -1077,9 +1073,9 @@ async function editarCarga(id) {
     }
 }
 
-// ============================================
-// ELIMINAR CARGA
-// ============================================
+
+
+
 async function eliminarCarga(id) {
     try {
         const result = await Swal.fire({
@@ -1109,21 +1105,21 @@ async function eliminarCarga(id) {
             throw new Error(data.message || 'Error al eliminar');
         }
         
-        // Eliminar del array de cargas en tiempo real SIN recargar página
+        
         const index = cargas.findIndex(c => c.id === id);
         if (index !== -1) {
             cargas.splice(index, 1);
         }
 
-        // Actualizar cargas filtradas
+        
         cargasFiltradas = [...cargas];
 
-        // Reinicializar paginación
+        
         if (window.PaginacionCarga) {
             PaginacionCarga.inicializar(cargasFiltradas.length, 10);
         }
 
-        // Renderizar tabla sin recargar página
+        
         renderizarTabla();
 
         Swal.fire({
@@ -1144,15 +1140,15 @@ async function eliminarCarga(id) {
     }
 }
 
-// ============================================
-// LIMPIAR Y CANCELAR
-// ============================================
+
+
+
 function limpiarFormulario() {
     document.getElementById('cargaForm').reset();
     limpiarErrores();
     cancelarEdicion();
     formularioModificado = false;
-    ignorarFiltros = false; // REACTIVAR filtros
+    ignorarFiltros = false; 
     
     llenarSelectGrupos(datosCache.grupos);
     llenarSelectMaterias(datosCache.materias);
@@ -1162,7 +1158,7 @@ function limpiarFormulario() {
 function cancelarEdicion() {
     modoEdicion = false;
     idCargaEdicion = null;
-    ignorarFiltros = false; // REACTIVAR filtros
+    ignorarFiltros = false; 
     
     document.getElementById('btnAgregar').innerHTML = '<i class="fa-solid fa-plus"></i> Agregar Asignatura';
     document.getElementById('btnCancelarEdicion').style.display = 'none';
@@ -1172,9 +1168,9 @@ function cancelarEdicion() {
     llenarSelectDocentes(datosCache.docentes);
 }
 
-// ============================================
-// PLANTILLAS
-// ============================================
+
+
+
 async function guardarPlantillaComoImagen() {
     try {
         if (!cargas || cargas.length === 0) {
@@ -1222,7 +1218,7 @@ async function guardarPlantillaComoImagen() {
         
         if (!formValues) return;
         
-        // Preparar datos para guardar
+        
         const datosPlantilla = {
             cargas: cargas,
             fecha_guardado: new Date().toISOString(),
@@ -1265,7 +1261,7 @@ async function guardarPlantillaComoImagen() {
 
 async function verPlantillas() {
     try {
-        // Cargar plantillas
+        
         const response = await fetch('../../php/carga/obtener_plantillas.php');
         const data = await response.json();
         
@@ -1284,7 +1280,7 @@ async function verPlantillas() {
             return;
         }
         
-        // Crear HTML para mostrar plantillas
+        
         let html = '<div style="max-height: 400px; overflow-y: auto; padding: 0 0.5rem;">';
         
         plantillas.forEach(plantilla => {
@@ -1344,7 +1340,7 @@ async function cargarPlantilla(id) {
             throw new Error(data.message || 'Error al cargar plantilla');
         }
         
-        // Confirmar antes de cargar
+        
         const result = await Swal.fire({
             title: '¿Cargar plantilla?',
             html: `Esto mostrará los datos guardados en la plantilla<br>
@@ -1357,26 +1353,26 @@ async function cargarPlantilla(id) {
         
         if (!result.isConfirmed) return;
         
-        // Guardar estado actual antes de cargar plantilla
+        
         if (!viendoPlantilla) {
             cargasOriginales = [...cargas];
         }
         
-        // Cargar datos de la plantilla
+        
         if (data.datos && data.datos.cargas) {
             cargas = data.datos.cargas;
             cargasFiltradas = [...cargas];
             viendoPlantilla = true;
             nombrePlantillaActual = data.plantilla.nombre;
             
-            // Actualizar paginación y tabla
+            
             if (window.PaginacionCarga) {
                 PaginacionCarga.inicializar(cargasFiltradas.length, 10);
             }
             
             renderizarTabla();
             
-            // Cerrar el modal de plantillas
+            
             Swal.close();
             
             Swal.fire({
@@ -1436,7 +1432,7 @@ async function eliminarPlantilla(id) {
             showConfirmButton: false
         });
         
-        // Recargar lista de plantillas
+        
         setTimeout(() => {
             verPlantillas();
         }, 1500);
@@ -1451,9 +1447,9 @@ async function eliminarPlantilla(id) {
     }
 }
 
-// ============================================
-// REGRESAR DE PLANTILLA
-// ============================================
+
+
+
 function regresarDePlantilla() {
     if (!viendoPlantilla) return;
     
@@ -1466,13 +1462,13 @@ function regresarDePlantilla() {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Restaurar datos originales
+            
             cargas = [...cargasOriginales];
             cargasFiltradas = [...cargas];
             viendoPlantilla = false;
             nombrePlantillaActual = '';
             
-            // Actualizar paginación y tabla
+            
             if (window.PaginacionCarga) {
                 PaginacionCarga.inicializar(cargasFiltradas.length, 10);
             }
@@ -1491,11 +1487,11 @@ function regresarDePlantilla() {
 }
 
 function actualizarBotonRegresar() {
-    // Buscar si ya existe el botón
+    
     let btnRegresar = document.getElementById('btnRegresarPlantilla');
     
     if (viendoPlantilla) {
-        // Crear o mostrar botón
+        
         if (!btnRegresar) {
             const tableActions = document.querySelector('.table-actions');
             if (tableActions) {
@@ -1503,25 +1499,25 @@ function actualizarBotonRegresar() {
                 btnRegresar.id = 'btnRegresarPlantilla';
                 btnRegresar.className = 'btn btn-warning';
                 btnRegresar.onclick = regresarDePlantilla;
-                btnRegresar.style.order = '-1'; // Ponerlo al inicio
+                btnRegresar.style.order = '-1'; 
                 btnRegresar.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Regresar';
                 
-                // Insertar al inicio
+                
                 tableActions.insertBefore(btnRegresar, tableActions.firstChild);
             }
         } else {
             btnRegresar.style.display = 'flex';
         }
         
-        // Agregar indicador visual de que se está viendo una plantilla
+        
         actualizarIndicadorPlantilla();
     } else {
-        // Ocultar botón si existe
+        
         if (btnRegresar) {
             btnRegresar.style.display = 'none';
         }
         
-        // Remover indicador
+        
         const indicador = document.getElementById('indicadorPlantilla');
         if (indicador) {
             indicador.remove();
@@ -1530,7 +1526,7 @@ function actualizarBotonRegresar() {
 }
 
 function actualizarIndicadorPlantilla() {
-    // Buscar o crear indicador
+    
     let indicador = document.getElementById('indicadorPlantilla');
     
     if (!indicador) {
@@ -1559,9 +1555,9 @@ function actualizarIndicadorPlantilla() {
     }
 }
 
-// ============================================
-// EXPORTAR A EXCEL
-// ============================================
+
+
+
 function exportToExcel() {
     if (!cargas || cargas.length === 0) {
         Swal.fire({
@@ -1573,16 +1569,16 @@ function exportToExcel() {
     }
     
     try {
-        // Crear datos para exportar
+        
         const datosExportar = [];
         
-        // Agrupar por docente
+        
         const cargasPorDocente = agruparPorDocente(cargas);
         
         Object.keys(cargasPorDocente).forEach(docenteId => {
             const datos = cargasPorDocente[docenteId];
             
-            // Agregar fila de docente
+            
             datosExportar.push({
                 'Docente': datos.docente,
                 'Turno': datos.turno,
@@ -1596,7 +1592,7 @@ function exportToExcel() {
                 'Total': ''
             });
             
-            // Agregar cargas
+            
             datos.cargas.forEach(carga => {
                 datosExportar.push({
                     'Docente': '',
@@ -1612,7 +1608,7 @@ function exportToExcel() {
                 });
             });
 
-            // Agregar totales
+            
             datosExportar.push({
                 'Docente': 'TOTAL',
                 'Turno': '',
@@ -1626,15 +1622,15 @@ function exportToExcel() {
                 'Total': datos.totales.total
             });
             
-            // Fila vacía para separar docentes
+            
             datosExportar.push({});
         });
         
-        // Convertir a CSV
+        
         const csv = convertirACSV(datosExportar);
         
-        // Descargar archivo
-        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM para Excel
+        
+        const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }); 
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
         
@@ -1668,16 +1664,16 @@ function exportToExcel() {
 function convertirACSV(datos) {
     if (!datos || datos.length === 0) return '';
     
-    // Obtener encabezados
+    
     const headers = Object.keys(datos[0]);
     
-    // Crear filas CSV
+    
     const csvRows = [];
     
-    // Agregar encabezados
+    
     csvRows.push(headers.join(','));
     
-    // Agregar datos
+    
     datos.forEach(row => {
         const values = headers.map(header => {
             const valor = row[header] || '';
@@ -1689,16 +1685,16 @@ function convertirACSV(datos) {
     return csvRows.join('\n');
 }
 
-// ============================================
-// IMPRIMIR
-// ============================================
+
+
+
 function imprimirPagina() {
     window.print();
 }
 
-// ============================================
-// UTILIDADES
-// ============================================
+
+
+
 function mostrarCargando() {
     const tbody = document.querySelector('#dataTable tbody');
     if (tbody) {
@@ -1714,7 +1710,7 @@ function mostrarCargando() {
 }
 
 function ocultarCargando() {
-    // Se maneja automáticamente al renderizar la tabla
+    
 }
 
 function mostrarError(mensaje) {
@@ -1725,11 +1721,11 @@ function mostrarError(mensaje) {
     });
 }
 
-// ============================================
-// FILTROS Y ORDENAMIENTO
-// ============================================
+
+
+
 function inicializarFiltros() {
-    // Event listeners para filtros
+    
     document.getElementById('filtro-buscar')?.addEventListener('input', aplicarFiltros);
     document.getElementById('filtro-turno')?.addEventListener('change', aplicarFiltros);
     document.getElementById('ordenar-por')?.addEventListener('change', aplicarFiltros);
@@ -1740,30 +1736,30 @@ function aplicarFiltros() {
     const turnoSeleccionado = document.getElementById('filtro-turno')?.value || '';
     const ordenSeleccionado = document.getElementById('ordenar-por')?.value || 'docente-asc';
 
-    // Aplicar filtros
+    
     cargasFiltradas = cargas.filter(carga => {
-        // Filtro de búsqueda por texto
+        
         const cumpleBusqueda = !textoBusqueda ||
             carga.docente.toLowerCase().includes(textoBusqueda) ||
             carga.materia.toLowerCase().includes(textoBusqueda) ||
             carga.grupo.toLowerCase().includes(textoBusqueda) ||
             carga.clave_materia.toLowerCase().includes(textoBusqueda);
 
-        // Filtro por turno usando turno_docente (turno del docente en la base de datos)
+        
         const cumpleTurno = !turnoSeleccionado || carga.turno_docente === turnoSeleccionado;
 
         return cumpleBusqueda && cumpleTurno;
     });
 
-    // Aplicar ordenamiento
+    
     aplicarOrdenamiento(ordenSeleccionado);
 
-    // Reiniciar paginación
+    
     if (window.PaginacionCarga) {
         PaginacionCarga.inicializar(cargasFiltradas.length, 10);
     }
 
-    // Renderizar tabla
+    
     renderizarTabla();
 }
 
@@ -1771,7 +1767,7 @@ function aplicarOrdenamiento(tipo) {
     if (tipo === 'docente-desc') {
         cargasFiltradas.sort((a, b) => b.docente.localeCompare(a.docente));
     } else {
-        // Por defecto ordena A-Z (docente-asc)
+        
         cargasFiltradas.sort((a, b) => a.docente.localeCompare(b.docente));
     }
 }
@@ -1781,30 +1777,26 @@ function limpiarFiltros() {
     document.getElementById('filtro-turno').value = '';
     document.getElementById('ordenar-por').value = 'docente-asc';
 
-    // Recargar todos los datos
+    
     cargasFiltradas = [...cargas];
 
-    // Reiniciar paginación
+    
     if (window.PaginacionCarga) {
         PaginacionCarga.inicializar(cargasFiltradas.length, 10);
     }
 
-    // Renderizar tabla
+    
     renderizarTabla();
 }
 
-// ============================================
-// GESTIÓN DE ELEMENTOS INDIVIDUALES DE PLANTILLAS
-// ============================================
 
-/**
- * Editar un elemento específico de una plantilla
- * @param {number} plantillaId - ID de la plantilla
- * @param {number} elementoIndex - Índice del elemento en el array
- */
+
+
+
+
 async function editarElementoPlantilla(plantillaId, elementoIndex) {
     try {
-        // Obtener datos actuales del elemento
+        
         const response = await fetch(`../../php/carga/cargar_plantilla.php?id=${plantillaId}`);
         const data = await response.json();
 
@@ -1814,7 +1806,7 @@ async function editarElementoPlantilla(plantillaId, elementoIndex) {
 
         const elemento = data.datos.cargas[elementoIndex];
 
-        // Mostrar formulario de edición
+        
         const { value: formValues } = await Swal.fire({
             title: 'Editar Elemento de Plantilla',
             html: `
@@ -1852,7 +1844,7 @@ async function editarElementoPlantilla(plantillaId, elementoIndex) {
 
         if (!formValues) return;
 
-        // Enviar actualización al servidor
+        
         const updateResponse = await fetch('../../php/carga/editar_elemento_plantilla.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1877,7 +1869,7 @@ async function editarElementoPlantilla(plantillaId, elementoIndex) {
             showConfirmButton: false
         });
 
-        // Recargar plantilla si se está visualizando
+        
         if (viendoPlantilla) {
             await cargarPlantilla(plantillaId);
         }
@@ -1891,13 +1883,10 @@ async function editarElementoPlantilla(plantillaId, elementoIndex) {
     }
 }
 
-/**
- * Agregar un nuevo elemento a una plantilla
- * @param {number} plantillaId - ID de la plantilla
- */
+
 async function agregarElementoPlantilla(plantillaId) {
     try {
-        // Mostrar formulario para agregar elemento
+        
         const { value: formValues } = await Swal.fire({
             title: 'Agregar Elemento a Plantilla',
             html: `
@@ -1975,7 +1964,7 @@ async function agregarElementoPlantilla(plantillaId) {
 
         if (!formValues) return;
 
-        // Enviar al servidor
+        
         const response = await fetch('../../php/carga/agregar_elemento_plantilla.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1999,7 +1988,7 @@ async function agregarElementoPlantilla(plantillaId) {
             showConfirmButton: false
         });
 
-        // Recargar plantilla si se está visualizando
+        
         if (viendoPlantilla) {
             await cargarPlantilla(plantillaId);
         }
@@ -2013,11 +2002,7 @@ async function agregarElementoPlantilla(plantillaId) {
     }
 }
 
-/**
- * Eliminar un elemento específico de una plantilla
- * @param {number} plantillaId - ID de la plantilla
- * @param {number} elementoIndex - Índice del elemento en el array
- */
+
 async function eliminarElementoPlantilla(plantillaId, elementoIndex) {
     try {
         const result = await Swal.fire({
@@ -2033,7 +2018,7 @@ async function eliminarElementoPlantilla(plantillaId, elementoIndex) {
 
         if (!result.isConfirmed) return;
 
-        // Enviar solicitud al servidor
+        
         const response = await fetch('../../php/carga/eliminar_elemento_plantilla.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2057,7 +2042,7 @@ async function eliminarElementoPlantilla(plantillaId, elementoIndex) {
             showConfirmButton: false
         });
 
-        // Recargar plantilla si se está visualizando
+        
         if (viendoPlantilla) {
             await cargarPlantilla(plantillaId);
         }
@@ -2071,9 +2056,9 @@ async function eliminarElementoPlantilla(plantillaId, elementoIndex) {
     }
 }
 
-// ============================================
-// HACER FUNCIONES DISPONIBLES GLOBALMENTE
-// ============================================
+
+
+
 window.editarCarga = editarCarga;
 window.eliminarCarga = eliminarCarga;
 window.guardarPlantillaComoImagen = guardarPlantillaComoImagen;

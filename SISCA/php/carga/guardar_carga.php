@@ -1,8 +1,5 @@
 <?php
-/**
- * Guardar una nueva carga academica
- * Valida datos y crea registro en carga_academica
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -74,7 +71,7 @@ try {
         exit;
     }
 
-    // INSERTAR DIRECTAMENTE
+    
     $sql_insert = "INSERT INTO carga_academica (
                       periodo_id,
                       docente_id,

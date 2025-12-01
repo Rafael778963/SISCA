@@ -1,21 +1,9 @@
 <?php
-/**
- * FUNCIONES DE REORGANIZACIÓN DE LETRAS DE GRUPOS
- *
- * Este archivo contiene funciones para reorganizar las letras de identificación
- * de los grupos cuando uno se da de baja, manteniendo un orden en cascada.
- */
 
-/**
- * Reorganiza las letras de los grupos en cascada cuando uno se da de baja
- *
- * @param mysqli $conn - Conexión a la base de datos
- * @param int $grupoId - ID del grupo que se está dando de baja
- * @return bool - true si se reorganizó exitosamente, false si no
- * @throws Exception
- */
+
+
 function reorganizarLetrasGrupos($conn, $grupoId) {
-    // Obtener información del grupo que se está dando de baja
+    
     $stmt = $conn->prepare("
         SELECT generacion, programa_educativo, grado, turno, letra_identificacion, periodo_id
         FROM grupos
@@ -33,13 +21,13 @@ function reorganizarLetrasGrupos($conn, $grupoId) {
     $grupoBaja = $result->fetch_assoc();
     $stmt->close();
 
-    // Si el grupo no tiene letra, no hay nada que reorganizar
+    
     if (empty($grupoBaja['letra_identificacion'])) {
         return true;
     }
 
-    // Obtener todos los grupos ACTIVOS con la misma configuración
-    // y con letra mayor a la del grupo que se está dando de baja
+    
+    
     $stmt = $conn->prepare("
         SELECT id, letra_identificacion, codigo_grupo
         FROM grupos
@@ -72,24 +60,24 @@ function reorganizarLetrasGrupos($conn, $grupoId) {
     }
     $stmt->close();
 
-    // Si no hay grupos para reorganizar, salir
+    
     if (empty($gruposReorganizar)) {
         return true;
     }
 
-    // Reorganizar las letras en cascada
+    
     $letraActual = $grupoBaja['letra_identificacion'];
 
     foreach ($gruposReorganizar as $grupo) {
         $nuevaLetra = $letraActual;
 
-        // Generar nuevo código de grupo
+        
         $codigoBase = $grupoBaja['generacion'] .
                      $grupoBaja['programa_educativo'] .
                      $grupoBaja['grado'];
         $nuevoCodigo = $codigoBase . $nuevaLetra . $grupoBaja['turno'];
 
-        // Actualizar el grupo con la nueva letra y código
+        
         $stmtUpdate = $conn->prepare("
             UPDATE grupos
             SET letra_identificacion = ?,
@@ -105,26 +93,16 @@ function reorganizarLetrasGrupos($conn, $grupoId) {
 
         $stmtUpdate->close();
 
-        // Pasar a la siguiente letra
+        
         $letraActual = chr(ord($letraActual) + 1);
     }
 
     return true;
 }
 
-/**
- * Encuentra la primera letra disponible para un nuevo grupo
- *
- * @param mysqli $conn - Conexión a la base de datos
- * @param string $generacion
- * @param string $programa
- * @param string $grado
- * @param string $turno
- * @param int $periodoId
- * @return string|null - La letra disponible o null si no hay letra (primer grupo)
- */
+
 function encontrarPrimeraLetraDisponible($conn, $generacion, $programa, $grado, $turno, $periodoId) {
-    // Obtener todas las letras usadas para esta configuración (SOLO ACTIVOS)
+    
     $stmt = $conn->prepare("
         SELECT letra_identificacion
         FROM grupos
@@ -149,7 +127,7 @@ function encontrarPrimeraLetraDisponible($conn, $generacion, $programa, $grado, 
     }
     $stmt->close();
 
-    // Si no hay letras usadas, verificar si existe un grupo sin letra
+    
     if (empty($letrasUsadas)) {
         $stmtSinLetra = $conn->prepare("
             SELECT id
@@ -169,17 +147,17 @@ function encontrarPrimeraLetraDisponible($conn, $generacion, $programa, $grado, 
         $resultSinLetra = $stmtSinLetra->get_result();
 
         if ($resultSinLetra->num_rows > 0) {
-            // Ya existe un grupo sin letra, el nuevo debe tener letra 'B'
+            
             $stmtSinLetra->close();
             return 'B';
         }
 
         $stmtSinLetra->close();
-        return null; // Primer grupo, sin letra
+        return null; 
     }
 
-    // Buscar la primera letra disponible en el rango A-Z
-    $letraInicio = 'B'; // Empezamos desde B porque el primer grupo no tiene letra
+    
+    $letraInicio = 'B'; 
 
     for ($i = ord($letraInicio); $i <= ord('Z'); $i++) {
         $letra = chr($i);
@@ -188,7 +166,7 @@ function encontrarPrimeraLetraDisponible($conn, $generacion, $programa, $grado, 
         }
     }
 
-    // Si llegamos aquí, todas las letras están usadas
+    
     throw new Exception('Se ha alcanzado el límite de grupos para esta configuración');
 }
 ?>

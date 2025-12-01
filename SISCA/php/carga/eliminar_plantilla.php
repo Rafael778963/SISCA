@@ -1,14 +1,12 @@
 <?php
-/**
- * Eliminar (soft delete) una plantilla
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
 
 header('Content-Type: application/json');
 
-// Solo aceptar POST
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode([
@@ -40,7 +38,7 @@ try {
         exit;
     }
 
-    // Verificar que la plantilla existe y pertenece al usuario
+    
     $sql_check = "SELECT id FROM carga_plantillas
                   WHERE id = ?
                     AND usuario_id = ?
@@ -62,7 +60,7 @@ try {
     }
     $stmt_check->close();
 
-    // Soft delete
+    
     $sql_delete = "UPDATE carga_plantillas SET estado = 'eliminado' WHERE id = ?";
     $stmt_delete = $conn->prepare($sql_delete);
     $stmt_delete->bind_param('i', $plantilla_id);

@@ -16,9 +16,9 @@ class FiltrosDocentes {
         }
     }
 
-    // ============================================
-    // ALTERNAR VISTA ACTIVOS/INACTIVOS
-    // ============================================
+    
+    
+    
     verInactivos() {
         mostrandoInactivos = !mostrandoInactivos;
         this.actualizarBotonInactivos();
@@ -37,11 +37,11 @@ class FiltrosDocentes {
         }
     }
 
-    // ============================================
-    // GESTIÓN DE FILTROS
-    // ============================================
+    
+    
+    
 
-    // Agregar un nuevo filtro
+    
     agregarFiltro(tipo) {
         if (this.filtrosActivos.has(tipo)) {
             const filtroId = this.filtrosActivos.get(tipo);
@@ -59,7 +59,7 @@ class FiltrosDocentes {
     }
 
 
-    // Quitar un filtro existente
+    
     quitarFiltro(tipo, filtroId) {
         document.getElementById(filtroId)?.remove();
         this.filtrosActivos.delete(tipo);
@@ -72,7 +72,7 @@ class FiltrosDocentes {
         this.aplicarFiltros();
     }
 
-    // Aplicar todos los filtros activos
+    
     aplicarFiltros() {
         filtrosActivos = {};
 
@@ -86,11 +86,11 @@ class FiltrosDocentes {
         cargarDocentes(1);
     }
 
-    // ============================================
-    // GENERACIÓN DE HTML
-    // ============================================
+    
+    
+    
 
-    // Generar HTML para cada tipo de filtro
+    
     generarHTMLFiltro(tipo, filtroId) {
         const configuraciones = {
             nombre_docente: {
@@ -132,7 +132,7 @@ class FiltrosDocentes {
         `;
     }
 
-    // Generar select para filtros
+    
     generarSelectFiltro(tipo, opciones, placeholder) {
         const opcionesHTML = opciones.map(o => `<option value="${o}">${o}</option>`).join('');
 
@@ -147,9 +147,9 @@ class FiltrosDocentes {
     }
 }
 
-// ============================================
-// INICIALIZACIÓN GLOBAL
-// ============================================
+
+
+
 let filtrosDocentes;
 
 document.addEventListener('DOMContentLoaded', () => {

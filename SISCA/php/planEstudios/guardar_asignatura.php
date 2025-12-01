@@ -4,7 +4,7 @@ include '../conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Obtener datos del formulario
+        
         $periodo_id = isset($_POST['periodo_id']) ? (int)$_POST['periodo_id'] : null;
         $nivel = isset($_POST['nivel']) ? trim($_POST['nivel']) : '';
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : '';
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $asignatura = isset($_POST['asignatura']) ? trim($_POST['asignatura']) : '';
         $horas_total = isset($_POST['horas_total']) ? (int)$_POST['horas_total'] : 0;
 
-        // Validar campos requeridos
+        
         if ($periodo_id === null || $periodo_id <= 0) {
             throw new Exception('El periodo es requerido');
         }
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('La asignatura y las horas totales son requeridas');
         }
 
-        // Insertar asignatura
+        
         $sql = "INSERT INTO plan_estudios_asignaturas
                 (periodo_id, nivel, turno, programa_educativo, cuatrimestre, area_conocimiento, asignatura, horas_total, estado)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'activo')";

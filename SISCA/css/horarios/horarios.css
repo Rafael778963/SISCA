@@ -1,6 +1,4 @@
-/* ============================================
-   VARIABLES
-   ============================================ */
+
 :root {
   --bg-1: #e9eef6;
   --bg-2: #eef3f8;
@@ -21,15 +19,13 @@
   --amarillo: #ffeb3b;
   --azul: #2196f3;
   
-  /* Nuevas variables para horarios */
+  
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
   --transition: all 0.3s ease;
 }
 
-/* ============================================
-   RESET Y ESTILOS BASE
-   ============================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -51,9 +47,7 @@ body {
   overflow-y: auto;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL
-   ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   padding: calc(var(--header-h) + 1rem) 1.5rem 2rem;
@@ -81,9 +75,7 @@ body {
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* ============================================
-   CONTENEDOR DE HORARIOS
-   ============================================ */
+
 .horarios-container {
   display: grid;
   grid-template-columns: 400px 1fr;
@@ -92,9 +84,7 @@ body {
   margin-top: 1rem;
 }
 
-/* ============================================
-   PANEL DE FORMULARIO
-   ============================================ */
+
 .horarios-form-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -116,9 +106,7 @@ body {
   gap: 0.5rem;
 }
 
-/* ============================================
-   FORMULARIO
-   ============================================ */
+
 .horarios-form {
   display: flex;
   flex-direction: column;
@@ -174,9 +162,7 @@ body {
   display: block;
 }
 
-/* ============================================
-   SUBIDA DE ARCHIVOS
-   ============================================ */
+
 .file-upload-container {
   position: relative;
 }
@@ -226,7 +212,7 @@ body {
   color: var(--muted);
 }
 
-/* Lista de archivos seleccionados */
+
 .selected-files {
   margin-top: 1rem;
   display: flex;
@@ -310,9 +296,7 @@ body {
   transform: scale(1.1);
 }
 
-/* ============================================
-   BOTONES DEL FORMULARIO
-   ============================================ */
+
 .form-actions {
   display: flex;
   flex-direction: column;
@@ -380,9 +364,7 @@ body {
   box-shadow: 0 6px 12px rgba(39, 174, 96, 0.4);
 }
 
-/* ============================================
-   SECCIÓN DE BÚSQUEDA
-   ============================================ */
+
 .search-section {
   margin-top: 2rem;
   padding-top: 2rem;
@@ -434,9 +416,7 @@ body {
   color: var(--error);
 }
 
-/* ============================================
-   PANEL DE VISUALIZACIÓN
-   ============================================ */
+
 .horarios-display-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -499,9 +479,7 @@ body {
   margin: 0;
 }
 
-/* ============================================
-   LISTA DE PDFs
-   ============================================ */
+
 .pdf-list-container {
   margin: 1.5rem 0;
 }
@@ -647,9 +625,7 @@ body {
   list-style: none;
 }
 
-/* ============================================
-   VISOR DE PDF
-   ============================================ */
+
 .pdf-viewer {
   position: fixed;
   top: 0;
@@ -701,9 +677,7 @@ body {
   border: none;
 }
 
-/* ============================================
-   ENLACES DE NAVEGACIÓN
-   ============================================ */
+
 .navigation-links {
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -732,9 +706,7 @@ body {
   box-shadow: 0 6px 12px rgba(228, 98, 32, 0.4);
 }
 
-/* ============================================
-   PIE DE PÁGINA
-   ============================================ */
+
 .footer-text {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -750,9 +722,7 @@ body {
   margin: 0;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 1200px) {
   .horarios-container {
     grid-template-columns: 1fr;
@@ -840,9 +810,7 @@ body {
   }
 }
 
-/* ============================================
-   ESTILOS PARA IMPRESIÓN
-   ============================================ */
+
 @media print {
   .form-actions,
   .search-section,

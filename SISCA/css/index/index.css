@@ -1,6 +1,4 @@
-/* ============================================
-   VARIABLES
-   ============================================ */
+
 :root {
   --bg-1: #e9eef6;
   --bg-2: #eef3f8;
@@ -9,9 +7,7 @@
   --muted: #6b7480;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL (específico de index)
-   ============================================ */
+
 .main-content {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -39,9 +35,7 @@
   border-radius: 8px;
 }
 
-/* ============================================
-   SELECTOR DE PERÍODO
-   ============================================ */
+
 .periodo-selector-container {
   width: 100%;
   max-width: 1200px;
@@ -151,9 +145,7 @@
   font-size: 1.1rem;
 }
 
-/* ============================================
-   DASHBOARD
-   ============================================ */
+
 .dashboard-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -219,9 +211,7 @@
   color: var(--text);
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 1100px) {
   .dashboard-container {
     grid-template-columns: repeat(2, 1fr);

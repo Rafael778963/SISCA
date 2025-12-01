@@ -1,6 +1,4 @@
-/* ============================================
-   VARIABLES
-   ============================================ */
+
 :root {
   --bg-1: #e9eef6;
   --bg-2: #eef3f8;
@@ -21,9 +19,7 @@
   --info: #3498db;
 }
 
-/* ============================================
-   RESET Y ESTILOS BASE
-   ============================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -45,9 +41,7 @@ body {
   overflow-y: auto;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL
-   ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   padding: calc(var(--header-h) + 1rem) 1.5rem 2rem;
@@ -61,9 +55,7 @@ body {
   width: calc(100% - var(--sidebar-collapsed));
 }
 
-/* ============================================
-   CONTENEDOR DE CARTA
-   ============================================ */
+
 .carta-container {
   display: grid;
   grid-template-columns: 380px 1fr;
@@ -72,9 +64,7 @@ body {
   margin-top: 1rem;
 }
 
-/* ============================================
-   PANEL DE CONFIGURACIÓN
-   ============================================ */
+
 .config-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -98,9 +88,7 @@ body {
   gap: 0.5rem;
 }
 
-/* ============================================
-   FORMULARIO DE CONFIGURACIÓN
-   ============================================ */
+
 .config-form {
   display: flex;
   flex-direction: column;
@@ -154,9 +142,7 @@ body {
   display: block;
 }
 
-/* ============================================
-   BOTONES
-   ============================================ */
+
 .form-actions {
   display: flex;
   flex-direction: column;
@@ -223,9 +209,7 @@ body {
   transform: scale(1.1);
 }
 
-/* ============================================
-   CAJA DE INFORMACIÓN
-   ============================================ */
+
 .info-box {
   margin-top: 1.5rem;
   padding: 1rem;
@@ -258,9 +242,7 @@ body {
   margin-bottom: 0.3rem;
 }
 
-/* ============================================
-   PANEL DE VISTA PREVIA
-   ============================================ */
+
 .preview-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -292,9 +274,7 @@ body {
   gap: 0.5rem;
 }
 
-/* ============================================
-   DOCUMENTO DE CARTA - FORMATO EXACTO
-   ============================================ */
+
 .carta-documento {
   background: white;
   padding: 30px 40px;
@@ -310,7 +290,7 @@ body {
   border: 3px solid #c94f18;
 }
 
-/* Header del documento */
+
 .doc-header {
   display: flex;
   align-items: center;
@@ -332,7 +312,7 @@ body {
   margin-left: 20px;
 }
 
-/* Ubicación y fecha */
+
 .ubicacion {
   text-align: right;
   margin-bottom: 20px;
@@ -355,7 +335,7 @@ body {
   margin-left: 5px;
 }
 
-/* Sección Cargando */
+
 .cargando-section {
   margin-bottom: 15px;
 }
@@ -364,7 +344,7 @@ body {
   margin: 0;
 }
 
-/* Sección Docente */
+
 .docente-section {
   margin-bottom: 20px;
 }
@@ -388,7 +368,7 @@ body {
   outline: none;
 }
 
-/* Texto introductorio */
+
 .intro-text {
   margin-bottom: 20px;
   text-align: justify;
@@ -415,7 +395,7 @@ body {
   border-bottom: 2px solid var(--verde-medio);
 }
 
-/* Sección de lista */
+
 .seccion-lista {
   margin-bottom: 25px;
 }
@@ -426,7 +406,7 @@ body {
   margin-bottom: 10px;
 }
 
-/* Tabla de asignaturas */
+
 .tabla-container {
   margin: 15px 0;
   overflow-x: auto;
@@ -476,7 +456,7 @@ body {
   color: #000;
 }
 
-/* Items adicionales */
+
 .items-adicionales {
   margin: 20px 0;
 }
@@ -504,7 +484,7 @@ body {
   min-width: 150px;
 }
 
-/* Despedida */
+
 .despedida {
   margin: 30px 0;
   text-align: justify;
@@ -515,7 +495,7 @@ body {
   line-height: 1.6;
 }
 
-/* Firma */
+
 .firma-section {
   margin: 40px 0 20px;
   text-align: center;
@@ -539,7 +519,7 @@ body {
   margin: 5px 0;
 }
 
-/* Detalles de control */
+
 .control-detalles {
   display: flex;
   justify-content: flex-start;
@@ -577,7 +557,7 @@ body {
   margin-left: auto;
 }
 
-/* Inputs dentro del documento */
+
 .darkinput {
   border: none;
   background: transparent;
@@ -597,7 +577,7 @@ body {
   color: #000;
 }
 
-/* Pie del documento */
+
 .doc-footer {
   margin-top: 30px;
   padding-top: 15px;
@@ -616,9 +596,7 @@ body {
   display: none;
 }
 
-/* ============================================
-   PIE DE PÁGINA GENERAL
-   ============================================ */
+
 .footer-text {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -633,9 +611,7 @@ body {
   font-style: italic;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 1200px) {
   .carta-container {
     grid-template-columns: 1fr;
@@ -679,11 +655,9 @@ body {
   }
 }
 
-/* ============================================
-   ESTILOS PARA IMPRESIÓN
-   ============================================ */
+
 @media print {
-  /* Ocultar elementos de navegación y controles */
+  
   .sidebar,
   .header,
   .config-panel,
@@ -695,14 +669,14 @@ body {
     display: none !important;
   }
 
-  /* Reset del body para impresión */
+  
   body {
     margin: 0;
     padding: 0;
     background: white !important;
   }
 
-  /* Ajustar el contenido principal */
+  
   .main-content {
     margin: 0 !important;
     padding: 0 !important;
@@ -721,7 +695,7 @@ body {
     border-radius: 0 !important;
   }
 
-  /* El documento debe ocupar toda la página */
+  
   .carta-documento {
     position: relative !important;
     margin: 0 !important;
@@ -735,7 +709,7 @@ body {
     font-size: 12px !important;
   }
 
-  /* Header del documento en impresión */
+  
   .doc-header {
     display: flex !important;
     align-items: center !important;
@@ -758,7 +732,7 @@ body {
     margin-left: 15px !important;
   }
 
-  /* Ubicación con fecha en impresión */
+  
   .ubicacion {
     text-align: right !important;
     margin-bottom: 15px !important;
@@ -777,7 +751,7 @@ body {
     print-color-adjust: exact !important;
   }
 
-  /* Secciones del documento */
+  
   .cargando-section,
   .docente-section,
   .intro-text {
@@ -793,7 +767,7 @@ body {
     print-color-adjust: exact !important;
   }
 
-  /* Tabla en impresión */
+  
   .tabla-container {
     page-break-inside: avoid;
     margin: 10px 0 !important;
@@ -833,7 +807,7 @@ body {
     print-color-adjust: exact !important;
   }
 
-  /* Inputs en impresión - transparentes */
+  
   .darkinput,
   .cell-input,
   .inline-input,
@@ -852,7 +826,7 @@ body {
     color: transparent !important;
   }
 
-  /* Items adicionales */
+  
   .items-adicionales {
     margin: 15px 0 !important;
     page-break-inside: avoid;
@@ -863,14 +837,14 @@ body {
     font-size: 11px !important;
   }
 
-  /* Despedida */
+  
   .despedida {
     margin: 20px 0 !important;
     font-size: 11px !important;
     page-break-inside: avoid;
   }
 
-  /* Firma */
+  
   .firma-section {
     margin: 30px 0 15px !important;
     page-break-inside: avoid;
@@ -892,14 +866,14 @@ body {
     font-size: 11px !important;
   }
 
-  /* Detalles de control */
+  
   .control-detalles {
     margin: 15px 0 !important;
     font-size: 9px !important;
     page-break-inside: avoid;
   }
 
-  /* Pie del documento */
+  
   .doc-footer {
     margin-top: 20px !important;
     padding-top: 10px !important;
@@ -912,13 +886,13 @@ body {
     line-height: 1.3 !important;
   }
 
-  /* Configuración de página */
+  
   @page {
-    size: letter; /* Tamaño carta */
-    margin: 10mm 15mm; /* Márgenes más pequeños */
+    size: letter; 
+    margin: 10mm 15mm; 
   }
 
-  /* Evitar saltos de página en elementos críticos */
+  
   .seccion-lista,
   .tabla-asignaturas,
   .items-adicionales,
@@ -926,13 +900,13 @@ body {
     page-break-inside: avoid;
   }
 
-  /* Asegurar que los colores se impriman */
+  
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Ocultar filas vacías en impresión */
+  
   #classTable tbody tr.fila-oculta,
   #classTable tbody tr.fila-vacia {
     display: none !important;

@@ -1,7 +1,5 @@
 <?php
-/**
- * Obtener lista de plantillas de plan de estudios
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -31,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
 
-        // Obtener plantillas del usuario para el periodo activo
+        
         $sql = "SELECT
                     id,
                     nombre_plantilla,

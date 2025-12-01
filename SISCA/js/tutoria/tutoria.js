@@ -1,6 +1,6 @@
-// ============================================
-// DATOS DE EJEMPLO - TUTORES
-// ============================================
+
+
+
 const datosEjemplo = {
     "TSU": {
         "matutino": [
@@ -223,9 +223,9 @@ const datosEjemplo = {
     }
 };
 
-// ============================================
-// FUNCIÓN PARA RENDERIZAR TUTORES
-// ============================================
+
+
+
 function renderizarTutores(turno, datos) {
     const contenedor = document.getElementById(turno === 'matutino' ? 'tutoresMatutino' : 'tutoresNocturno');
     
@@ -266,33 +266,33 @@ function renderizarTutores(turno, datos) {
     contenedor.innerHTML = html;
 }
 
-// ============================================
-// INICIALIZACIÓN
-// ============================================
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Cargar datos de ejemplo
+    
     cargarDatosEjemplo();
     
-    // Event listeners para filtros
+    
     document.getElementById('btnFiltrar')?.addEventListener('click', aplicarFiltros);
     document.getElementById('btnLimpiarFiltros')?.addEventListener('click', limpiarFiltros);
     
-    // Event listeners para acciones rápidas
+    
     document.getElementById('btnExportarPDF')?.addEventListener('click', exportarPDF);
     document.getElementById('btnImprimir')?.addEventListener('click', imprimir);
     
     console.log('Módulo de Tutoría inicializado');
 });
 
-// ============================================
-// CARGAR DATOS DE EJEMPLO
-// ============================================
+
+
+
 function cargarDatosEjemplo() {
-    // Renderizar TSU Matutino y Nocturno
+    
     renderizarTutores('matutino', datosEjemplo.TSU.matutino);
     renderizarTutores('nocturno', datosEjemplo.TSU.nocturno);
     
-    // Cargar opciones de periodos (ejemplo)
+    
     const selectPeriodo = document.getElementById('filtroPeriodo');
     if (selectPeriodo) {
         const opcionEjemplo = document.createElement('option');
@@ -301,17 +301,17 @@ function cargarDatosEjemplo() {
         selectPeriodo.appendChild(opcionEjemplo);
     }
     
-    // Cargar opciones de programas (ejemplo)
+    
     const selectPrograma = document.getElementById('filtroPrograma');
     if (selectPrograma) {
         const programas = new Set();
         
-        // Recolectar todos los programas
+        
         [...datosEjemplo.TSU.matutino, ...datosEjemplo.TSU.nocturno].forEach(p => {
             programas.add(p.programa);
         });
         
-        // Agregar opciones
+        
         programas.forEach(programa => {
             const option = document.createElement('option');
             option.value = programa;
@@ -321,14 +321,14 @@ function cargarDatosEjemplo() {
     }
 }
 
-// ============================================
-// FUNCIONES DE FILTROS
-// ============================================
+
+
+
 function aplicarFiltros() {
     const busqueda = document.getElementById('busquedaTexto').value.toLowerCase();
     const programaFiltro = document.getElementById('filtroPrograma').value;
     
-    // Filtrar datos
+    
     let datosMatutino = datosEjemplo.TSU.matutino;
     let datosNocturno = datosEjemplo.TSU.nocturno;
     
@@ -355,11 +355,11 @@ function aplicarFiltros() {
         })).filter(p => p.tutores.length > 0);
     }
     
-    // Renderizar datos filtrados
+    
     renderizarTutores('matutino', datosMatutino);
     renderizarTutores('nocturno', datosNocturno);
     
-    // Mostrar notificación
+    
     Swal.fire({
         icon: 'success',
         title: 'Filtros aplicados',
@@ -374,10 +374,10 @@ function limpiarFiltros() {
     document.getElementById('filtroPrograma').value = '';
     document.getElementById('busquedaTexto').value = '';
     
-    // Recargar datos originales
+    
     cargarDatosEjemplo();
     
-    // Mostrar notificación
+    
     Swal.fire({
         icon: 'info',
         title: 'Filtros limpiados',
@@ -387,9 +387,9 @@ function limpiarFiltros() {
     });
 }
 
-// ============================================
-// FUNCIONES DE ACCIONES RÁPIDAS
-// ============================================
+
+
+
 function exportarPDF() {
     Swal.fire({
         icon: 'info',

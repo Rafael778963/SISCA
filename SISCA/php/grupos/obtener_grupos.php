@@ -4,10 +4,10 @@ include '../conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        // Filtro de estado (activo/inactivo)
+        
         $estado = isset($_GET['estado']) ? $_GET['estado'] : 'activo';
 
-        // Filtro de período - CRÍTICO para separar grupos por período académico
+        
         $periodo_id = isset($_GET['periodo_id']) ? (int)$_GET['periodo_id'] : null;
 
         if ($periodo_id === null) {
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $grupos = [];
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
-                // Si turno es null, asignar 'M' por defecto para compatibilidad
+                
                 if ($row['turno'] === null) {
                     $row['turno'] = 'M';
                 }

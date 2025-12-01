@@ -4,13 +4,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterAnio = document.getElementById('filterAnio');
     let periodos = [];
 
-    // Cargar periodos
+    
     function cargarPeriodos() {
         fetch('../../php/periodos/get_periodos.php', {
             credentials: 'include'
         })
             .then(res => {
-                // Si hay error de autenticación, redirigir a login
+                
                 if (res.status === 401) {
                     alert('Sesión expirada. Por favor, inicia sesión nuevamente.');
                     window.location.href = '../../login.html';
@@ -19,15 +19,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 return res.json();
             })
             .then(data => {
-                // Verificar que data sea un array
+                
                 if (Array.isArray(data)) {
                     periodos = data;
                 } else if (data && data.success === false) {
-                    // Error del servidor
+                    
                     console.error('Error del servidor:', data.message);
                     periodos = [];
                 } else {
-                    // Otro tipo de respuesta inesperada
+                    
                     periodos = [];
                 }
                 llenarSelectorAnios();
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Llenar selector de años
+    
     function llenarSelectorAnios() {
         const anios = [...new Set(periodos.map(p => p.año))].sort((a, b) => b - a);
         filterAnio.innerHTML = '';
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         filterAnio.value = 'Todos';
     }
 
-    // Cargar cards según filtro
+    
     function filtrarYCargarCards(anioSeleccionado) {
         cardsContainer.innerHTML = '';
         const filtrados = anioSeleccionado === 'Todos'
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Delegación de eventos: icono eliminar
+    
     cardsContainer.addEventListener('click', function (e) {
         const deleteBtn = e.target.closest('.btn-delete');
         if (deleteBtn) {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Función para contar horarios de un período
+    
     function contarHorariosPeriodo(periodoId) {
         return fetch(`../../php/horarios/obtener_horarios.php?periodo_id=${periodoId}`, {
             credentials: 'include'
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Función comprobación de contraseña para eliminar un periodo
+    
     function verificarContraseña(id) {
 
         Swal.fire({
@@ -134,21 +134,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     didOpen: () => {
                         Swal.showLoading();
 
-                        // Asegurar que el loading se vea al menos 2.5 segundos
+                        
                         const minLoadingTime = new Promise(resolve => setTimeout(resolve, 2500));
 
-                        // Enviar contraseña al backend
+                        
                         const fetchPromise = fetch('../../php/periodos/verificar_contraseña.php', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                             body: `password=${encodeURIComponent(result.value)}`,
                         }).then(res => res.json());
 
-                        // Esperar ambos: el tiempo mínimo Y la respuesta del servidor
+                        
                         Promise.all([minLoadingTime, fetchPromise])
                             .then(([_, data]) => {
                                 if (data.success) {
-                                    // Contraseña correcta → Continúa a eliminación
+                                    
                                     Swal.close();
                                     eliminarPeriodo(id);
                                 } else {
@@ -166,9 +166,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // Función eliminar periodo
+    
     function eliminarPeriodo(id) {
-        // Primero contar cuántos horarios hay
+        
         contarHorariosPeriodo(id).then(cantidadHorarios => {
             let textoAdvertencia = '';
 
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }).then(result => {
                 if (result.isConfirmed) {
-                    // Mostrar loading
+                    
                     Swal.fire({
                         title: 'Eliminando...',
                         text: 'Por favor espera mientras se elimina el período y todos sus horarios.',
@@ -218,10 +218,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         didOpen: () => {
                             Swal.showLoading();
 
-                            // Asegurar que el loading se vea al menos 5 segundos
+                            
                             const minLoadingTime = new Promise(resolve => setTimeout(resolve, 5000));
 
-                            // Realizar la petición de eliminación
+                            
                             const fetchPromise = fetch('../../php/periodos/eliminar_periodo.php', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     return res.json();
                                 });
 
-                            // Esperar ambos: el tiempo mínimo (5 segundos) Y la respuesta del servidor
+                            
                             Promise.all([minLoadingTime, fetchPromise])
                                 .then(([_, data]) => {
                                     if (!data) return;
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Guardar nuevo periodo
+    
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return res.json();
             })
             .then(data => {
-                if (!data) return; // Si fue 401, ya redirigió
+                if (!data) return; 
                 if (data.success) {
                     Swal.fire('¡Éxito!', data.message, 'success');
                     form.reset();
@@ -322,6 +322,6 @@ document.addEventListener('DOMContentLoaded', function () {
         filtrarYCargarCards(this.value);
     });
 
-    // Inicializar
+    
     cargarPeriodos();
 });

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // ==================== VARIABLES GLOBALES ====================
+    
     const form = document.getElementById('horariosForm');
     const periodoSelect = document.getElementById('periodo');
     const fileInput = document.getElementById('file-input');
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentPeriodoId = null;
     let allHorarios = [];
 
-    // ==================== CARGAR PERÍODOS ====================
+    
     function cargarPeriodos() {
         fetch('../../php/periodos/get_periodos.php')
             .then(res => {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // ==================== EVENTOS DE PERÍODO ====================
+    
     periodoSelect.addEventListener('change', function () {
         currentPeriodoId = parseInt(this.value);
         if (currentPeriodoId) {
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ==================== DRAG AND DROP ====================
+    
     const dropZone = document.querySelector('.file-upload-container');
 
     dropZone.addEventListener('dragover', (e) => {
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
         handleFiles(files);
     });
 
-    // ==================== MANEJO DE ARCHIVOS ====================
+    
     fileInput.addEventListener('change', function () {
         handleFiles(this.files);
     });
@@ -98,13 +98,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const validFiles = [];
 
         for (let file of files) {
-            // Validar extensión
+            
             if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
                 mostrarAlerta(`${file.name} no es un archivo PDF válido`, 'error');
                 continue;
             }
 
-            // Validar tamaño (50MB)
+            
             if (file.size > 50 * 1024 * 1024) {
                 mostrarAlerta(`${file.name} excede el tamaño máximo (50MB)`, 'error');
                 continue;
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </button>
             `;
 
-            // Evento para eliminar archivo
+            
             li.querySelector('.btn-remove-file').addEventListener('click', () => {
                 selectedFiles.splice(index, 1);
                 mostrarArchivosSeleccionados();
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fileListContainer.appendChild(ul);
     }
 
-    // ==================== GUARDAR ARCHIVOS ====================
+    
     savePdfBtn.addEventListener('click', async function () {
         if (selectedFiles.length === 0) {
             mostrarAlerta('Selecciona al menos un archivo PDF', 'warning');
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('files[]', file);
         });
 
-        // Deshabilitar botón durante carga
+        
         savePdfBtn.disabled = true;
         savePdfBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
 
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ==================== CARGAR Y MOSTRAR HORARIOS ====================
+    
     function cargarHorarios(periodoId) {
         fetch(`../../php/horarios/obtener_horarios.php?periodo_id=${periodoId}`)
             .then(res => res.json())
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `;
 
-            // Eventos
+            
             li.querySelector('.btn-view').addEventListener('click', () => verPDF(horario.ruta, horario.nombre));
             li.querySelector('.btn-download').addEventListener('click', () => descargarPDF(horario.ruta, horario.nombre));
             li.querySelector('.btn-delete').addEventListener('click', () => eliminarHorario(horario.id));
@@ -278,17 +278,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ==================== VER PDF ====================
+    
     function verPDF(ruta, nombre) {
         pdfPreview.src = ruta;
         pdfViewer.style.display = 'flex';
         
-        // Configurar descarga
+        
         downloadBtn.style.display = 'inline-flex';
         downloadBtn.onclick = () => descargarPDF(ruta, nombre);
     }
 
-    // ==================== DESCARGAR PDF ====================
+    
     function descargarPDF(ruta, nombre) {
         const link = document.createElement('a');
         link.href = ruta;
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
         link.click();
     }
 
-    // ==================== ELIMINAR HORARIO ====================
+    
     function eliminarHorario(id) {
         Swal.fire({
             title: '¿Eliminar horario?',
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // ==================== BÚSQUEDA ====================
+    
     searchInput.addEventListener('input', function () {
         const termino = this.value.trim().toLowerCase();
         
@@ -357,13 +357,13 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarHorarios(allHorarios);
     });
 
-    // ==================== CERRAR VISUALIZADOR ====================
+    
     closeBtn.addEventListener('click', function () {
         pdfViewer.style.display = 'none';
         pdfPreview.src = '';
     });
 
-    // ==================== LIMPIAR FORMULARIO ====================
+    
     limpiarBtn.addEventListener('click', function () {
         fileInput.value = '';
         selectedFiles = [];
@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearSearchBtn.style.display = 'none';
     });
 
-    // ==================== UTILIDADES ====================
+    
     function formatearFecha(fecha) {
         const date = new Date(fecha);
         const opciones = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };

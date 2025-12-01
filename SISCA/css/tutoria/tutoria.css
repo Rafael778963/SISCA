@@ -1,6 +1,4 @@
-/* ============================================
-   VARIABLES
-   ============================================ */
+
 :root {
   --bg-1: #e9eef6;
   --bg-2: #eef3f8;
@@ -27,9 +25,7 @@
   --transition: all 0.3s ease;
 }
 
-/* ============================================
-   RESET Y ESTILOS BASE
-   ============================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -51,9 +47,7 @@ body {
   overflow-y: auto;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL
-   ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   padding: calc(var(--header-h) + 1rem) 1.5rem 2rem;
@@ -67,9 +61,7 @@ body {
   width: calc(100% - var(--sidebar-collapsed));
 }
 
-/* ============================================
-   CONTENEDOR DE TUTORÍA
-   ============================================ */
+
 .tutoria-container {
   display: grid;
   grid-template-columns: 400px 1fr;
@@ -78,9 +70,7 @@ body {
   margin-top: 1rem;
 }
 
-/* ============================================
-   PANEL DE CONTROL (FILTROS)
-   ============================================ */
+
 .tutoria-control-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -102,9 +92,7 @@ body {
   gap: 0.5rem;
 }
 
-/* ============================================
-   FORMULARIO DE FILTROS
-   ============================================ */
+
 .filtros-form {
   display: flex;
   flex-direction: column;
@@ -146,9 +134,7 @@ body {
   box-shadow: 0 0 0 3px rgba(120, 181, 67, 0.1);
 }
 
-/* ============================================
-   BOTONES DEL FORMULARIO
-   ============================================ */
+
 .form-actions {
   display: flex;
   flex-direction: column;
@@ -199,9 +185,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* ============================================
-   ACCIONES RÁPIDAS
-   ============================================ */
+
 .acciones-rapidas-section {
   margin-top: 2rem;
   padding-top: 2rem;
@@ -252,9 +236,7 @@ body {
   color: var(--verde-medio);
 }
 
-/* ============================================
-   PANEL DE VISUALIZACIÓN
-   ============================================ */
+
 .tutoria-display-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -320,9 +302,7 @@ body {
   margin: 0.5rem 0 0;
 }
 
-/* ============================================
-   GRID DE TUTORES (DOS COLUMNAS)
-   ============================================ */
+
 .tutores-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -391,9 +371,7 @@ body {
   }
 }
 
-/* ============================================
-   CONTENIDO DE TUTORES
-   ============================================ */
+
 .tutores-content {
   padding: 1.5rem;
   max-height: 600px;
@@ -413,9 +391,7 @@ body {
   background: rgba(120, 181, 67, 0.6);
 }
 
-/* ============================================
-   SECCIÓN DE PROGRAMA EDUCATIVO
-   ============================================ */
+
 .programa-section {
   margin-bottom: 2rem;
 }
@@ -435,9 +411,7 @@ body {
   border-radius: 4px;
 }
 
-/* ============================================
-   TARJETAS DE TUTOR
-   ============================================ */
+
 .tutor-card {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(107, 116, 128, 0.2);
@@ -496,9 +470,7 @@ body {
   -webkit-box-orient: vertical;
 }
 
-/* ============================================
-   ESTADO VACÍO
-   ============================================ */
+
 .empty-state {
   padding: 3rem 1.5rem;
   text-align: center;
@@ -516,9 +488,7 @@ body {
   margin: 0;
 }
 
-/* ============================================
-   PIE DE PÁGINA
-   ============================================ */
+
 .footer-text {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -534,9 +504,7 @@ body {
   margin: 0;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 1400px) {
   .tutores-grid {
     gap: 1.5rem;
@@ -669,9 +637,7 @@ body {
   }
 }
 
-/* ============================================
-   ESTILOS PARA IMPRESIÓN
-   ============================================ */
+
 @media print {
   .sidebar,
   .header,
@@ -739,9 +705,7 @@ body {
   }
 }
 
-/* ============================================
-   ANIMACIONES
-   ============================================ */
+
 @keyframes fadeIn {
   from {
     opacity: 0;

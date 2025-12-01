@@ -1,7 +1,5 @@
 <?php
-/**
- * Cargar una plantilla específica por ID
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -30,7 +28,7 @@ try {
         exit;
     }
 
-    // Obtener plantilla (solo del usuario actual por seguridad)
+    
     $sql = "SELECT
               cp.id,
               cp.nombre_plantilla,
@@ -66,7 +64,7 @@ try {
     $row = $result->fetch_assoc();
     $stmt->close();
 
-    // Decodificar JSON
+    
     $datos = json_decode($row['datos_json'], true);
 
     echo json_encode([
