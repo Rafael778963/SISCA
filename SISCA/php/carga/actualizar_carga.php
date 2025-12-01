@@ -1,8 +1,5 @@
 <?php
-/**
- * Actualizar una carga academica existente
- * Valida datos y actualiza registro en carga_academica
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -80,7 +77,7 @@ try {
         exit;
     }
 
-    // Verificar que la carga existe
+    
     $sql_verify = "SELECT id FROM carga_academica
                    WHERE id = ?
                      AND periodo_id = ?
@@ -102,7 +99,7 @@ try {
     }
     $stmt_verify->close();
 
-    // Actualizar registro SIN usuario_modificacion ni fecha_modificacion
+    
     $sql_update = "UPDATE carga_academica SET
                       docente_id = ?,
                       grupo_id = ?,

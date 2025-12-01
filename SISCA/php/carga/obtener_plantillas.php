@@ -1,7 +1,5 @@
 <?php
-/**
- * Obtener plantillas del usuario actual
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -24,7 +22,7 @@ try {
         exit;
     }
 
-    // Construir query base
+    
     $sql = "SELECT
               cp.id,
               cp.nombre_plantilla,
@@ -44,7 +42,7 @@ try {
     $params_types = 'i';
     $params_values = [$usuario_id];
 
-    // Filtrar por periodo si se especifica
+    
     if ($periodo_id > 0) {
         $sql .= " AND cp.periodo_id = ?";
         $params_types .= 'i';
@@ -60,7 +58,7 @@ try {
 
     $plantillas = [];
     while ($row = $result->fetch_assoc()) {
-        // Decodificar JSON para obtener información adicional
+        
         $datos = json_decode($row['datos_json'], true);
         $num_registros = isset($datos['cargas']) ? count($datos['cargas']) : 0;
 

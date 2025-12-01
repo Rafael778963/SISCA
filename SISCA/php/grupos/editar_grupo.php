@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $turno = isset($_POST['turno']) ? trim($_POST['turno']) : 'M';
         $periodo_id = isset($_POST['periodo_id']) ? (int)$_POST['periodo_id'] : null;
 
-        // Validaciones básicas
+        
         if (empty($id) || empty($generacion) || empty($nivel) || empty($programa) || empty($grado)) {
             throw new Exception('Todos los campos son obligatorios');
         }
@@ -30,12 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('El grado debe estar entre 1 y 9');
         }
         
-        // Validar turno
+        
         if (!in_array($turno, ['M', 'N'])) {
             throw new Exception('Turno inválido. Debe ser M (Matutino) o N (Nocturno)');
         }
         
-        // Obtener datos actuales del grupo
+        
         $stmt = $conn->prepare("SELECT generacion, programa_educativo, grado, letra_identificacion, turno FROM grupos WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -59,24 +59,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $letraIdentificacion = $datosActuales['letra_identificacion'];
         $codigoCompleto = $codigoBase . $turno;
 
-        // ============================================
-        // SI CAMBIÓ LA CONFIGURACIÓN, REORGANIZAR
-        // ============================================
+        
+        
+        
         if ($cambioConfiguracion) {
-            // PASO 1: Marcar temporalmente este grupo como inactivo
-            // Esto evita conflictos de clave duplicada durante la reorganización
+            
+            
             $stmtTemp = $conn->prepare("UPDATE grupos SET estado = 'inactivo' WHERE id = ?");
             $stmtTemp->bind_param("i", $id);
             $stmtTemp->execute();
             $stmtTemp->close();
 
-            // PASO 2: Reorganizar las letras de la configuración antigua
-            // Los grupos subsecuentes tomarán las letras correspondientes
+            
+            
             reorganizarLetrasGrupos($conn, $id);
 
-            // PASO 3: Calcular la letra para la nueva configuración
-            // Solo si cambió generación, programa o grado, recalcular la letra
-            // CRÍTICO: Filtrar solo por el período activo para evitar conflictos entre períodos
+            
+            
+            
             $stmt = $conn->prepare("
                 SELECT letra_identificacion
                 FROM grupos
@@ -108,25 +108,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             } else {
-                // No hay grupos con esta configuración y turno, usar NULL (primer grupo)
+                
                 $letraIdentificacion = null;
             }
             
             $stmt->close();
 
-            // PASO 4: Reactivar el grupo y actualizar con nueva configuración
-            // El UPDATE más abajo se encargará de esto
+            
+            
         }
-        // Si NO cambió la configuración, mantener la letra actual (ya está asignada arriba)
+        
 
-        // Construir el código completo con o sin letra
+        
         if ($letraIdentificacion !== null) {
             $codigoCompleto = $codigoBase . $letraIdentificacion . $turno;
         } else {
             $codigoCompleto = $codigoBase . $turno;
         }
 
-        // Actualizar el grupo (si cambió configuración, también reactivar)
+        
         $stmt = $conn->prepare("
             UPDATE grupos
             SET codigo_grupo = ?, generacion = ?, nivel_educativo = ?, programa_educativo = ?, grado = ?, letra_identificacion = ?, turno = ?, estado = 'activo'

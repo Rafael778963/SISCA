@@ -1,8 +1,5 @@
 <?php
-/**
- * Agregar un nuevo elemento a una plantilla existente
- * Permite añadir registros sin afectar los elementos actuales
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -19,14 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    // Recibir datos JSON
-    $input = json_decode(file_get_contents('php://input'), true);
+    
+    $input = json_decode(file_get_contents('php:
 
     $plantilla_id = isset($input['plantilla_id']) ? intval($input['plantilla_id']) : 0;
     $elemento_datos = isset($input['elemento_datos']) ? $input['elemento_datos'] : null;
     $usuario_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
 
-    // Validaciones
+    
     if ($plantilla_id <= 0) {
         throw new Exception('ID de plantilla inválido');
     }
@@ -39,7 +36,7 @@ try {
         throw new Exception('Usuario no identificado');
     }
 
-    // Validar campos requeridos del elemento
+    
     $campos_requeridos = ['docente_id', 'grupo_id', 'materia_id', 'turno', 'horas'];
     foreach ($campos_requeridos as $campo) {
         if (!isset($elemento_datos[$campo])) {
@@ -47,7 +44,7 @@ try {
         }
     }
 
-    // Obtener plantilla actual
+    
     $sql = "SELECT datos_json, periodo_id FROM carga_plantillas
             WHERE id = ? AND usuario_id = ? AND estado = 'activo'";
 
@@ -64,14 +61,14 @@ try {
     $periodo_id = $row['periodo_id'];
     $stmt->close();
 
-    // Decodificar JSON
+    
     $datos = json_decode($row['datos_json'], true);
 
     if (!isset($datos['cargas']) || !is_array($datos['cargas'])) {
         $datos['cargas'] = [];
     }
 
-    // Obtener información completa del elemento desde la BD
+    
     $sql_elemento = "SELECT
                         ca.id,
                         ca.periodo_id,
@@ -116,10 +113,10 @@ try {
     $result_elemento = $stmt_elemento->get_result();
 
     if ($result_elemento->num_rows > 0) {
-        // Si existe en la BD, usar esos datos
+        
         $nuevo_elemento = $result_elemento->fetch_assoc();
     } else {
-        // Si no existe, crear elemento con los datos proporcionados
+        
         $nuevo_elemento = array_merge([
             'id' => null,
             'periodo_id' => $periodo_id,
@@ -133,14 +130,14 @@ try {
     }
     $stmt_elemento->close();
 
-    // Agregar el nuevo elemento al array
+    
     $datos['cargas'][] = $nuevo_elemento;
 
-    // Actualizar contador y fecha
+    
     $datos['total_registros'] = count($datos['cargas']);
     $datos['fecha_guardado'] = date('Y-m-d\TH:i:s.v\Z');
 
-    // Guardar cambios en la base de datos
+    
     $datos_json = json_encode($datos);
 
     $sql_update = "UPDATE carga_plantillas

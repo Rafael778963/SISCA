@@ -1,14 +1,12 @@
 <?php
-/**
- * Eliminar (soft delete) una carga académica
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
 
 header('Content-Type: application/json');
 
-// Solo aceptar POST
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode([
@@ -30,7 +28,7 @@ try {
         exit;
     }
 
-    // Verificar que el registro existe y está activo
+    
     $sql_check = "SELECT id FROM carga_academica WHERE id = ? AND estado = 'activo'";
     $stmt_check = $conn->prepare($sql_check);
     $stmt_check->bind_param('i', $id);
@@ -48,7 +46,7 @@ try {
     }
     $stmt_check->close();
 
-    // Soft delete (marcar como eliminado)
+    
     $sql_delete = "UPDATE carga_academica SET estado = 'eliminado' WHERE id = ?";
     $stmt_delete = $conn->prepare($sql_delete);
     $stmt_delete->bind_param('i', $id);

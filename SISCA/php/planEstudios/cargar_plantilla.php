@@ -1,7 +1,5 @@
 <?php
-/**
- * Cargar una plantilla específica de plan de estudios
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -31,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
 
-        // Obtener plantilla (solo del usuario actual)
+        
         $sql = "SELECT
                     id,
                     nombre_plantilla,

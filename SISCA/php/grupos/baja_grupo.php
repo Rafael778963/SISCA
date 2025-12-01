@@ -4,29 +4,29 @@ include '../conexion.php';
 include 'funciones_letras.php';
 
 try {
-    // ============================================
-    // OBTENER Y VALIDAR DATOS
-    // ============================================
-    $data = json_decode(file_get_contents('php://input'), true);
+    
+    
+    
+    $data = json_decode(file_get_contents('php:
 
     $id = intval($data['id'] ?? 0);
     $nuevoEstado = trim($data['estado'] ?? 'inactivo');
 
-    // Validar ID
+    
     if (empty($id)) {
         throw new Exception('ID de grupo no proporcionado');
     }
 
-    // Validar estado
+    
     if (!in_array($nuevoEstado, ['activo', 'inactivo'])) {
         throw new Exception('Estado no válido');
     }
 
-    // ============================================
-    // ACTUALIZAR ESTADO PRIMERO
-    // ============================================
-    // IMPORTANTE: Marcamos como inactivo primero para evitar conflictos
-    // de clave duplicada al reorganizar las letras
+    
+    
+    
+    
+    
     $stmt = $conn->prepare("UPDATE grupos SET estado = ? WHERE id = ?");
     $stmt->bind_param("si", $nuevoEstado, $id);
 
@@ -34,25 +34,25 @@ try {
         throw new Exception('Error al actualizar el estado del grupo');
     }
 
-    // Verificar si se actualizó algún registro
+    
     if ($stmt->affected_rows === 0) {
         throw new Exception('No se encontró el grupo o no hubo cambios');
     }
 
     $stmt->close();
 
-    // ============================================
-    // REORGANIZAR LETRAS DESPUÉS DE DAR DE BAJA
-    // ============================================
+    
+    
+    
     if ($nuevoEstado === 'inactivo') {
-        // Reorganizar las letras después de marcar como inactivo
-        // Esto evita el error de "Duplicate entry"
+        
+        
         reorganizarLetrasGrupos($conn, $id);
     }
 
-    // ============================================
-    // RESPUESTA EXITOSA
-    // ============================================
+    
+    
+    
     $mensaje = $nuevoEstado === 'inactivo'
         ? 'Grupo dado de baja exitosamente. Las letras de los grupos subsecuentes se reorganizaron automáticamente.'
         : 'Grupo dado de alta exitosamente';

@@ -5,18 +5,18 @@ include '../conexion.php';
 if(isset($_POST['id'])) {
     $id = intval($_POST['id']);
 
-    // Validar que el ID sea válido
+    
     if ($id <= 0) {
         echo json_encode(['success' => false, 'message' => 'ID inválido']);
         $conn->close();
         exit;
     }
 
-    // Iniciar transacción para asegurar integridad
+    
     $conn->begin_transaction();
 
     try {
-        // 1. Obtener todos los horarios del período
+        
         $sql_horarios = "SELECT id, ruta_archivo FROM horarios WHERE periodo_id = ?";
         $stmt = $conn->prepare($sql_horarios);
         if (!$stmt) {
@@ -33,7 +33,7 @@ if(isset($_POST['id'])) {
         }
         $stmt->close();
 
-        // 2. Eliminar archivos físicos de cada horario
+        
         $archivos_eliminados = 0;
         $archivos_no_eliminados = 0;
 
@@ -50,7 +50,7 @@ if(isset($_POST['id'])) {
             }
         }
 
-        // 3. Eliminar todos los registros de horarios de la BD
+        
         $sql_delete_horarios = "DELETE FROM horarios WHERE periodo_id = ?";
         $stmt = $conn->prepare($sql_delete_horarios);
         if (!$stmt) {
@@ -64,12 +64,12 @@ if(isset($_POST['id'])) {
         $horarios_eliminados = $stmt->affected_rows;
         $stmt->close();
 
-        // 4. Eliminar carpeta del período
+        
         $periodo_dir = __DIR__ . '/../../PDFs/horarios/periodo_' . $id . '/';
         $carpeta_eliminada = false;
 
         if (is_dir($periodo_dir)) {
-            // Asegurarse de que está vacía (en caso de que quedaran archivos)
+            
             $archivos_restantes = array_diff(scandir($periodo_dir), ['.', '..']);
             if (empty($archivos_restantes)) {
                 if (@rmdir($periodo_dir)) {
@@ -77,11 +77,11 @@ if(isset($_POST['id'])) {
                 }
             }
         } else {
-            // Si la carpeta no existe, consideramos que fue eliminada
+            
             $carpeta_eliminada = true;
         }
 
-        // 5. Eliminar todos los grupos asociados al período
+        
         $sql_delete_grupos = "DELETE FROM grupos WHERE periodo_id = ?";
         $stmt = $conn->prepare($sql_delete_grupos);
         if (!$stmt) {
@@ -95,7 +95,7 @@ if(isset($_POST['id'])) {
         $grupos_eliminados = $stmt->affected_rows;
         $stmt->close();
 
-        // 6. Eliminar todos los docentes del período de la BD
+        
         $sql_delete_docentes = "DELETE FROM docentes WHERE periodo_id = ?";
         $stmt = $conn->prepare($sql_delete_docentes);
         if (!$stmt) {
@@ -109,7 +109,7 @@ if(isset($_POST['id'])) {
         $docentes_eliminados = $stmt->affected_rows;
         $stmt->close();
 
-        // 7. Eliminar el período de la BD
+        
         $sql_delete_periodo = "DELETE FROM periodos WHERE id = ?";
         $stmt = $conn->prepare($sql_delete_periodo);
         if (!$stmt) {
@@ -127,7 +127,7 @@ if(isset($_POST['id'])) {
 
         $stmt->close();
 
-        // Confirmar transacción
+        
         $conn->commit();
 
         echo json_encode([
@@ -145,7 +145,7 @@ if(isset($_POST['id'])) {
         ]);
 
     } catch (Exception $e) {
-        // Revertir transacción en caso de error
+        
         $conn->rollback();
         echo json_encode([
             'success' => false,

@@ -1,8 +1,5 @@
 <?php
-/**
- * Obtener cargas academicas del periodo activo
- * Filtra por periodo y retorna datos agrupados por docente
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
@@ -23,7 +20,7 @@ try {
         exit;
     }
 
-    // OBTENER CARGAS usando consulta directa sin vista
+    
     $sql = "SELECT
               ca.id,
               ca.periodo_id,
@@ -92,7 +89,7 @@ try {
 
     $stmt->close();
 
-    // OBTENER ESTADISTICAS por docente
+    
     $sql_stats = "SELECT
                     ca.docente_id,
                     d.nombre_docente,

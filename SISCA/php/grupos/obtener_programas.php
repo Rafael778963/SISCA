@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $nivel = isset($_GET['nivel']) ? trim($_GET['nivel']) : '';
         
         if (empty($nivel)) {
-            // Si no se especifica nivel, devolver todos los programas agrupados por nivel
+            
             $sql = "SELECT id, nomenclatura, nombre, nivel, activo 
                     FROM programas 
                     WHERE activo = 1 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ]);
             
         } else {
-            // Si se especifica nivel, devolver solo programas de ese nivel
+            
             $stmt = $conn->prepare("
                 SELECT id, nomenclatura, nombre, nivel, activo 
                 FROM programas 

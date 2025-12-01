@@ -1,7 +1,5 @@
 <?php
-/**
- * Obtiene el período activo de la sesión
- */
+
 
 include '../session_check.php';
 

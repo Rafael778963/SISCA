@@ -1,15 +1,12 @@
 <?php
-/**
- * Guardar una plantilla de plan de estudios
- * Permite guardar el plan de estudios completo como plantilla
- */
+
 
 include '../session_check.php';
 include '../conexion.php';
 
 header('Content-Type: application/json');
 
-// Solo aceptar POST
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode([
@@ -20,16 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    // Obtener datos del formulario
+    
     $nombre_plantilla = trim($_POST['nombre_plantilla'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
     $datos_json = $_POST['datos_json'] ?? '';
     $periodo_id = isset($_POST['periodo_id']) ? intval($_POST['periodo_id']) : 0;
 
-    // Obtener usuario de sesión
+    
     $usuario_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
 
-    // VALIDACIONES
+    
     if (empty($nombre_plantilla)) {
         http_response_code(400);
         echo json_encode([
@@ -57,7 +54,7 @@ try {
         exit;
     }
 
-    // Validar que sea JSON válido
+    
     $datos_array = json_decode($datos_json, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
         http_response_code(400);
@@ -86,7 +83,7 @@ try {
         exit;
     }
 
-    // Verificar si ya existe una plantilla con el mismo nombre para este usuario
+    
     $sql_check = "SELECT id FROM plan_estudios_plantillas
                   WHERE usuario_id = ?
                     AND nombre_plantilla = ?
@@ -99,7 +96,7 @@ try {
     $result_check = $stmt_check->get_result();
 
     if ($result_check->num_rows > 0) {
-        // Ya existe, actualizar
+        
         $row = $result_check->fetch_assoc();
         $plantilla_id = $row['id'];
 
@@ -126,7 +123,7 @@ try {
         $stmt_update->close();
 
     } else {
-        // No existe, crear nueva
+        
         $sql_insert = "INSERT INTO plan_estudios_plantillas (
                           nombre_plantilla,
                           descripcion,
