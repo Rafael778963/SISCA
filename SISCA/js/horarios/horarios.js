@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // ==================== VARIABLES GLOBALES ====================
-    const form = document.getElementById('horariosForm');
+        const form = document.getElementById('horariosForm');
     const periodoSelect = document.getElementById('periodo');
     const fileInput = document.getElementById('file-input');
     const fileLabel = document.querySelector('.file-label');
@@ -19,8 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentPeriodoId = null;
     let allHorarios = [];
 
-    // ==================== CARGAR PERÍODOS ====================
-    function cargarPeriodos() {
+        function cargarPeriodos() {
         fetch('../../php/periodos/get_periodos.php')
             .then(res => {
                 if (!res.ok) throw new Error('Error al cargar períodos');
@@ -48,8 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // ==================== EVENTOS DE PERÍODO ====================
-    periodoSelect.addEventListener('change', function () {
+        periodoSelect.addEventListener('change', function () {
         currentPeriodoId = parseInt(this.value);
         if (currentPeriodoId) {
             cargarHorarios(currentPeriodoId);
@@ -61,8 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ==================== DRAG AND DROP ====================
-    const dropZone = document.querySelector('.file-upload-container');
+        const dropZone = document.querySelector('.file-upload-container');
 
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -83,8 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
         handleFiles(files);
     });
 
-    // ==================== MANEJO DE ARCHIVOS ====================
-    fileInput.addEventListener('change', function () {
+        fileInput.addEventListener('change', function () {
         handleFiles(this.files);
     });
 
@@ -98,14 +93,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const validFiles = [];
 
         for (let file of files) {
-            // Validar extensión
-            if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                        if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
                 mostrarAlerta(`${file.name} no es un archivo PDF válido`, 'error');
                 continue;
             }
 
-            // Validar tamaño (50MB)
-            if (file.size > 50 * 1024 * 1024) {
+                        if (file.size > 50 * 1024 * 1024) {
                 mostrarAlerta(`${file.name} excede el tamaño máximo (50MB)`, 'error');
                 continue;
             }
@@ -147,8 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </button>
             `;
 
-            // Evento para eliminar archivo
-            li.querySelector('.btn-remove-file').addEventListener('click', () => {
+                        li.querySelector('.btn-remove-file').addEventListener('click', () => {
                 selectedFiles.splice(index, 1);
                 mostrarArchivosSeleccionados();
             });
@@ -160,8 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fileListContainer.appendChild(ul);
     }
 
-    // ==================== GUARDAR ARCHIVOS ====================
-    savePdfBtn.addEventListener('click', async function () {
+        savePdfBtn.addEventListener('click', async function () {
         if (selectedFiles.length === 0) {
             mostrarAlerta('Selecciona al menos un archivo PDF', 'warning');
             return;
@@ -179,8 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('files[]', file);
         });
 
-        // Deshabilitar botón durante carga
-        savePdfBtn.disabled = true;
+                savePdfBtn.disabled = true;
         savePdfBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
 
         try {
@@ -216,8 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ==================== CARGAR Y MOSTRAR HORARIOS ====================
-    function cargarHorarios(periodoId) {
+        function cargarHorarios(periodoId) {
         fetch(`../../php/horarios/obtener_horarios.php?periodo_id=${periodoId}`)
             .then(res => res.json())
             .then(data => {
@@ -269,8 +258,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `;
 
-            // Eventos
-            li.querySelector('.btn-view').addEventListener('click', () => verPDF(horario.ruta, horario.nombre));
+                        li.querySelector('.btn-view').addEventListener('click', () => verPDF(horario.ruta, horario.nombre));
             li.querySelector('.btn-download').addEventListener('click', () => descargarPDF(horario.ruta, horario.nombre));
             li.querySelector('.btn-delete').addEventListener('click', () => eliminarHorario(horario.id));
 
@@ -278,26 +266,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ==================== VER PDF ====================
-    function verPDF(ruta, nombre) {
+        function verPDF(ruta, nombre) {
         pdfPreview.src = ruta;
         pdfViewer.style.display = 'flex';
         
-        // Configurar descarga
-        downloadBtn.style.display = 'inline-flex';
+                downloadBtn.style.display = 'inline-flex';
         downloadBtn.onclick = () => descargarPDF(ruta, nombre);
     }
 
-    // ==================== DESCARGAR PDF ====================
-    function descargarPDF(ruta, nombre) {
+        function descargarPDF(ruta, nombre) {
         const link = document.createElement('a');
         link.href = ruta;
         link.download = nombre;
         link.click();
     }
 
-    // ==================== ELIMINAR HORARIO ====================
-    function eliminarHorario(id) {
+        function eliminarHorario(id) {
         Swal.fire({
             title: '¿Eliminar horario?',
             text: 'Esta acción no se puede deshacer. El horario será eliminado permanentemente.',
@@ -332,8 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // ==================== BÚSQUEDA ====================
-    searchInput.addEventListener('input', function () {
+        searchInput.addEventListener('input', function () {
         const termino = this.value.trim().toLowerCase();
         
         if (termino === '') {
@@ -357,14 +340,12 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarHorarios(allHorarios);
     });
 
-    // ==================== CERRAR VISUALIZADOR ====================
-    closeBtn.addEventListener('click', function () {
+        closeBtn.addEventListener('click', function () {
         pdfViewer.style.display = 'none';
         pdfPreview.src = '';
     });
 
-    // ==================== LIMPIAR FORMULARIO ====================
-    limpiarBtn.addEventListener('click', function () {
+        limpiarBtn.addEventListener('click', function () {
         fileInput.value = '';
         selectedFiles = [];
         mostrarArchivosSeleccionados();
@@ -372,8 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearSearchBtn.style.display = 'none';
     });
 
-    // ==================== UTILIDADES ====================
-    function formatearFecha(fecha) {
+        function formatearFecha(fecha) {
         const date = new Date(fecha);
         const opciones = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
         return date.toLocaleDateString('es-ES', opciones);

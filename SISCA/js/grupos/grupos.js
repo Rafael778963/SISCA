@@ -1,6 +1,3 @@
-// ============================================
-// VARIABLES GLOBALES
-// ============================================
 let programasEducativos = {
     'TSU': [],
     'I': [],
@@ -17,19 +14,14 @@ let gruposData = [];
 let gruposFiltrados = [];
 let mostrandoInactivos = false;
 
-// ============================================
-// INICIALIZACIÓN
-// ============================================
 document.addEventListener('DOMContentLoaded', function() {
     inicializarApp();
 });
 
 async function inicializarApp() {
-    // Inicializar gestor de periodo
-    await inicializarPeriodoManager();
+        await inicializarPeriodoManager();
 
-    // Validar que haya un periodo activo
-    if (!hayPeriodoActivo()) {
+        if (!hayPeriodoActivo()) {
         Swal.fire({
             icon: 'warning',
             title: 'Periodo no seleccionado',
@@ -62,9 +54,6 @@ async function inicializarApp() {
     cargarGrupos();
 }
 
-// ============================================
-// CONFIGURAR EVENT LISTENERS
-// ============================================
 function configurarEventListeners() {
     const form = document.getElementById('gruposForm');
     const generacion = document.getElementById('generacion');
@@ -112,9 +101,6 @@ function configurarEventListeners() {
     });
 }
 
-// ============================================
-// CARGAR PROGRAMAS EDUCATIVOS EN SELECT
-// ============================================
 function cargarProgramasEducativos(nivelSeleccionado) {
     const selectPrograma = document.getElementById('programa');
     selectPrograma.innerHTML = '<option value="" disabled selected>Selecciona...</option>';
@@ -134,9 +120,6 @@ function cargarProgramasEducativos(nivelSeleccionado) {
     }
 }
 
-// ============================================
-// VALIDACIONES
-// ============================================
 function validarGeneracion(input) {
     const valor = input.value.trim();
     input.value = valor.replace(/[^0-9]/g, '');
@@ -228,9 +211,6 @@ function limpiarError(campo) {
     if (errorSpan) errorSpan.textContent = '';
 }
 
-// ============================================
-// GENERAR CÓDIGO DE GRUPO
-// ============================================
 function generarCodigoGrupo() {
     const generacion = document.getElementById('generacion').value.trim();
     const nivelCodigo = document.getElementById('nivel').value;
@@ -264,9 +244,6 @@ function generarCodigoGrupo() {
     }
 }
 
-// ============================================
-// MOSTRAR GRUPOS EN TABLA
-// ============================================
 function mostrarGrupos(grupos) {
     gruposData = grupos;
     gruposFiltrados = grupos;
@@ -275,9 +252,6 @@ function mostrarGrupos(grupos) {
     renderizarGruposPaginados();
 }
 
-// ============================================
-// RENDERIZAR GRUPOS PAGINADOS
-// ============================================
 function renderizarGruposPaginados() {
     const tbody = document.getElementById('gruposTableBody');
     
@@ -300,8 +274,7 @@ function renderizarGruposPaginados() {
         const programaTexto = obtenerTextoPrograma(grupo.programa_educativo);
         const turnoBadge = obtenerBadgeTurno(grupo.turno);
         
-        // Botones según el estado
-        const botonesAccion = grupo.estado === 'activo' || !grupo.estado
+                const botonesAccion = grupo.estado === 'activo' || !grupo.estado
             ? `<button class="btn-action btn-edit" onclick="editarGrupo(${grupo.id})" title="Editar">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
@@ -330,9 +303,6 @@ function renderizarGruposPaginados() {
     actualizarPaginacion();
 }
 
-// ============================================
-// ALTERNAR VISTA ACTIVOS/INACTIVOS
-// ============================================
 function verInactivos() {
     mostrandoInactivos = !mostrandoInactivos;
     actualizarBotonInactivos();
@@ -352,9 +322,6 @@ function actualizarBotonInactivos() {
     }
 }
 
-// ============================================
-// GENERAR BADGE HTML PARA TURNO
-// ============================================
 function obtenerBadgeTurno(turno) {
     if (turno === 'M') {
         return '<span class="turno-badge matutino"></i> Matutino</span>';
@@ -364,9 +331,6 @@ function obtenerBadgeTurno(turno) {
     return turno || 'M';
 }
 
-// ============================================
-// PAGINACIÓN
-// ============================================
 function actualizarPaginacion() {
     const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
     const paginacionDiv = document.getElementById('paginacion');
@@ -434,9 +398,6 @@ function obtenerTextoPrograma(codigo) {
     return codigo;
 }
 
-// ============================================
-// EDICIÓN DE GRUPO
-// ============================================
 function llenarFormularioEdicion(grupo) {
     modoEdicion = true;
     idGrupoEditando = grupo.id;

@@ -1,64 +1,39 @@
-// ====================================
-// PLAN DE ESTUDIOS - SISCA
-// ====================================
 
-// Variables globales
-let asignaturas = []; // Array principal de asignaturas
-let asignaturasFiltradas = []; // Array filtrado
-let viendoPlantilla = false; // Indica si se está viendo una plantilla
-let asignaturasOriginales = []; // Backup de asignaturas originales
-let nombrePlantillaActual = ''; // Nombre de la plantilla actual
-let plantillaActualId = null; // ID de la plantilla actual
-
-// ====================================
-// INICIALIZACIÓN
-// ====================================
+let asignaturas = []; let asignaturasFiltradas = []; let viendoPlantilla = false; let asignaturasOriginales = []; let nombrePlantillaActual = ''; let plantillaActualId = null; 
 
 document.addEventListener('DOMContentLoaded', async function () {
     console.log('Iniciando Plan de Estudios...');
 
-    // Inicializar periodo manager
-    await inicializarPeriodoManager();
+        await inicializarPeriodoManager();
 
-    // Verificar que hay periodo activo
-    if (!hayPeriodoActivo()) {
+        if (!hayPeriodoActivo()) {
         validarPeriodoActivo('cargar el módulo de Carga Académica');
         return;
     }
 
-    // Inicializar componentes
-    inicializarEventos();
+        inicializarEventos();
     await cargarAsignaturas();
     await cargarPlantillas();
 });
 
-// ====================================
-// EVENTOS
-// ====================================
 
 function inicializarEventos() {
-    // Botón agregar asignatura
-    const btnAgregar = document.getElementById('btn-agregar-asignatura');
+        const btnAgregar = document.getElementById('btn-agregar-asignatura');
     if (btnAgregar) {
         btnAgregar.addEventListener('click', agregarAsignatura);
     }
 
-    // Botón limpiar
-    const btnLimpiar = document.getElementById('btnLimpiar');
+        const btnLimpiar = document.getElementById('btnLimpiar');
     if (btnLimpiar) {
         btnLimpiar.addEventListener('click', limpiarFormulario);
     }
 
-    // Botón guardar plantilla
-    const btnGuardarPlantilla = document.getElementById('btn-guardar-plantilla');
+        const btnGuardarPlantilla = document.getElementById('btn-guardar-plantilla');
     if (btnGuardarPlantilla) {
         btnGuardarPlantilla.addEventListener('click', mostrarDialogoGuardarPlantilla);
     }
 }
 
-// ====================================
-// CARGAR ASIGNATURAS
-// ====================================
 
 async function cargarAsignaturas() {
     try {
@@ -77,8 +52,7 @@ async function cargarAsignaturas() {
             renderizarTabla();
         } else {
             console.error('Error al cargar asignaturas:', data.message);
-            // No mostrar error si no hay datos, solo inicializar vacío
-            asignaturas = [];
+                        asignaturas = [];
             asignaturasFiltradas = [];
             renderizarTabla();
         }
@@ -90,13 +64,9 @@ async function cargarAsignaturas() {
     }
 }
 
-// ====================================
-// AGREGAR ASIGNATURA
-// ====================================
 
 async function agregarAsignatura() {
-    // Validar periodo activo
-    const periodoId = obtenerPeriodoActivoId();
+        const periodoId = obtenerPeriodoActivoId();
     if (!periodoId) {
         Swal.fire({
             icon: 'warning',
@@ -106,8 +76,7 @@ async function agregarAsignatura() {
         return;
     }
 
-    // Obtener valores del formulario
-    const nivel = document.getElementById('nivel').value.trim();
+        const nivel = document.getElementById('nivel').value.trim();
     const turno = document.getElementById('turno').value.trim();
     const programaEducativo = document.getElementById('programa_educativo').value.trim();
     const cuatrimestre = document.getElementById('cuatrimestre').value;
@@ -115,8 +84,7 @@ async function agregarAsignatura() {
     const asignatura = document.getElementById('asignatura').value.trim();
     const horasTotal = document.getElementById('horas_total').value;
 
-    // Validar campos requeridos
-    if (!nivel || !turno || !programaEducativo || !cuatrimestre) {
+        if (!nivel || !turno || !programaEducativo || !cuatrimestre) {
         Swal.fire({
             icon: 'warning',
             title: 'Campos incompletos',
@@ -134,8 +102,7 @@ async function agregarAsignatura() {
         return;
     }
 
-    // Preparar datos
-    const formData = new FormData();
+        const formData = new FormData();
     formData.append('periodo_id', periodoId);
     formData.append('nivel', nivel);
     formData.append('turno', turno);
@@ -162,13 +129,11 @@ async function agregarAsignatura() {
                 showConfirmButton: false
             });
 
-            // Limpiar campos de asignatura
-            document.getElementById('programa').value = '';
+                        document.getElementById('programa').value = '';
             document.getElementById('asignatura').value = '';
             document.getElementById('horas_total').value = '';
 
-            // Recargar asignaturas
-            await cargarAsignaturas();
+                        await cargarAsignaturas();
         } else {
             Swal.fire({
                 icon: 'error',
@@ -186,9 +151,6 @@ async function agregarAsignatura() {
     }
 }
 
-// ====================================
-// RENDERIZAR TABLA
-// ====================================
 
 function renderizarTabla() {
     const tbody = document.getElementById('tabla-body');
@@ -196,11 +158,9 @@ function renderizarTabla() {
 
     if (!tbody) return;
 
-    // Limpiar tabla
-    tbody.innerHTML = '';
+        tbody.innerHTML = '';
 
-    // Si no hay asignaturas, mostrar mensaje
-    if (asignaturasFiltradas.length === 0) {
+        if (asignaturasFiltradas.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="12" style="text-align: center; padding: 20px;">
@@ -212,36 +172,28 @@ function renderizarTabla() {
         return;
     }
 
-    // Agrupar asignaturas por área de conocimiento
-    const asignaturasPorArea = agruparPorArea(asignaturasFiltradas);
+        const asignaturasPorArea = agruparPorArea(asignaturasFiltradas);
 
-    // Obtener información del plan (del primer registro)
-    const primerAsignatura = asignaturasFiltradas[0];
+        const primerAsignatura = asignaturasFiltradas[0];
     actualizarInformacionCarrera(primerAsignatura);
 
-    // Determinar el número máximo de cuatrimestres
-    const maxCuatrimestre = Math.max(...asignaturasFiltradas.map(a => parseInt(a.cuatrimestre || a.grado)));
+        const maxCuatrimestre = Math.max(...asignaturasFiltradas.map(a => parseInt(a.cuatrimestre || a.grado)));
 
-    // Actualizar encabezados de la tabla
-    actualizarEncabezados(maxCuatrimestre);
+        actualizarEncabezados(maxCuatrimestre);
 
-    // Renderizar filas por área
-    for (const [area, asignaturasArea] of Object.entries(asignaturasPorArea)) {
+        for (const [area, asignaturasArea] of Object.entries(asignaturasPorArea)) {
         const tr = document.createElement('tr');
 
-        // Columna de área
-        const tdArea = document.createElement('td');
+                const tdArea = document.createElement('td');
         tdArea.className = 'area-cell';
         tdArea.textContent = area || 'Sin área';
         tr.appendChild(tdArea);
 
-        // Columnas de cuatrimestres
-        for (let i = 1; i <= maxCuatrimestre; i++) {
+                for (let i = 1; i <= maxCuatrimestre; i++) {
             const td = document.createElement('td');
             td.className = 'asignatura-cell';
 
-            // Buscar asignaturas de este cuatrimestre
-            const asignaturasEnCuatrimestre = asignaturasArea.filter(a =>
+                        const asignaturasEnCuatrimestre = asignaturasArea.filter(a =>
                 parseInt(a.cuatrimestre || a.grado) === i
             );
 
@@ -270,8 +222,7 @@ function renderizarTabla() {
         tbody.appendChild(tr);
     }
 
-    // Actualizar indicador si se está viendo plantilla
-    actualizarIndicadorPlantilla();
+        actualizarIndicadorPlantilla();
 }
 
 function agruparPorArea(asignaturas) {
@@ -315,9 +266,6 @@ function actualizarInformacionCarrera(asignatura) {
     `;
 }
 
-// ====================================
-// ELIMINAR ASIGNATURA
-// ====================================
 
 async function eliminarAsignatura(id) {
     const result = await Swal.fire({
@@ -370,21 +318,14 @@ async function eliminarAsignatura(id) {
     }
 }
 
-// ====================================
-// LIMPIAR FORMULARIO
-// ====================================
 
 function limpiarFormulario() {
     document.getElementById('planEstudiosForm').reset();
 }
 
-// ====================================
-// PLANTILLAS - GUARDAR
-// ====================================
 
 async function mostrarDialogoGuardarPlantilla() {
-    // Verificar que hay asignaturas
-    if (asignaturas.length === 0) {
+        if (asignaturas.length === 0) {
         Swal.fire({
             icon: 'warning',
             title: 'No hay datos',
@@ -393,8 +334,7 @@ async function mostrarDialogoGuardarPlantilla() {
         return;
     }
 
-    // Mostrar diálogo
-    const { value: formValues } = await Swal.fire({
+        const { value: formValues } = await Swal.fire({
         title: 'Guardar Plantilla',
         html: `
             <div style="text-align: left;">
@@ -431,8 +371,7 @@ async function guardarPlantilla(formValues) {
     try {
         const periodoId = obtenerPeriodoActivoId();
 
-        // Preparar datos de la plantilla
-        const datosPlantilla = {
+                const datosPlantilla = {
             asignaturas: asignaturas,
             fecha_guardado: new Date().toISOString(),
             total_registros: asignaturas.length
@@ -460,8 +399,7 @@ async function guardarPlantilla(formValues) {
                 showConfirmButton: false
             });
 
-            // Recargar plantillas
-            await cargarPlantillas();
+                        await cargarPlantillas();
         } else {
             Swal.fire({
                 icon: 'error',
@@ -479,9 +417,6 @@ async function guardarPlantilla(formValues) {
     }
 }
 
-// ====================================
-// PLANTILLAS - CARGAR Y LISTAR
-// ====================================
 
 async function cargarPlantillas() {
     try {
@@ -505,8 +440,7 @@ function mostrarPlantillas(plantillas) {
 
     if (!tabsHeader || !tabsContent) return;
 
-    // Limpiar contenido previo (excepto botón "Nueva")
-    const btnNueva = document.getElementById('nueva-tab');
+        const btnNueva = document.getElementById('nueva-tab');
     tabsHeader.innerHTML = '';
     if (btnNueva) {
         tabsHeader.appendChild(btnNueva);
@@ -519,17 +453,14 @@ function mostrarPlantillas(plantillas) {
         return;
     }
 
-    // Crear tabs para cada plantilla
-    plantillas.forEach((plantilla, index) => {
-        // Tab button
-        const tabBtn = document.createElement('button');
+        plantillas.forEach((plantilla, index) => {
+                const tabBtn = document.createElement('button');
         tabBtn.className = 'tab-btn';
         tabBtn.innerHTML = `<i class="fa-solid fa-file"></i> ${plantilla.nombre_plantilla}`;
         tabBtn.addEventListener('click', () => mostrarContenidoPlantilla(plantilla, index));
         tabsHeader.appendChild(tabBtn);
 
-        // Tab content
-        const tabContent = document.createElement('div');
+                const tabContent = document.createElement('div');
         tabContent.className = 'tab-content';
         tabContent.id = `content-${index}`;
         tabContent.style.display = 'none';
@@ -559,24 +490,19 @@ function mostrarPlantillas(plantillas) {
 }
 
 function mostrarContenidoPlantilla(plantilla, index) {
-    // Ocultar todos los contenidos
-    const allContents = document.querySelectorAll('.tab-content');
+        const allContents = document.querySelectorAll('.tab-content');
     allContents.forEach(content => content.style.display = 'none');
 
-    // Desactivar todos los botones
-    const allBtns = document.querySelectorAll('.tab-btn');
+        const allBtns = document.querySelectorAll('.tab-btn');
     allBtns.forEach(btn => btn.classList.remove('active'));
 
-    // Mostrar contenido seleccionado
-    const content = document.getElementById(`content-${index}`);
+        const content = document.getElementById(`content-${index}`);
     if (content) {
         content.style.display = 'block';
     }
 
-    // Activar botón seleccionado
-    const btns = document.querySelectorAll('.tab-btn');
-    if (btns[index + 1]) { // +1 porque el primer botón es "Nueva"
-        btns[index + 1].classList.add('active');
+        const btns = document.querySelectorAll('.tab-btn');
+    if (btns[index + 1]) {         btns[index + 1].classList.add('active');
     }
 }
 
@@ -586,23 +512,19 @@ async function cargarPlantilla(id, nombre) {
         const data = await response.json();
 
         if (data.success) {
-            // Backup de asignaturas actuales si no estamos ya viendo una plantilla
-            if (!viendoPlantilla) {
+                        if (!viendoPlantilla) {
                 asignaturasOriginales = [...asignaturas];
             }
 
-            // Cargar datos de la plantilla
-            const datosPlantilla = JSON.parse(data.plantilla.datos_json);
+                        const datosPlantilla = JSON.parse(data.plantilla.datos_json);
             asignaturas = datosPlantilla.asignaturas || [];
             asignaturasFiltradas = [...asignaturas];
 
-            // Marcar que estamos viendo plantilla
-            viendoPlantilla = true;
+                        viendoPlantilla = true;
             nombrePlantillaActual = nombre;
             plantillaActualId = id;
 
-            // Renderizar
-            renderizarTabla();
+                        renderizarTabla();
 
             Swal.fire({
                 icon: 'success',
@@ -631,22 +553,18 @@ async function cargarPlantilla(id, nombre) {
 function regresarDePlantilla() {
     if (!viendoPlantilla) return;
 
-    // Restaurar asignaturas originales
-    asignaturas = [...asignaturasOriginales];
+        asignaturas = [...asignaturasOriginales];
     asignaturasFiltradas = [...asignaturas];
     viendoPlantilla = false;
     nombrePlantillaActual = '';
     plantillaActualId = null;
 
-    // Renderizar
-    renderizarTabla();
+        renderizarTabla();
 
-    // Ocultar todos los contenidos de plantillas
-    const allContents = document.querySelectorAll('.tab-content');
+        const allContents = document.querySelectorAll('.tab-content');
     allContents.forEach(content => content.style.display = 'none');
 
-    // Desactivar todos los botones excepto "Nueva"
-    const allBtns = document.querySelectorAll('.tab-btn');
+        const allBtns = document.querySelectorAll('.tab-btn');
     allBtns.forEach((btn, index) => {
         if (index === 0) btn.classList.add('active');
         else btn.classList.remove('active');
@@ -654,8 +572,7 @@ function regresarDePlantilla() {
 }
 
 function actualizarIndicadorPlantilla() {
-    // Crear o actualizar indicador de visualización de plantilla
-    let indicador = document.getElementById('indicador-plantilla');
+        let indicador = document.getElementById('indicador-plantilla');
 
     if (viendoPlantilla) {
         if (!indicador) {
@@ -711,8 +628,7 @@ async function eliminarPlantilla(id) {
 
             await cargarPlantillas();
 
-            // Si era la plantilla actual, regresar a vista normal
-            if (plantillaActualId === id) {
+                        if (plantillaActualId === id) {
                 regresarDePlantilla();
             }
         } else {
@@ -732,9 +648,6 @@ async function eliminarPlantilla(id) {
     }
 }
 
-// ====================================
-// IMPRIMIR
-// ====================================
 
 function imprimirPagina() {
     window.print();

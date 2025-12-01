@@ -10,12 +10,8 @@ const DocentesAPI = {
         }
     },
 
-    // ============================================
-    // OPERACIONES CRUD
-    // ============================================
-
-    // Crear nuevo docente
-    async crear(data) {
+            
+        async crear(data) {
         return await this.request('crear_docente.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -23,8 +19,7 @@ const DocentesAPI = {
         });
     },
 
-    // Editar docente existente
-    async editar(data) {
+        async editar(data) {
         return await this.request('editar_docente.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -32,8 +27,7 @@ const DocentesAPI = {
         });
     },
 
-    // Cambiar estado del docente (activo/inactivo)
-    async cambiarEstado(id, estado) {
+        async cambiarEstado(id, estado) {
         return await this.request('baja_docente.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -41,18 +35,13 @@ const DocentesAPI = {
         });
     },
 
-    // ============================================
-    // CONSULTAS
-    // ============================================
-
-    // Obtener docentes con filtros y paginación
-    async obtener(filtros = {}, page = 1) {
+            
+        async obtener(filtros = {}, page = 1) {
         const params = new URLSearchParams({ ...filtros, page });
         return await this.request(`obtener_docentes.php?${params}`);
     },
 
-    // Obtener datos únicos para filtros (turnos y regímenes)
-    async obtenerDatosFiltros() {
+        async obtenerDatosFiltros() {
         return await this.request('obtener_datos_filtros.php');
     }
 };

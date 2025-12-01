@@ -16,10 +16,7 @@ class FiltrosDocentes {
         }
     }
 
-    // ============================================
-    // ALTERNAR VISTA ACTIVOS/INACTIVOS
-    // ============================================
-    verInactivos() {
+                verInactivos() {
         mostrandoInactivos = !mostrandoInactivos;
         this.actualizarBotonInactivos();
         cargarDocentes(1);
@@ -37,12 +34,8 @@ class FiltrosDocentes {
         }
     }
 
-    // ============================================
-    // GESTIÓN DE FILTROS
-    // ============================================
-
-    // Agregar un nuevo filtro
-    agregarFiltro(tipo) {
+            
+        agregarFiltro(tipo) {
         if (this.filtrosActivos.has(tipo)) {
             const filtroId = this.filtrosActivos.get(tipo);
             this.quitarFiltro(tipo, filtroId);
@@ -59,8 +52,7 @@ class FiltrosDocentes {
     }
 
 
-    // Quitar un filtro existente
-    quitarFiltro(tipo, filtroId) {
+        quitarFiltro(tipo, filtroId) {
         document.getElementById(filtroId)?.remove();
         this.filtrosActivos.delete(tipo);
 
@@ -72,8 +64,7 @@ class FiltrosDocentes {
         this.aplicarFiltros();
     }
 
-    // Aplicar todos los filtros activos
-    aplicarFiltros() {
+        aplicarFiltros() {
         filtrosActivos = {};
 
         this.filtrosActivos.forEach((filtroId, tipo) => {
@@ -86,12 +77,8 @@ class FiltrosDocentes {
         cargarDocentes(1);
     }
 
-    // ============================================
-    // GENERACIÓN DE HTML
-    // ============================================
-
-    // Generar HTML para cada tipo de filtro
-    generarHTMLFiltro(tipo, filtroId) {
+            
+        generarHTMLFiltro(tipo, filtroId) {
         const configuraciones = {
             nombre_docente: {
                 icono: 'fa-user',
@@ -132,8 +119,7 @@ class FiltrosDocentes {
         `;
     }
 
-    // Generar select para filtros
-    generarSelectFiltro(tipo, opciones, placeholder) {
+        generarSelectFiltro(tipo, opciones, placeholder) {
         const opcionesHTML = opciones.map(o => `<option value="${o}">${o}</option>`).join('');
 
         return `
@@ -147,9 +133,6 @@ class FiltrosDocentes {
     }
 }
 
-// ============================================
-// INICIALIZACIÓN GLOBAL
-// ============================================
 let filtrosDocentes;
 
 document.addEventListener('DOMContentLoaded', () => {

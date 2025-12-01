@@ -1,6 +1,3 @@
-// ============================================
-// SISTEMA DE FILTROS
-// ============================================
 
 let filtrosActivos = {
     grupo: false,
@@ -29,9 +26,6 @@ let opcionesFiltros = {
     turnos: []
 };
 
-// ============================================
-// CARGAR OPCIONES DE FILTROS DESDE BD
-// ============================================
 function cargarOpcionesFiltros() {
     if (!gruposData || gruposData.length === 0) return;
     
@@ -43,9 +37,6 @@ function cargarOpcionesFiltros() {
     opcionesFiltros.turnos = [...new Set(gruposData.map(g => g.turno || 'M'))].sort();
 }
 
-// ============================================
-// TOGGLE FILTRO
-// ============================================
 function toggleFiltro(filtro) {
     const btn = document.querySelector(`[data-filtro="${filtro}"]`);
     
@@ -64,9 +55,6 @@ function toggleFiltro(filtro) {
     aplicarFiltros();
 }
 
-// ============================================
-// AGREGAR CAMPO DE FILTRO
-// ============================================
 function agregarCampoFiltro(filtro) {
     const container = document.getElementById('filtros-activos');
     const filtroItem = document.createElement('div');
@@ -188,9 +176,6 @@ function agregarCampoFiltro(filtro) {
     container.appendChild(filtroItem);
 }
 
-// ============================================
-// FUNCIONES AUXILIARES
-// ============================================
 function obtenerNombrePrograma(codigo) {
     for (let nivel in programasEducativos) {
         const programa = programasEducativos[nivel].find(p => p.codigo === codigo);
@@ -209,9 +194,6 @@ function actualizarFiltro(filtro, valor) {
     aplicarFiltros();
 }
 
-// ============================================
-// APLICAR FILTROS
-// ============================================
 function aplicarFiltros() {
     if (!gruposData || gruposData.length === 0) return;
     
@@ -236,8 +218,7 @@ function aplicarFiltros() {
             if (grupo.grado.toLowerCase() !== valoresFiltros.grado) return false;
         }
         
-        // Filtro de turno
-        if (filtrosActivos.turno && valoresFiltros.turno) {
+                if (filtrosActivos.turno && valoresFiltros.turno) {
             const grupoTurno = (grupo.turno || 'M').toLowerCase();
             if (grupoTurno !== valoresFiltros.turno) return false;
         }
@@ -250,9 +231,6 @@ function aplicarFiltros() {
     renderizarGruposPaginados();
 }
 
-// ============================================
-// LIMPIAR TODOS LOS FILTROS
-// ============================================
 function limpiarTodosFiltros() {
     Object.keys(filtrosActivos).forEach(filtro => {
         if (filtrosActivos[filtro]) toggleFiltro(filtro);
@@ -271,9 +249,6 @@ function limpiarTodosFiltros() {
     mostrarGrupos(gruposData);
 }
 
-// ============================================
-// ACTUALIZAR VISIBILIDAD
-// ============================================
 function actualizarVisibilidadFiltros() {
     const container = document.getElementById('filtros-activos');
     const btnLimpiar = document.querySelector('.btn-limpiar-filtros');

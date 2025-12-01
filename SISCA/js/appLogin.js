@@ -28,7 +28,6 @@ function prevRole() {
   updateRole();
 }
 
-// Mensaje de error
 function showMessage(message, type) {
   const existingMsg = document.querySelector('.login-message');
   if (existingMsg) {
@@ -48,7 +47,6 @@ function showMessage(message, type) {
   }, 3000);
 }
 
-// Funcion de login
 function handleLogin(event) {
   event.preventDefault();
 
@@ -105,8 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Mostrar/ocultar contraseña
-  const togglePassword = document.getElementById('togglePassword');
+    const togglePassword = document.getElementById('togglePassword');
   if (togglePassword) {
     togglePassword.addEventListener('click', function () {
       const passwordInput = document.getElementById('password');

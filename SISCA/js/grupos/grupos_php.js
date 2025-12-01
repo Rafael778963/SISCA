@@ -1,6 +1,3 @@
-// ============================================
-// CARGAR PROGRAMAS DESDE BASE DE DATOS
-// ============================================
 function cargarProgramasDesdeDB() {
     return fetch('../../php/grupos/obtener_programas.php')
         .then(response => response.json())
@@ -18,9 +15,6 @@ function cargarProgramasDesdeDB() {
         });
 }
 
-// ============================================
-// VERIFICAR LETRA DE GRUPO
-// ============================================
 function verificarLetraGrupo(generacion, programa, grado, turno, codigoBase) {
     const grupoGenerado = document.getElementById('grupoGenerado');
     const periodoId = obtenerPeriodoActivoId();
@@ -50,12 +44,8 @@ function verificarLetraGrupo(generacion, programa, grado, turno, codigoBase) {
         });
 }
 
-// ============================================
-// GUARDAR GRUPO
-// ============================================
 function guardarGrupo() {
-    // Validar que haya periodo activo
-    if (!validarPeriodoActivo('guardar un grupo')) {
+        if (!validarPeriodoActivo('guardar un grupo')) {
         return;
     }
 
@@ -91,9 +81,6 @@ function guardarGrupo() {
         });
 }
 
-// ============================================
-// CARGAR GRUPOS
-// ============================================
 function cargarGrupos() {
     const estado = mostrandoInactivos ? 'inactivo' : 'activo';
     const periodoId = obtenerPeriodoActivoId();
@@ -112,9 +99,6 @@ function cargarGrupos() {
         });
 }
 
-// ============================================
-// EDITAR GRUPO
-// ============================================
 function editarGrupo(id) {
     const estado = mostrandoInactivos ? 'inactivo' : 'activo';
     const periodoId = obtenerPeriodoActivoId();
@@ -141,12 +125,8 @@ function editarGrupo(id) {
         });
 }
 
-// ============================================
-// ACTUALIZAR GRUPO
-// ============================================
 function actualizarGrupo() {
-    // Validar que haya periodo activo
-    if (!validarPeriodoActivo('actualizar un grupo')) {
+        if (!validarPeriodoActivo('actualizar un grupo')) {
         return;
     }
 
@@ -182,9 +162,6 @@ function actualizarGrupo() {
         });
 }
 
-// ============================================
-// DAR DE BAJA GRUPO
-// ============================================
 function bajaGrupo(id) {
     if (!confirm('¿Estás seguro de dar de baja este grupo?')) return;
 
@@ -208,9 +185,6 @@ function bajaGrupo(id) {
         });
 }
 
-// ============================================
-// DAR DE ALTA GRUPO
-// ============================================
 function altaGrupo(id) {
     if (!confirm('¿Estás seguro de dar de alta este grupo?')) return;
 
@@ -234,9 +208,6 @@ function altaGrupo(id) {
         });
 }
 
-// ============================================
-// ELIMINAR GRUPO DEFINITIVAMENTE
-// ============================================
 function eliminarGrupo(id) {
     if (!confirm('ADVERTENCIA: Esta acción eliminará el grupo permanentemente. ¿Estás completamente seguro?')) return;
 

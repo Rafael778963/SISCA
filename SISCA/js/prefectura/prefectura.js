@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // ==================== VARIABLES GLOBALES ====================
-    const searchInput = document.getElementById('searchInput');
+        const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
     const periodoFilter = document.getElementById('periodoFilter');
     const sortBtns = document.querySelectorAll('.sort-btn');
@@ -27,8 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalCount = document.getElementById('totalCount');
     const alertContainer = document.getElementById('alertContainer');
     
-    // Paginación
-    const paginationContainer = document.getElementById('paginationContainer');
+        const paginationContainer = document.getElementById('paginationContainer');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const currentPageSpan = document.getElementById('currentPage');
@@ -41,14 +39,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentPdfUrl = '';
     let currentPdfName = '';
     
-    // Variables de paginación
-    const itemsPerPage = 16;  
+        const itemsPerPage = 16;  
     let currentPage = 1;
     let totalPages = 1;
     let paginatedPdfs = [];
 
-    // ==================== CARGAR TODOS LOS PDFs ====================
-    function cargarTodosPdfs() {
+        function cargarTodosPdfs() {
         fetch('../../php/prefectura/obtener_todos_horarios.php')
             .then(res => {
                 if (!res.ok) throw new Error('Error al cargar PDFs');
@@ -58,8 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.success) {
                     allPdfs = data.horarios || [];
                     
-                    // Asegurarse de que los datos tienen las propiedades necesarias
-                    allPdfs = allPdfs.map(pdf => ({
+                                        allPdfs = allPdfs.map(pdf => ({
                         ...pdf,
                         tamaño: pdf.tamaño || pdf.size || 0,
                         fecha_carga: pdf.fecha_carga || pdf.fecha || new Date().toISOString(),
@@ -79,70 +74,58 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // ==================== ACTUALIZAR ESTADÍSTICAS ====================
-    function actualizarEstadisticas() {
+        function actualizarEstadisticas() {
         const total = allPdfs.length;
-        // Sumar todos los tamaños en bytes
-        const tamañoTotal = allPdfs.reduce((sum, pdf) => {
+                const tamañoTotal = allPdfs.reduce((sum, pdf) => {
             const size = parseFloat(pdf.tamaño) || 0;
             return sum + size;
         }, 0);
         
-        // Convertir a MB
-        const tamañoMb = (tamañoTotal / 1024 / 1024).toFixed(2);
+                const tamañoMb = (tamañoTotal / 1024 / 1024).toFixed(2);
 
         totalPdfsSpan.textContent = total;
         totalSizeSpan.textContent = tamañoMb;
     }
 
-    // ==================== CALCULAR PAGINACIÓN ====================
-    function calcularPaginacion() {
+        function calcularPaginacion() {
         totalPages = Math.ceil(filteredPdfs.length / itemsPerPage);
         
-        // Si estamos en una página que ya no existe, volver a la primera
-        if (currentPage > totalPages && totalPages > 0) {
+                if (currentPage > totalPages && totalPages > 0) {
             currentPage = 1;
         }
         
-        // Obtener los PDFs de la página actual
-        const startIndex = (currentPage - 1) * itemsPerPage;
+                const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         paginatedPdfs = filteredPdfs.slice(startIndex, endIndex);
         
         actualizarControlesPaginacion();
     }
 
-    // ==================== ACTUALIZAR CONTROLES DE PAGINACIÓN ====================
-    function actualizarControlesPaginacion() {
+        function actualizarControlesPaginacion() {
         currentPageSpan.textContent = currentPage;
         totalPagesSpan.textContent = totalPages;
         
-        // Mostrar/ocultar botones y paginación
-        if (filteredPdfs.length > itemsPerPage) {
+                if (filteredPdfs.length > itemsPerPage) {
             paginationContainer.style.display = 'flex';
         } else {
             paginationContainer.style.display = 'none';
         }
         
-        // Habilitar/deshabilitar botones
-        prevBtn.disabled = currentPage <= 1;
+                prevBtn.disabled = currentPage <= 1;
         nextBtn.disabled = currentPage >= totalPages;
     }
 
-    // ==================== APLICAR FILTROS Y ORDENAMIENTO ====================
-    function aplicarFiltrosYOrdenamiento() {
+        function aplicarFiltrosYOrdenamiento() {
         const busqueda = searchInput.value.toLowerCase().trim();
         const periodo = periodoFilter.value;
 
-        // Filtrar
-        filteredPdfs = allPdfs.filter(pdf => {
+                filteredPdfs = allPdfs.filter(pdf => {
             const cumpleBusqueda = !busqueda || pdf.nombre.toLowerCase().includes(busqueda);
             const cumplePeriodo = !periodo || pdf.periodo === periodo || pdf.periodo_id == periodo;
             return cumpleBusqueda && cumplePeriodo;
         });
 
-        // Ordenar
-        filteredPdfs.sort((a, b) => {
+                filteredPdfs.sort((a, b) => {
             switch (currentSort) {
                 case 'nombre':
                     return a.nombre.localeCompare(b.nombre);
@@ -155,25 +138,20 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Reiniciar a la primera página
-        currentPage = 1;
+                currentPage = 1;
         
-        // Calcular paginación
-        calcularPaginacion();
+                calcularPaginacion();
         
-        // Actualizar vista
-        actualizarVista();
+                actualizarVista();
         actualizarContadores();
     }
 
-    // ==================== ACTUALIZAR CONTADORES ====================
-    function actualizarContadores() {
+        function actualizarContadores() {
         resultsCount.textContent = filteredPdfs.length;
         totalCount.textContent = allPdfs.length;
     }
 
-    // ==================== ACTUALIZAR VISTA ====================
-    function actualizarVista() {
+        function actualizarVista() {
         pdfGrid.innerHTML = '';
         pdfList.innerHTML = '';
 
@@ -188,8 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pdfListContainer.style.display = paginatedPdfs.length > 0 && currentView === 'list' ? 'block' : 'none';
         emptyState.style.display = 'none';
 
-        // Usar paginatedPdfs en lugar de filteredPdfs
-        paginatedPdfs.forEach((pdf, index) => {
+                paginatedPdfs.forEach((pdf, index) => {
             if (currentView === 'grid') {
                 agregarItemGrid(pdf);
             } else {
@@ -198,8 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ==================== AGREGAR ITEM A GRID ====================
-    function agregarItemGrid(pdf) {
+        function agregarItemGrid(pdf) {
         const li = document.createElement('li');
         li.className = 'pdf-grid-item';
         
@@ -243,8 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pdfGrid.appendChild(li);
     }
 
-    // ==================== AGREGAR ITEM A LISTA ====================
-    function agregarItemLista(pdf) {
+        function agregarItemLista(pdf) {
         const li = document.createElement('li');
         li.className = 'pdf-list-item';
         
@@ -284,8 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pdfList.appendChild(li);
     }
 
-    // ==================== VER PDF ====================
-    function verPdf(url, nombre) {
+        function verPdf(url, nombre) {
         currentPdfUrl = url;
         currentPdfName = nombre;
         pdfPreview.src = url;
@@ -294,8 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = 'hidden';
     }
 
-    // ==================== DESCARGAR PDF ====================
-    function descargarPdf(url, nombre) {
+        function descargarPdf(url, nombre) {
         const link = document.createElement('a');
         link.href = url;
         link.download = nombre;
@@ -303,8 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarAlerta(`Descargando: ${nombre}`, 'success', 2000);
     }
 
-    // ==================== IMPRIMIR PDF ====================
-    function imprimirPdf() {
+        function imprimirPdf() {
         const printWindow = window.open(currentPdfUrl, 'print_window');
         
         if (printWindow) {
@@ -318,8 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ==================== CERRAR VISOR ====================
-    function cerrarVisor() {
+        function cerrarVisor() {
         pdfViewerModal.style.display = 'none';
         pdfPreview.src = '';
         currentPdfUrl = '';
@@ -327,8 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = 'auto';
     }
 
-    // ==================== CAMBIAR VISTA ====================
-    function cambiarVista(vista) {
+        function cambiarVista(vista) {
         currentView = vista;
 
         if (vista === 'grid') {
@@ -342,8 +312,7 @@ document.addEventListener('DOMContentLoaded', function () {
         actualizarVista();
     }
 
-    // ==================== BÚSQUEDA ====================
-    searchInput.addEventListener('input', () => {
+        searchInput.addEventListener('input', () => {
         if (searchInput.value.trim()) {
             clearSearchBtn.classList.remove('hidden');
         } else {
@@ -358,11 +327,9 @@ document.addEventListener('DOMContentLoaded', function () {
         aplicarFiltrosYOrdenamiento();
     });
 
-    // ==================== FILTRO POR PERÍODO ====================
-    periodoFilter.addEventListener('change', aplicarFiltrosYOrdenamiento);
+        periodoFilter.addEventListener('change', aplicarFiltrosYOrdenamiento);
 
-    // ==================== ORDENAMIENTO ====================
-    sortBtns.forEach(btn => {
+        sortBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             sortBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -371,8 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ==================== PAGINACIÓN ====================
-    prevBtn.addEventListener('click', () => {
+        prevBtn.addEventListener('click', () => {
         if (currentPage > 1) {
             currentPage--;
             calcularPaginacion();
@@ -390,8 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ==================== BOTONES DE ACCIÓN ====================
-    reloadBtn.addEventListener('click', () => {
+        reloadBtn.addEventListener('click', () => {
         reloadBtn.disabled = true;
         reloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Recargando...';
         cargarTodosPdfs();
@@ -416,27 +381,23 @@ document.addEventListener('DOMContentLoaded', function () {
     gridViewBtn.addEventListener('click', () => cambiarVista('grid'));
     listViewBtn.addEventListener('click', () => cambiarVista('list'));
 
-    // ==================== VISOR PDF ====================
-    closeViewerBtn.addEventListener('click', cerrarVisor);
+        closeViewerBtn.addEventListener('click', cerrarVisor);
     downloadBtn.addEventListener('click', () => descargarPdf(currentPdfUrl, currentPdfName));
     printBtn.addEventListener('click', imprimirPdf);
 
-    // Cerrar visor al hacer clic fuera
-    pdfViewerModal.addEventListener('click', (e) => {
+        pdfViewerModal.addEventListener('click', (e) => {
         if (e.target === pdfViewerModal) {
             cerrarVisor();
         }
     });
 
-    // Cerrar visor con ESC
-    document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && pdfViewerModal.style.display === 'flex') {
             cerrarVisor();
         }
     });
 
-    // ==================== DELEGACIÓN DE EVENTOS ====================
-    document.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
         const viewBtn = e.target.closest('.view-btn');
         const downloadBtn = e.target.closest('.download-btn');
 
@@ -453,8 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ==================== UTILIDADES ====================
-    function formatearFecha(fecha) {
+        function formatearFecha(fecha) {
         const date = new Date(fecha);
         const opciones = { 
             year: 'numeric', 
@@ -487,17 +447,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ==================== CARGAR AL INICIAR ====================
-    cargarTodosPdfs();
+        cargarTodosPdfs();
 
-    // Actualizar períodos disponibles
-    function actualizarPeriodos() {
+        function actualizarPeriodos() {
         fetch('../../php/periodos/get_periodos.php')
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data) && data.length > 0) {
-                    // Obtener períodos únicos
-                    const periodosUnicos = [...new Set(data.map(p => p.periodo))];
+                                        const periodosUnicos = [...new Set(data.map(p => p.periodo))];
                     const optionsHTML = data.map(p => 
                         `<option value="${p.id}">${p.periodo} (${p.año})</option>`
                     ).join('');
