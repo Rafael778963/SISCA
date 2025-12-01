@@ -1,0 +1,768 @@
+/* ============================================
+   VARIABLES
+   ============================================ */
+:root {
+  --bg-1: #e9eef6;
+  --bg-2: #eef3f8;
+  --surface: #e6ebf1;
+  --text: #2f3a45;
+  --muted: #6b7480;
+
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 70px;
+  --header-h: 72px;
+
+  --verde-medio: #78B543;
+  --verde-dark: #3B7D2F;
+  --naranja: #c94f18;
+  --naranja-medio: #E46220;
+  --error: #e74c3c;
+  --success: #27ae60;
+  --amarillo: #ffeb3b;
+  --azul: #2196f3;
+  --morado: #9b59b6;
+
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease;
+}
+
+/* ============================================
+   RESET Y ESTILOS BASE
+   ============================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+  background-attachment: fixed;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ============================================
+   CONTENIDO PRINCIPAL
+   ============================================ */
+.main-content {
+  margin-left: var(--sidebar-width);
+  padding: calc(var(--header-h) + 1rem) 1.5rem 2rem;
+  width: calc(100% - var(--sidebar-width));
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.sidebar.collapsed~.main-content {
+  margin-left: var(--sidebar-collapsed);
+  width: calc(100% - var(--sidebar-collapsed));
+}
+
+/* ============================================
+   CONTENEDOR DE TUTORÍA
+   ============================================ */
+.tutoria-container {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 2rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* ============================================
+   PANEL DE CONTROL (FILTROS)
+   ============================================ */
+.tutoria-control-panel {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.1),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+  height: fit-content;
+}
+
+.panel-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--verde-medio);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ============================================
+   FORMULARIO DE FILTROS
+   ============================================ */
+.filtros-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-select,
+.form-input {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(107, 116, 128, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--text);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-select:focus,
+.form-input:focus {
+  outline: none;
+  border-color: var(--verde-medio);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 3px rgba(120, 181, 67, 0.1);
+}
+
+/* ============================================
+   BOTONES DEL FORMULARIO
+   ============================================ */
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+
+.btn {
+  padding: 0.75rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--verde-medio);
+  color: white;
+  box-shadow: 0 4px 6px rgba(120, 181, 67, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--verde-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(120, 181, 67, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.1),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+}
+
+.btn-secondary:hover {
+  background: #f0f3f7;
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   ACCIONES RÁPIDAS
+   ============================================ */
+.acciones-rapidas-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(107, 116, 128, 0.2);
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.acciones-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.btn-accion {
+  padding: 0.7rem 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(107, 116, 128, 0.3);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn-accion:hover {
+  background: rgba(120, 181, 67, 0.1);
+  border-color: var(--verde-medio);
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(120, 181, 67, 0.2);
+}
+
+.btn-accion i {
+  font-size: 1.1rem;
+  color: var(--verde-medio);
+}
+
+/* ============================================
+   PANEL DE VISUALIZACIÓN
+   ============================================ */
+.tutoria-display-panel {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.1),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+}
+
+.panel-header {
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(120, 181, 67, 0.3);
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 0;
+}
+
+.title-section {
+  text-align: center;
+}
+
+.main-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--verde-dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+}
+
+.main-title i {
+  color: var(--verde-medio);
+}
+
+.periodo-texto {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin: 0.5rem 0 0;
+}
+
+/* ============================================
+   GRID DE TUTORES (DOS COLUMNAS)
+   ============================================ */
+.tutores-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.turno-column {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.turno-header {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.turno-header.matutino {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+}
+
+.turno-header.nocturno {
+  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  box-shadow: 0 2px 8px rgba(142, 68, 173, 0.3);
+}
+
+.turno-header i {
+  font-size: 1.3rem;
+}
+
+.turno-header.matutino i {
+  animation: rotate 10s linear infinite;
+}
+
+.turno-header.nocturno i {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(0.95);
+  }
+}
+
+/* ============================================
+   CONTENIDO DE TUTORES
+   ============================================ */
+.tutores-content {
+  padding: 1.5rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.tutores-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tutores-content::-webkit-scrollbar-thumb {
+  background: rgba(120, 181, 67, 0.4);
+  border-radius: 4px;
+}
+
+.tutores-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 181, 67, 0.6);
+}
+
+/* ============================================
+   SECCIÓN DE PROGRAMA EDUCATIVO
+   ============================================ */
+.programa-section {
+  margin-bottom: 2rem;
+}
+
+.programa-section:last-child {
+  margin-bottom: 0;
+}
+
+.programa-titulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--verde-dark);
+  margin-bottom: 1rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, rgba(120, 181, 67, 0.1), rgba(120, 181, 67, 0.05));
+  border-left: 4px solid var(--verde-medio);
+  border-radius: 4px;
+}
+
+/* ============================================
+   TARJETAS DE TUTOR
+   ============================================ */
+.tutor-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(107, 116, 128, 0.2);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tutor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(120, 181, 67, 0.2);
+  border-color: var(--verde-medio);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.tutor-icon {
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  background: linear-gradient(135deg, var(--verde-medio), var(--verde-dark));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  box-shadow: 0 3px 8px rgba(120, 181, 67, 0.3);
+}
+
+.tutor-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tutor-grupo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--verde-dark);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.5px;
+}
+
+.tutor-nombre {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ============================================
+   ESTADO VACÍO
+   ============================================ */
+.empty-state {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+
+.empty-state p {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ============================================
+   PIE DE PÁGINA
+   ============================================ */
+.footer-text {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(107, 116, 128, 0.2);
+}
+
+.footer-text p {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.5;
+  text-align: center;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1400px) {
+  .tutores-grid {
+    gap: 1.5rem;
+  }
+
+  .tutor-card {
+    padding: 0.8rem 0.9rem;
+  }
+
+  .tutor-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1.1rem;
+  }
+
+  .tutor-nombre {
+    font-size: 0.8rem;
+  }
+
+  .tutor-grupo {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .tutoria-container {
+    grid-template-columns: 1fr;
+  }
+
+  .tutoria-control-panel {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .tutores-grid {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .tutores-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .turno-column {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    gap: 1rem;
+  }
+
+  .logo-img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .main-title {
+    font-size: 1.4rem;
+  }
+
+  .periodo-texto {
+    font-size: 0.9rem;
+  }
+
+  .tutores-content {
+    max-height: 500px;
+    padding: 1rem;
+  }
+
+  .programa-titulo {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .tutor-card {
+    padding: 0.7rem 0.8rem;
+    gap: 0.8rem;
+  }
+
+  .tutor-icon {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    font-size: 1rem;
+  }
+
+  .tutor-nombre {
+    font-size: 0.75rem;
+  }
+
+  .tutor-grupo {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .main-content {
+    padding: calc(var(--header-h) + 0.5rem) 1rem 1.5rem;
+  }
+
+  .tutoria-container {
+    gap: 1rem;
+  }
+
+  .tutoria-control-panel {
+    padding: 1rem;
+  }
+
+  .tutoria-display-panel {
+    padding: 1rem;
+  }
+
+  .panel-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .turno-header {
+    font-size: 0.95rem;
+    padding: 0.8rem;
+  }
+
+  .turno-header i {
+    font-size: 1.1rem;
+  }
+}
+
+/* ============================================
+   ESTILOS PARA IMPRESIÓN
+   ============================================ */
+@media print {
+  .sidebar,
+  .header,
+  .user-menu,
+  .tutoria-control-panel {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .tutoria-container {
+    grid-template-columns: 1fr;
+    margin-top: 0;
+    gap: 0;
+  }
+
+  .tutoria-display-panel {
+    box-shadow: none;
+    padding: 0;
+    background: white;
+  }
+
+  .panel-header {
+    margin-bottom: 1rem;
+  }
+
+  .header-content {
+    border-bottom: 2px solid #333;
+  }
+
+  .main-title {
+    color: #333;
+  }
+
+  .tutores-grid {
+    gap: 1rem;
+    page-break-inside: avoid;
+  }
+
+  .turno-column {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .turno-header {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .tutor-card {
+    page-break-inside: avoid;
+  }
+
+  .footer-text {
+    margin-top: 2rem;
+    page-break-inside: avoid;
+  }
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tutoria-container {
+  animation: fadeIn 0.4s ease;
+}
+
+.tutor-card {
+  animation: fadeIn 0.3s ease backwards;
+}
+
+.tutor-card:nth-child(1) { animation-delay: 0.05s; }
+.tutor-card:nth-child(2) { animation-delay: 0.1s; }
+.tutor-card:nth-child(3) { animation-delay: 0.15s; }
+.tutor-card:nth-child(4) { animation-delay: 0.2s; }
+.tutor-card:nth-child(5) { animation-delay: 0.25s; }
