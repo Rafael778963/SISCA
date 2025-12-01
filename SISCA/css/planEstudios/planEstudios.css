@@ -1,6 +1,4 @@
-/* ============================================
-   VARIABLES
-   ============================================ */
+
 :root {
   --bg-1: #e9eef6;
   --bg-2: #eef3f8;
@@ -22,9 +20,7 @@
   --azul: #2196f3;
 }
 
-/* ============================================
-   RESET Y ESTILOS BASE
-   ============================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -46,9 +42,7 @@ body {
   overflow-y: auto;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL
-   ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   padding: calc(var(--header-h) + 1rem) 1.5rem 2rem;
@@ -76,9 +70,7 @@ body {
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* ============================================
-   CONTENEDOR DE PLAN DE ESTUDIOS
-   ============================================ */
+
 .plan-estudios-container {
   display: grid;
   grid-template-columns: 400px 1fr;
@@ -87,9 +79,7 @@ body {
   margin-top: 1rem;
 }
 
-/* ============================================
-   PANEL DE FORMULARIO
-   ============================================ */
+
 .plan-form-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -111,9 +101,7 @@ body {
   gap: 0.5rem;
 }
 
-/* ============================================
-   FORMULARIO
-   ============================================ */
+
 .plan-form {
   display: flex;
   flex-direction: column;
@@ -178,9 +166,7 @@ body {
   display: block;
 }
 
-/* ============================================
-   BOTONES DEL FORMULARIO
-   ============================================ */
+
 .form-actions {
   display: flex;
   flex-direction: column;
@@ -243,9 +229,7 @@ body {
   box-shadow: 0 6px 12px rgba(39, 174, 96, 0.4);
 }
 
-/* ============================================
-   PANEL DE VISUALIZACIÓN
-   ============================================ */
+
 .plan-display-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -319,9 +303,7 @@ body {
   max-width: 100%;
 }
 
-/* ============================================
-   TABLA DE PLAN DE ESTUDIOS
-   ============================================ */
+
 .table-container {
   overflow-x: auto;
   margin: 1.5rem 0;
@@ -388,7 +370,7 @@ body {
   border-bottom: none;
 }
 
-/* Celdas con asignaturas */
+
 .plan-table tbody td.asignatura-cell {
   background: rgba(120, 181, 67, 0.1);
   font-weight: 500;
@@ -399,9 +381,7 @@ body {
   background: rgba(120, 181, 67, 0.2);
 }
 
-/* ============================================
-   PIE DE LA TABLA
-   ============================================ */
+
 .table-footer {
   margin-top: 1rem;
   padding: 1rem;
@@ -420,9 +400,7 @@ body {
   color: var(--verde-dark);
 }
 
-/* ============================================
-   BOTONES DE ACCIÓN DE LA TABLA
-   ============================================ */
+
 .table-actions {
   display: flex;
   gap: 1rem;
@@ -433,9 +411,7 @@ body {
   border-top: 1px solid rgba(107, 116, 128, 0.2);
 }
 
-/* ============================================
-   CONTENEDOR DE PLANTILLAS
-   ============================================ */
+
 .plantillas-container {
   background: var(--surface);
   border-radius: 16px;
@@ -457,9 +433,7 @@ body {
   gap: 0.5rem;
 }
 
-/* ============================================
-   SISTEMA DE PESTAÑAS
-   ============================================ */
+
 .tabs-container {
   display: flex;
   flex-direction: column;
@@ -527,9 +501,7 @@ body {
   color: var(--error);
 }
 
-/* ============================================
-   CONTENIDO DE LAS PESTAÑAS
-   ============================================ */
+
 .tabs-content {
   background: white;
   border-radius: 12px;
@@ -546,7 +518,7 @@ body {
   display: block;
 }
 
-/* Grid de plantillas */
+
 .plantillas-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -606,7 +578,7 @@ body {
   transform: scale(1.05);
 }
 
-/* Estado vacío */
+
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
@@ -628,9 +600,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* ============================================
-   PIE DE PÁGINA
-   ============================================ */
+
 .footer-text {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -645,9 +615,7 @@ body {
   font-style: italic;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 1200px) {
   .plan-estudios-container {
     grid-template-columns: 1fr;
@@ -716,9 +684,7 @@ body {
   }
 }
 
-/* ============================================
-   ESTILOS PARA IMPRESIÓN
-   ============================================ */
+
 @media print {
 
   .sidebar,
@@ -755,11 +721,9 @@ body {
   }
 }
 
-/* ============================================
-   ESTILOS ADICIONALES PARA ASIGNATURAS
-   ============================================ */
 
-/* Celda de área de conocimiento */
+
+
 .area-cell {
   font-weight: 700;
   background: rgba(59, 125, 47, 0.15);
@@ -767,7 +731,7 @@ body {
   vertical-align: middle;
 }
 
-/* Contenedor de asignatura dentro de la celda */
+
 .asignatura-item {
   position: relative;
   padding: 0.5rem;
@@ -782,7 +746,7 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Botón eliminar asignatura */
+
 .btn-eliminar-asig {
   position: absolute;
   top: 4px;
@@ -814,7 +778,7 @@ body {
   font-size: 0.7rem;
 }
 
-/* Botón de peligro general */
+
 .btn-danger {
   background: var(--error);
   color: white;
@@ -827,9 +791,7 @@ body {
   box-shadow: 0 6px 12px rgba(231, 76, 60, 0.4);
 }
 
-/* ============================================
-   ESTILOS PARA INFORMACIÓN DE PLANTILLAS
-   ============================================ */
+
 
 .plantilla-info {
   padding: 1rem;
@@ -858,7 +820,7 @@ body {
   flex-wrap: wrap;
 }
 
-/* Corregir clase active en tabs */
+
 .tab-btn.active {
   background: linear-gradient(135deg, var(--verde-medio), var(--verde-dark));
   color: white;
@@ -866,7 +828,7 @@ body {
   box-shadow: 0 4px 8px rgba(120, 181, 67, 0.3);
 }
 
-/* Clase para contenido de tab */
+
 .tab-content {
   display: none;
 }

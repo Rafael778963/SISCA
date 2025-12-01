@@ -1,4 +1,4 @@
-/* ----  vARIABLES -----*/
+
 :root {
   --verde-claro: #A4D17B;
   --verde-medio: #78B543;
@@ -18,7 +18,7 @@ body {
   overflow: hidden;
 }
 
-/* Fondo con blur */
+
 body::before {
   content: "";
   position: absolute;
@@ -31,7 +31,7 @@ body::before {
   z-index: -1;
 }
 
-/* Contenedor translúcido */
+
 .content-wrapper {
   background: rgba(255, 255, 255, 0.85);
   border-radius: 20px;
@@ -88,11 +88,11 @@ body::before {
 
 .arrow {
   -webkit-user-select: none;
-  /* Safari/Chrome */
+  
   -moz-user-select: none;
-  /* Firefox */
+  
   -ms-user-select: none;
-  /* IE 10+ */
+  
   cursor: pointer;
   font-size: 18px;
   color: #fff;

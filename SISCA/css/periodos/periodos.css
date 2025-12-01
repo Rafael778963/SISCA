@@ -1,6 +1,4 @@
-/* ============================================
-   VARIABLES
-   ============================================ */
+
 :root {
   --bg-1: #e9eef6;
   --bg-2: #eef3f8;
@@ -19,9 +17,7 @@
   --error: #e74c3c;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL
-   ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   padding-top: calc(var(--header-h) + 1rem);
@@ -33,7 +29,7 @@
   transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
-/* Ajuste cuando el sidebar está colapsado */
+
 .sidebar.collapsed~.main-content {
   margin-left: var(--sidebar-collapsed);
   width: calc(100% - var(--sidebar-collapsed));
@@ -53,9 +49,7 @@
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* ============================================
-   CONTENEDOR PRINCIPAL DE PERÍODOS
-   ============================================ */
+
 .periodos-container {
   display: grid;
   grid-template-columns: 400px 1fr;
@@ -64,9 +58,7 @@
   margin-top: 1rem;
 }
 
-/* ============================================
-   PANEL DE AGREGAR PERÍODO
-   ============================================ */
+
 .agregar-periodo-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -94,9 +86,7 @@
   color: var(--verde-medio);
 }
 
-/* ============================================
-   FORMULARIO
-   ============================================ */
+
 .form-container {
   display: flex;
   flex-direction: column;
@@ -141,9 +131,7 @@
   box-shadow: 0 0 0 3px rgba(120, 181, 67, 0.1);
 }
 
-/* ============================================
-   BOTONES
-   ============================================ */
+
 .btn {
   padding: 0.7rem 1.2rem;
   border: none;
@@ -175,9 +163,7 @@
   transform: translateY(0);
 }
 
-/* ============================================
-   PANEL DE LISTA DE PERÍODOS
-   ============================================ */
+
 .periodos-list-panel {
   display: flex;
   flex-direction: column;
@@ -274,9 +260,7 @@
   max-width: 200px;
 }
 
-/* ============================================
-   CARDS
-   ============================================ */
+
 .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -339,9 +323,7 @@
   font-size: 0.8rem;
 }
 
-/* ============================================
-   BOTÓN ELIMINAR
-   ============================================ */
+
 .btn-delete {
   position: absolute;
   top: 1rem;
@@ -371,9 +353,7 @@
   transform: scale(1.1);
 }
 
-/* ============================================
-   MENSAJE VACÍO
-   ============================================ */
+
 .empty-message {
   grid-column: 1 / -1;
   text-align: center;
@@ -390,9 +370,7 @@
   color: rgba(107, 116, 128, 0.3);
 }
 
-/* ============================================
-   PIE DE PÁGINA
-   ============================================ */
+
 .footer-text {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -407,9 +385,7 @@
   font-style: italic;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 1200px) {
   .periodos-container {
     grid-template-columns: 1fr;

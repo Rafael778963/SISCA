@@ -1,6 +1,4 @@
-/* ============================================
-   VARIABLES PARA MENU LATERAL Y HEADER
-   ============================================ */
+
 :root {
   --sidebar-width: 240px;
   --sidebar-collapsed: 70px;
@@ -11,9 +9,7 @@
   --naranja-medio: #E46220;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL
-   ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   min-height: 100vh;
@@ -25,9 +21,7 @@
   margin-left: var(--sidebar-collapsed);
 }
 
-/* ============================================
-   ESCALA RESPONSIVA (100% = 75%)
-   ============================================ */
+
 body {
   zoom: 0.75;
 }
@@ -41,9 +35,7 @@ body {
   }
 }
 
-/* ============================================
-   RESET Y ESTILOS BASE
-   ============================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -64,9 +56,7 @@ body {
   overflow-y: auto;
 }
 
-/* ============================================
-   SIDEBAR
-   ============================================ */
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -85,12 +75,12 @@ body {
   transition: width 0.3s ease;
 }
 
-/* Estado colapsado del sidebar */
+
 .sidebar.collapsed {
   width: var(--sidebar-collapsed);
 }
 
-/* Scrollbar personalizado */
+
 .sidebar::-webkit-scrollbar {
   width: 8px;
 }
@@ -108,9 +98,7 @@ body {
   background: transparent;
 }
 
-/* ============================================
-   BOTÓN TOGGLE (Abrir/Cerrar Sidebar)
-   ============================================ */
+
 .toggle-btn {
   position: fixed;
   top: 20px;
@@ -131,20 +119,18 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Posición del botón cuando sidebar está colapsado */
+
 .sidebar.collapsed .toggle-btn {
   left: calc(var(--sidebar-collapsed) - 15px);
 }
 
-/* Hover del botón toggle */
+
 .toggle-btn:hover {
   background: var(--verde-dark);
   transform: scale(1.1);
 }
 
-/* ============================================
-   LOGO
-   ============================================ */
+
 .logo-container {
   padding: 16px 0;
   display: flex;
@@ -155,7 +141,7 @@ body {
   min-height: 64px;
 }
 
-/* Logo completo (cuando sidebar está expandido) */
+
 .logo-full {
   height: 40px;
   width: auto;
@@ -163,7 +149,7 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* Logo icono (cuando sidebar está colapsado) */
+
 .logo-collapsed {
   height: 40px;
   width: auto;
@@ -171,7 +157,7 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* Mostrar/ocultar logos según estado */
+
 .sidebar.collapsed .logo-full {
   display: none;
 }
@@ -180,14 +166,12 @@ body {
   display: block;
 }
 
-/* ============================================
-   NAVEGACIÓN
-   ============================================ */
+
 .sidebar-nav {
   padding: 10px 0;
 }
 
-/* Items de navegación */
+
 .nav-item {
   display: flex;
   align-items: center;
@@ -204,7 +188,7 @@ body {
   min-height: 46px;
 }
 
-/* Nav items cuando sidebar está colapsado */
+
 .sidebar.collapsed .nav-item {
   justify-content: center;
   padding: 12px;
@@ -214,12 +198,12 @@ body {
   gap: 0;
 }
 
-/* Ocultar texto cuando sidebar está colapsado */
+
 .sidebar.collapsed .nav-item span {
   display: none;
 }
 
-/* Hover de nav items */
+
 .nav-item:hover {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.35));
   box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.1);
@@ -227,12 +211,12 @@ body {
   transform: translateY(-2px);
 }
 
-/* Efecto hover en iconos */
+
 .nav-item:hover i {
   transform: scale(1.1);
 }
 
-/* Iconos de navegación */
+
 .nav-item i {
   width: 22px;
   flex-shrink: 0;
@@ -240,9 +224,7 @@ body {
   transition: transform 0.3s ease;
 }
 
-/* ============================================
-   HEADER
-   ============================================ */
+
 .header {
   position: fixed;
   top: 0;
@@ -261,15 +243,13 @@ body {
   transition: left 0.3s ease, width 0.3s ease;
 }
 
-/* Header cuando sidebar está colapsado */
+
 .sidebar.collapsed ~ .main-content .header {
   left: var(--sidebar-collapsed);
   width: calc(100% - var(--sidebar-collapsed));
 }
 
-/* ============================================
-   TÍTULO DE PÁGINA
-   ============================================ */
+
 .page-title {
   font-size: 1.8rem;
   font-weight: 600;
@@ -305,9 +285,7 @@ body {
   font-weight: 700;
 }
 
-/* ============================================
-   MENÚ DE USUARIO
-   ============================================ */
+
 .user-menu {
   position: relative;
   display: flex;

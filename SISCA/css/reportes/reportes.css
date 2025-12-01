@@ -1,6 +1,4 @@
-/* ============================================
-   VARIABLES
-   ============================================ */
+
 :root {
   --bg-1: #e9eef6;
   --bg-2: #eef3f8;
@@ -26,9 +24,7 @@
   --transition: all 0.3s ease;
 }
 
-/* ============================================
-   RESET Y ESTILOS BASE
-   ============================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -50,9 +46,7 @@ body {
   overflow-y: auto;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL
-   ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   padding: calc(var(--header-h) + 1rem) 1.5rem 2rem;
@@ -66,9 +60,7 @@ body {
   width: calc(100% - var(--sidebar-collapsed));
 }
 
-/* ============================================
-   CONTENEDOR DE REPORTES
-   ============================================ */
+
 .reportes-container {
   display: grid;
   grid-template-columns: 400px 1fr;
@@ -77,9 +69,7 @@ body {
   margin-top: 1rem;
 }
 
-/* ============================================
-   PANEL DE FORMULARIO
-   ============================================ */
+
 .reportes-form-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -101,9 +91,7 @@ body {
   gap: 0.5rem;
 }
 
-/* ============================================
-   FORMULARIO
-   ============================================ */
+
 .reportes-form {
   display: flex;
   flex-direction: column;
@@ -157,9 +145,7 @@ body {
   display: block;
 }
 
-/* ============================================
-   BOTONES DEL FORMULARIO
-   ============================================ */
+
 .form-actions {
   display: flex;
   flex-direction: column;
@@ -215,18 +201,14 @@ body {
   transform: translateY(-1px);
 }
 
-/* ============================================
-   SECCIÓN DE ACCIONES RÁPIDAS
-   ============================================ */
+
 .acciones-rapidas-section {
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid rgba(107, 116, 128, 0.2);
 }
 
-/* ============================================
-   DIVISOR DE COMPARACIÓN
-   ============================================ */
+
 .comparacion-divider {
   display: flex;
   align-items: center;
@@ -254,9 +236,7 @@ body {
               inset -2px -2px 4px rgba(255, 255, 255, 0.7);
 }
 
-/* ============================================
-   DISEÑO COMPACTO PARA COMPARATIVO
-   ============================================ */
+
 .periodo-group {
   display: flex;
   flex-direction: column;
@@ -376,9 +356,7 @@ body {
   transform: none !important;
 }
 
-/* ============================================
-   PANEL DE VISUALIZACIÓN
-   ============================================ */
+
 .reportes-display-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -442,9 +420,7 @@ body {
   margin: 0;
 }
 
-/* ============================================
-   CONTENEDOR DE REPORTE
-   ============================================ */
+
 .reporte-container {
   margin-top: 1rem;
 }
@@ -483,7 +459,7 @@ body {
   padding: 1rem;
 }
 
-/* Estado vacío */
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -512,9 +488,7 @@ body {
   color: var(--muted);
 }
 
-/* ============================================
-   TABLAS DE REPORTES
-   ============================================ */
+
 .reporte-table {
   width: 100%;
   border-collapse: collapse;
@@ -553,7 +527,7 @@ body {
   border-bottom: none;
 }
 
-/* Fila de totales */
+
 .reporte-table .total-row {
   background: rgba(120, 181, 67, 0.1);
   font-weight: 700;
@@ -565,9 +539,7 @@ body {
   font-size: 0.95rem;
 }
 
-/* ============================================
-   TABLA COMPARATIVA - ESTILOS ESPECIALES
-   ============================================ */
+
 .tabla-comparativo-container {
   overflow-x: auto;
   margin: 0;
@@ -578,7 +550,7 @@ body {
   font-size: 0.85rem;
 }
 
-/* Columnas con ancho fijo */
+
 .tabla-comparativo .col-regimen {
   width: 120px;
   min-width: 120px;
@@ -590,7 +562,7 @@ body {
   background: rgba(120, 181, 67, 0.05);
 }
 
-/* Headers agrupados */
+
 .tabla-comparativo .header-grupo {
   background: var(--verde-dark);
   border-left: 1px solid rgba(255, 255, 255, 0.2);
@@ -598,7 +570,7 @@ body {
   padding: 0.6rem 0.5rem;
 }
 
-/* Sub-headers */
+
 .tabla-comparativo .sub-header {
   background: var(--verde-medio);
   font-size: 0.75rem;
@@ -610,7 +582,7 @@ body {
   max-width: 150px;
 }
 
-/* Celdas de régimen */
+
 .tabla-comparativo .regimen-cell {
   font-weight: 600;
   color: var(--verde-dark);
@@ -618,7 +590,7 @@ body {
   padding: 0.7rem 1rem;
 }
 
-/* Columna de diferencia */
+
 .tabla-comparativo .diferencia-neutral {
   background: rgba(120, 181, 67, 0.05);
   font-weight: 500;
@@ -636,13 +608,13 @@ body {
   font-weight: 600;
 }
 
-/* Celdas de datos */
+
 .tabla-comparativo tbody td {
   padding: 0.7rem 0.5rem;
   font-size: 0.85rem;
 }
 
-/* Hover en filas */
+
 .tabla-comparativo tbody tr:hover {
   background: rgba(120, 181, 67, 0.08);
 }
@@ -655,7 +627,7 @@ body {
   background: rgba(120, 181, 67, 0.15);
 }
 
-/* Fila de totales en comparativo */
+
 .tabla-comparativo .total-row {
   background: linear-gradient(135deg, 
     rgba(120, 181, 67, 0.15) 0%, 
@@ -672,7 +644,7 @@ body {
   background: rgba(120, 181, 67, 0.2);
 }
 
-/* Alineación de texto */
+
 .text-center {
   text-align: center !important;
 }
@@ -681,9 +653,7 @@ body {
   text-align: right !important;
 }
 
-/* ============================================
-   PIE DE PÁGINA
-   ============================================ */
+
 .footer-text {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -699,9 +669,7 @@ body {
   margin: 0;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 1200px) {
   .reportes-container {
     grid-template-columns: 1fr;
@@ -712,7 +680,7 @@ body {
     margin: 0 auto;
   }
   
-  /* Tabla comparativa responsive */
+  
   .tabla-comparativo {
     font-size: 0.8rem;
   }
@@ -755,7 +723,7 @@ body {
     padding: 0.7rem 0.5rem;
   }
 
-  /* Responsive para diseño compacto */
+  
   .periodo-selects {
     grid-template-columns: 80px 1fr;
     gap: 0.4rem;
@@ -775,7 +743,7 @@ body {
     padding: 0.25rem 0.8rem;
   }
   
-  /* Tabla comparativa móvil */
+  
   .tabla-comparativo-container {
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;
@@ -839,9 +807,7 @@ body {
   }
 }
 
-/* ============================================
-   ESTILOS PARA IMPRESIÓN
-   ============================================ */
+
 @media print {
   .sidebar,
   .header,
@@ -896,9 +862,7 @@ body {
   }
 }
 
-/* ============================================
-   ANIMACIONES
-   ============================================ */
+
 @keyframes fadeIn {
   from {
     opacity: 0;

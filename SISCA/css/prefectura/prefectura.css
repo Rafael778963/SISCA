@@ -1,7 +1,5 @@
 
-/* ============================================
-   VARIABLES
-   ============================================ */
+
 :root {
   --bg-1: #e9eef6;
   --bg-2: #eef3f8;
@@ -24,9 +22,7 @@
   --morado: #9c27b0;
 }
 
-/* ============================================
-   RESET Y ESTILOS BASE
-   ============================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -48,9 +44,7 @@ body {
   overflow-y: auto;
 }
 
-/* ============================================
-   CONTENIDO PRINCIPAL
-   ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   padding: calc(var(--header-h) + 1rem) 1.5rem 2rem;
@@ -78,9 +72,7 @@ body {
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* ============================================
-   CONTENEDOR PRINCIPAL DE PREFECTURA
-   ============================================ */
+
 .prefectura-container {
   display: grid;
   grid-template-columns: 1fr;
@@ -157,9 +149,7 @@ body {
   margin-top: 0.3rem;
 }
 
-/* ============================================
-   PANEL DE CONTROLES
-   ============================================ */
+
 .prefectura-controls {
   background: var(--surface);
   border-radius: 16px;
@@ -187,9 +177,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* ============================================
-   GRUPO DE BÚSQUEDA Y FILTROS
-   ============================================ */
+
 .search-group {
   display: flex;
   flex-direction: column;
@@ -266,9 +254,7 @@ body {
   display: none;
 }
 
-/* ============================================
-   FILTROS
-   ============================================ */
+
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -333,9 +319,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* ============================================
-   BOTONES DE ACCIONES
-   ============================================ */
+
 .action-buttons {
   display: flex;
   gap: 0.7rem;
@@ -415,9 +399,7 @@ body {
   transform: none;
 }
 
-/* ============================================
-   BOTONES TOGGLE DE VISTA
-   ============================================ */
+
 .view-toggle {
   display: flex;
   gap: 0.5rem;
@@ -451,9 +433,7 @@ body {
   background: rgba(120, 181, 67, 0.1);
 }
 
-/* ============================================
-   PANTALLA DE VISUALIZACIÓN
-   ============================================ */
+
 .prefectura-display {
   background: var(--surface);
   border-radius: 16px;
@@ -487,9 +467,7 @@ body {
   margin: 0;
 }
 
-/* ============================================
-   ALERTAS
-   ============================================ */
+
 #alertContainer {
   position: fixed;
   top: 90px;
@@ -551,9 +529,7 @@ body {
   }
 }
 
-/* ============================================
-   GRID DE PDFs - NUEVO ESTILO
-   ============================================ */
+
 .pdf-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -584,7 +560,7 @@ body {
   transform: translateY(-4px);
 }
 
-/* Header naranja con ícono PDF */
+
 .pdf-card-icon {
   background: linear-gradient(135deg, #E46220, #c94f18);
   color: white;
@@ -659,9 +635,7 @@ body {
   background: #fafafa;
 }
 
-/* ============================================
-   LISTA DE PDFs
-   ============================================ */
+
 .pdf-list {
   display: flex;
   flex-direction: column;
@@ -747,9 +721,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ============================================
-   BOTONES DE ACCIÓN
-   ============================================ */
+
 .action-btn {
   width: 36px;
   height: 36px;
@@ -803,7 +775,7 @@ body {
   color: white;
 }
 
-/* Vista en lista - botones con texto */
+
 .pdf-list-item .action-btn {
   padding: 8px 16px;
   width: auto;
@@ -813,9 +785,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* ============================================
-   VISOR PDF MODAL
-   ============================================ */
+
 .pdf-viewer-modal {
   position: fixed;
   top: 0;
@@ -917,9 +887,7 @@ body {
   border: none;
 }
 
-/* ============================================
-   PAGINACIÓN
-   ============================================ */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -967,9 +935,7 @@ body {
   text-align: center;
 }
 
-/* ============================================
-   ESTADO VACÍO
-   ============================================ */
+
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -995,9 +961,7 @@ body {
   color: #6b7480;
 }
 
-/* ============================================
-   FOOTER
-   ============================================ */
+
 .footer-text {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -1013,9 +977,7 @@ body {
   margin: 0;
 }
 
-/* ============================================
-   CLASES AUXILIARES
-   ============================================ */
+
 .hidden {
   display: none !important;
 }
@@ -1025,9 +987,7 @@ body {
   color: white !important;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 1024px) {
   .pdf-grid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
