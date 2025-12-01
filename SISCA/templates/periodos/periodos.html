@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../../img/SISCA I C.png" type="image/x-icon">
+    <link rel="stylesheet" href="../../css/periodos/periodos.css">
+    <link rel="stylesheet" href="../../css/periodos/menuLateral.css">
+    <title>SISCA - Sistema de Carga Académica</title>
+</head>
+
+<body>
+    <script>
+        (function () {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.sidebar{width:70px!important}.sidebar .logo-full{display:none!important}.sidebar .logo-collapsed{display:block!important}.sidebar .nav-item{justify-content:center;padding:12px;margin:8px auto;width:46px;gap:0!important}.sidebar .nav-item span{display:none!important}.toggle-btn{left:55px!important}.main-content{margin-left:70px!important}.header{left:70px!important;width:calc(100% - 70px)!important}';
+                document.head.appendChild(style);
+            } else {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.main-content{margin-left:240px!important}.header{left:240px!important;width:calc(100% - 240px)!important}';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+
+    <!-- Barra lateral -->
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" id="toggleBtn">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="logo-container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../img/SISCA C.png" alt="Logo completo" class="logo-full">
+                    <img src="../../img/SISCA I C.png" alt="Logo icono" class="logo-collapsed">
+                </a>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="../../index.html" class="nav-item active">
+                <i class="fa-solid fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="../periodos/periodos.html" class="nav-item active">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Períodos</span>
+            </a>
+            <a href="../planEstudios/planEstudios.html" class="nav-item">
+                <i class="fa-solid fa-book"></i>
+                <span>Plan de Estudios</span>
+            </a>
+            <a href="../cartaAsignacion/cartaAsignacion.html" class="nav-item">
+                <i class="fa-solid fa-envelopes-bulk"></i>
+                <span>Carta Asignación</span>
+            </a>
+            <a href="../grupos/grupos.html" class="nav-item">
+                <i class="fa-solid fa-border-all"></i>
+                <span>Grupos</span>
+            </a>
+            <a href="../docentes/docentes.html" class="nav-item">
+                <i class="fa-solid fa-user-tie"></i>
+                <span>Docentes</span>
+            </a>
+            <a href="../carga/carga.html" class="nav-item">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Carga</span>
+            </a>
+            <a href="../tutoria/tutoria.html" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Tutoría</span>
+            </a>
+            <a href="../reportes/reportes.html" class="nav-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reportes</span>
+            </a>
+            <a href="../horarios/horarios.html" class="nav-item">
+                <i class="fa-solid fa-clock"></i>
+                <span>Horarios</span>
+            </a>
+            <a href="../prefectura/prefectura.html" class="nav-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Prefectura</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Pagina principal -->
+    <main class="main-content">
+        <!-- Encabezado -->
+        <header class="header">
+            <h1 class="page-title">
+                Bienvenido <span class="username"><a id="user-name"></a></span>
+            </h1>
+            <div class="user-menu">
+                <div class="user-dropdown">
+                    <button class="user-btn" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket fa-xl"></i>
+                    </button>
+                </div>
+                <button class="user-btn">
+                    <i class="fa-solid fa-circle-user fa-2xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenedor principal de períodos -->
+        <div class="periodos-container">
+            <!-- Panel de agregar período -->
+            <div class="agregar-periodo-panel">
+                <h2 class="panel-title">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Agregar Período
+                </h2>
+                <form id="formPeriodo" class="form-container">
+                    <div class="form-group">
+                        <label for="periodo">
+                            Período <span class="required">*</span>
+                        </label>
+                        <select name="periodo" id="periodo" class="form-select" required>
+                            <option value selected disabled>Selecciona...</option>
+                            <option value="Enero - Abril">Enero -
+                                Abril</option>
+                            <option value="Mayo - Agosto">Mayo -
+                                Agosto</option>
+                            <option value="Septiembre - Diciembre">Septiembre -
+                                Diciembre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="anio">
+                            Año <span class="required">*</span>
+                        </label>
+                        <input type="number" name="anio" id="anio" class="form-input" placeholder="Ej. 2025" min="1900"
+                            max="3000" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Guardar Período
+                    </button>
+                </form>
+            </div>
+
+            <!-- Panel de períodos registrados -->
+            <div class="periodos-list-panel">
+                <div class="panel-header">
+                    <div class="header-content-periodos">
+                        <div class="logo-section">
+                            <img id="logoImage" class="logo-img" src="../../img/SISCA C.png" alt="Logo">
+                            <h5 class="subtitle">Universidad Tecnológica Cadereyta</h5>
+                        </div>
+
+                        <div class="title-section">
+                            <h1 class="main-title">Períodos Registrados</h1>
+                        </div>
+
+                        <div class="filter-section">
+                            <div class="filter-container">
+                                <label for="filterAnio">
+                                    <i class="fa-solid fa-filter"></i>
+                                    Filtrar por año:
+                                </label>
+                                <select id="filterAnio" class="form-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor de cards -->
+                <div id="cardsContainer" class="cards-container"></div>
+            </div>
+        </div>
+        <!-- Pie de Página -->
+        <div class="footer-text">
+            <p>La presente publicación se plantea de manera
+                incluyente y libre de estereotipos de género, por lo
+                que al referirse a una persona como "él" significa
+                "él o ella".</p>
+        </div>
+    </main>
+
+    <script src="../../fonts/js/all.min.js"></script>
+    <script src="../../js/js/sweetalert2.all.min.js"></script>
+    <script src="../../js/session_check.js"></script>
+    <script src="../../js/periodos/periodos.js"></script>
+    <script src="../../js/periodos/menuLateral.js"></script>
+</body>
+
+</html>
