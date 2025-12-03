@@ -636,109 +636,105 @@ document.addEventListener('DOMContentLoaded', async function() {
 /**
  * Cargar períodos desde la base de datos
  */
-function cargarPeriodos() {
-    
-    
-    
-    
-    
-    
-    
-    
+async function cargarPeriodos() {
     const periodoSelect = document.getElementById('periodo');
-    
-    const periodosEjemplo = [
-        { value: '2024-1', text: 'Enero - Abril 2024' },
-        { value: '2024-2', text: 'Mayo - Agosto 2024' },
-        { value: '2024-3', text: 'Septiembre - Diciembre 2024' },
-    ];
-    
-    
-    periodoSelect.innerHTML = '<option value="" disabled selected>-- Selecciona un período --</option>';
-    
-    
-    periodosEjemplo.forEach(periodo => {
-        const option = new Option(periodo.text, periodo.value);
-        periodoSelect.add(option);
-    });
+
+    try {
+        periodoSelect.innerHTML = '<option value="" disabled selected>Cargando períodos...</option>';
+
+        const response = await fetch('../../php/periodos/get_periodos.php');
+        const periodos = await response.json();
+
+        periodoSelect.innerHTML = '<option value="" disabled selected>-- Selecciona un período --</option>';
+
+        if (periodos && periodos.length > 0) {
+            periodos.forEach(periodo => {
+                const option = new Option(periodo.texto, periodo.id);
+                periodoSelect.add(option);
+            });
+        } else {
+            periodoSelect.innerHTML = '<option value="" disabled selected>No hay períodos disponibles</option>';
+        }
+    } catch (error) {
+        console.error('Error al cargar períodos:', error);
+        periodoSelect.innerHTML = '<option value="" disabled selected>Error al cargar períodos</option>';
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudieron cargar los períodos. Por favor, intenta de nuevo.',
+            confirmButtonColor: '#78B543'
+        });
+    }
 }
 
 /**
  * Cargar años disponibles para comparativo
  */
-function cargarAnios() {
-    
-    
-    
-    
-    
-    
-    
-    
+async function cargarAnios() {
     const anio1Select = document.getElementById('anioComparativo1');
     const anio2Select = document.getElementById('anioComparativo2');
-    
-    const aniosEjemplo = [
-        { value: '2023', text: '2023' },
-        { value: '2024', text: '2024' },
-        { value: '2025', text: '2025' },
-    ];
-    
-    
-    anio1Select.innerHTML = '<option value="" disabled selected>-- Selecciona un año --</option>';
-    anio2Select.innerHTML = '<option value="" disabled selected>-- Selecciona un año --</option>';
-    
-    
-    aniosEjemplo.forEach(anio => {
-        const option1 = new Option(anio.text, anio.value);
-        const option2 = new Option(anio.text, anio.value);
-        anio1Select.add(option1);
-        anio2Select.add(option2);
-    });
+
+    try {
+        anio1Select.innerHTML = '<option value="" disabled selected>Cargando años...</option>';
+        anio2Select.innerHTML = '<option value="" disabled selected>Cargando años...</option>';
+
+        const response = await fetch('../../php/periodos/get_periodos.php');
+        const periodos = await response.json();
+
+        // Extraer años únicos de los periodos
+        const aniosUnicos = [...new Set(periodos.map(p => p.anio))].sort((a, b) => b - a);
+
+        anio1Select.innerHTML = '<option value="" disabled selected>-- Selecciona un año --</option>';
+        anio2Select.innerHTML = '<option value="" disabled selected>-- Selecciona un año --</option>';
+
+        if (aniosUnicos.length > 0) {
+            aniosUnicos.forEach(anio => {
+                const option1 = new Option(anio, anio);
+                const option2 = new Option(anio, anio);
+                anio1Select.add(option1);
+                anio2Select.add(option2);
+            });
+        } else {
+            anio1Select.innerHTML = '<option value="" disabled selected>No hay años disponibles</option>';
+            anio2Select.innerHTML = '<option value="" disabled selected>No hay años disponibles</option>';
+        }
+    } catch (error) {
+        console.error('Error al cargar años:', error);
+        anio1Select.innerHTML = '<option value="" disabled selected>Error al cargar años</option>';
+        anio2Select.innerHTML = '<option value="" disabled selected>Error al cargar años</option>';
+    }
 }
 
 /**
  * Cargar períodos por año seleccionado
  */
-function cargarPeriodosPorAnio(anio, targetSelectId) {
-    
-    
-    
-    
-    
-    
-    
-    
-    const periodosPorAnio = {
-        '2023': [
-            { value: '2023-1', text: 'Enero - Abril 2023' },
-            { value: '2023-2', text: 'Mayo - Agosto 2023' },
-            { value: '2023-3', text: 'Septiembre - Diciembre 2023' },
-        ],
-        '2024': [
-            { value: '2024-1', text: 'Enero - Abril 2024' },
-            { value: '2024-2', text: 'Mayo - Agosto 2024' },
-            { value: '2024-3', text: 'Septiembre - Diciembre 2024' },
-        ],
-        '2025': [
-            { value: '2025-1', text: 'Enero - Abril 2025' },
-            { value: '2025-2', text: 'Mayo - Agosto 2025' },
-            { value: '2025-3', text: 'Septiembre - Diciembre 2025' },
-        ],
-    };
-    
-    const periodosDelAnio = periodosPorAnio[anio] || [];
+async function cargarPeriodosPorAnio(anio, targetSelectId) {
     const targetSelect = document.getElementById(targetSelectId);
-    
-    
-    targetSelect.innerHTML = '<option value="" disabled selected>-- Selecciona período --</option>';
-    
-    
-    periodosDelAnio.forEach(periodo => {
-        const option = new Option(periodo.text, periodo.value);
-        targetSelect.add(option);
-    });
-    
-    
-    validarPeriodosDiferentes();
+
+    try {
+        targetSelect.innerHTML = '<option value="" disabled selected>Cargando períodos...</option>';
+
+        const response = await fetch('../../php/periodos/get_periodos.php');
+        const periodos = await response.json();
+
+        // Filtrar periodos por el año seleccionado
+        const periodosDelAnio = periodos.filter(p => p.anio == anio);
+
+        targetSelect.innerHTML = '<option value="" disabled selected>-- Selecciona período --</option>';
+
+        if (periodosDelAnio.length > 0) {
+            periodosDelAnio.forEach(periodo => {
+                const option = new Option(periodo.texto, periodo.id);
+                targetSelect.add(option);
+            });
+        } else {
+            targetSelect.innerHTML = '<option value="" disabled selected>No hay períodos para este año</option>';
+        }
+
+        // Validar que los períodos sean diferentes
+        validarPeriodosDiferentes();
+    } catch (error) {
+        console.error('Error al cargar períodos por año:', error);
+        targetSelect.innerHTML = '<option value="" disabled selected>Error al cargar períodos</option>';
+    }
 }
