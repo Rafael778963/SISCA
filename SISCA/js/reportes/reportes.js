@@ -646,31 +646,36 @@ document.addEventListener('DOMContentLoaded', async function() {
 /**
  * Cargar períodos desde la base de datos
  */
-function cargarPeriodos() {
-    // Aquí iría la llamada a tu API
-    // fetch('../../php/reportes/get_periodos.php')
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         llenarSelectPeriodos(data);
-    //     });
-    
-    // Por ahora, agregamos períodos de ejemplo
+async function cargarPeriodos() {
     const periodoSelect = document.getElementById('periodo');
-    
-    const periodosEjemplo = [
-        { value: '2024-1', text: 'Enero - Abril 2024' },
-        { value: '2024-2', text: 'Mayo - Agosto 2024' },
-        { value: '2024-3', text: 'Septiembre - Diciembre 2024' },
-    ];
-    
-    // Limpiar select
-    periodoSelect.innerHTML = '<option value="" disabled selected>-- Selecciona un período --</option>';
-    
-    // Llenar select
-    periodosEjemplo.forEach(periodo => {
-        const option = new Option(periodo.text, periodo.value);
-        periodoSelect.add(option);
-    });
+
+    try {
+        // Obtener períodos de la base de datos
+        const response = await fetch('../../php/periodos/get_periodos.php');
+        const periodos = await response.json();
+
+        // Limpiar select
+        periodoSelect.innerHTML = '<option value="" disabled>-- Selecciona un período --</option>';
+
+        // Llenar select con periodos reales
+        periodos.forEach(periodo => {
+            const option = new Option(periodo.texto, periodo.id);
+            periodoSelect.add(option);
+        });
+
+        // Pre-seleccionar el periodo activo si existe
+        const periodoActivo = obtenerPeriodoActivo();
+        if (periodoActivo && periodoActivo.id) {
+            periodoSelect.value = periodoActivo.id;
+        } else {
+            // Si no hay periodo activo, seleccionar la primera opción deshabilitada
+            periodoSelect.selectedIndex = 0;
+        }
+
+    } catch (error) {
+        console.error('Error al cargar períodos:', error);
+        periodoSelect.innerHTML = '<option value="" disabled selected>Error al cargar períodos</option>';
+    }
 }
 
 /**
