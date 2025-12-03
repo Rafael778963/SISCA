@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../../img/SISCA I C.png" type="image/x-icon">
+    <link rel="stylesheet" href="../../css/cartaAsignacion/cartaAsignacion.css">
+    <link rel="stylesheet" href="../../css/cartaAsignacion/menuLateral.css">
+    <link rel="stylesheet" href="../../css/periodo_indicator.css">
+    <title>SISCA - Sistema de Carga Académica</title>
+</head>
+
+<body>
+    <script>
+        (function () {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.sidebar{width:70px!important}.sidebar .logo-full{display:none!important}.sidebar .logo-collapsed{display:block!important}.sidebar .nav-item{justify-content:center;padding:12px;margin:8px auto;width:46px;gap:0!important}.sidebar .nav-item span{display:none!important}.toggle-btn{left:55px!important}.main-content{margin-left:70px!important}.header{left:70px!important;width:calc(100% - 70px)!important}';
+                document.head.appendChild(style);
+            } else {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.main-content{margin-left:240px!important}.header{left:240px!important;width:calc(100% - 240px)!important}';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+
+    <!-- Barra lateral -->
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" id="toggleBtn">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="logo-container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../img/SISCA C.png" alt="Logo completo" class="logo-full">
+                    <img src="../../img/SISCA I C.png" alt="Logo icono" class="logo-collapsed">
+                </a>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="../../index.html" class="nav-item">
+                <i class="fa-solid fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="../periodos/periodos.html" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Períodos</span>
+            </a>
+            <a href="../planEstudios/planEstudios.html" class="nav-item">
+                <i class="fa-solid fa-book"></i>
+                <span>Plan de Estudios</span>
+            </a>
+            <a href="../cartaAsignacion/cartaAsignacion.html" class="nav-item active">
+                <i class="fa-solid fa-envelopes-bulk"></i>
+                <span>Carta Asignación</span>
+            </a>
+            <a href="../grupos/grupos.html" class="nav-item">
+                <i class="fa-solid fa-border-all"></i>
+                <span>Grupos</span>
+            </a>
+            <a href="../docentes/docentes.html" class="nav-item">
+                <i class="fa-solid fa-user-tie"></i>
+                <span>Docentes</span>
+            </a>
+            <a href="../carga/carga.html" class="nav-item">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Carga</span>
+            </a>
+            <a href="../tutoria/tutoria.html" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Tutoría</span>
+            </a>
+            <a href="../reportes/reportes.html" class="nav-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reportes</span>
+            </a>
+            <a href="../horarios/horarios.html" class="nav-item">
+                <i class="fa-solid fa-clock"></i>
+                <span>Horarios</span>
+            </a>
+            <a href="../prefectura/prefectura.html" class="nav-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Prefectura</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Página principal -->
+    <main class="main-content">
+        <!-- Encabezado -->
+        <header class="header">
+            <h1 class="page-title">
+                Bienvenido <span class="username"><a id="user-name"></a></span>
+            </h1>
+            <div class="user-menu">
+                <div class="user-dropdown">
+                    <button class="user-btn" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket fa-xl"></i>
+                    </button>
+                </div>
+                <button class="user-btn">
+                    <i class="fa-solid fa-circle-user fa-2xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenedor Principal -->
+        <div class="carta-container">
+            <!-- Panel de Configuración -->
+            <div class="config-panel">
+                <h2 class="panel-title">
+                    <i class="fa-solid fa-sliders"></i> Configuración de Carta
+                </h2>
+
+                <form class="config-form" id="configForm">
+                    <div class="form-group">
+                        <label for="docente">
+                            <i class="fa-solid fa-user-tie"></i> Docente:
+                            <span class="required">*</span>
+                        </label>
+                        <select id="docente" name="docente" class="form-select" required>
+                            <option value="" disabled selected>Selecciona un docente...</option>
+                        </select>
+                        <span class="error-message" id="error-docente"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha">
+                            <i class="fa-solid fa-calendar-alt"></i> Fecha:
+                        </label>
+                        <input type="date" id="fecha" name="fecha" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grupo">
+                            <i class="fa-solid fa-users"></i> Tutoría de Acompañamiento:
+                        </label>
+                        <select id="grupo" name="grupo" class="form-select">
+                            <option value="">Selecciona un grupo...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary" onclick="window.print()">
+                            <i class="fa-solid fa-print"></i> Imprimir Carta
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="btnLimpiar">
+                            <i class="fa-solid fa-broom"></i> Limpiar
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Info adicional -->
+                <div class="info-box">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div>
+                        <strong>Instrucciones:</strong>
+                        <ul>
+                            <li>Selecciona un docente para cargar sus datos</li>
+                            <li>Verifica la información en la carta</li>
+                            <li>Haz clic en "Imprimir Carta" cuando esté lista</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Vista Previa de la Carta -->
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <h2 class="preview-title">
+                        <i class="fa-solid fa-file-invoice"></i> Vista Previa de Carta
+                    </h2>
+                    <div class="preview-actions">
+                        <button class="btn-icon" onclick="window.print()" title="Imprimir">
+                            <i class="fa-solid fa-print"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Documento de Carta -->
+                <div class="carta-documento" id="impresionn">
+                    <!-- Encabezado del documento -->
+                    <div class="doc-header">
+                        <img src="../../img/LogoUT.png" alt="Logo UT Cadereyta" class="doc-logo">
+                        <h2 class="doc-title">CARTA DE ASIGNACIÓN DE HORAS</h2>
+                    </div>
+
+                    <!-- Ubicación y fecha -->
+                    <div class="ubicacion">
+                        <p>Cadereyta Jiménez, N.L., <input type="date" id="fechaCarta" class="fecha-input"></p>
+                    </div>
+
+                    <!-- Docente -->
+                    <div class="docente-section">
+                        <p><strong>Docente</strong></p>
+                        <div class="docente-input-box">
+                            <input type="text" id="docenteNombre" class="darkinput" placeholder="Cargando...">
+                        </div>
+                    </div>
+
+                    <!-- Párrafo introductorio -->
+                    <div class="intro-text">
+                        <p>Por medio de la presente hemos programado para usted la siguiente carga académica de acuerdo
+                            a su perfil profesional y a las necesidades de la Universidad para el cuatrimestre
+                            <input type="text" class="darkinput inline-input" placeholder="Cargando..."
+                                id="cuatrimestreInput"> con las siguientes funciones:
+                        </p>
+                    </div>
+
+                    <!-- Impartición de Clases -->
+                    <div class="seccion-lista">
+                        <h4>• Impartición de Clases</h4>
+
+                        <!-- Tabla de asignaturas -->
+                        <div class="tabla-container">
+                            <table id="classTable" class="tabla-asignaturas">
+                                <thead>
+                                    <tr>
+                                        <th>Asignatura</th>
+                                        <th>Horas</th>
+                                        <th>Grupo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- 12 Filas -->
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Asignatura">
+                                        </td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Horas"></td>
+                                        <td><input type="text" class="darkinput cell-input" placeholder="Grupo"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Lista de items adicionales -->
+                    <div class="items-adicionales">
+                        <div class="item-line">
+                            <span class="bullet">•</span>
+                            <span class="label">Tutoría de acompañamiento</span>
+                            <input type="text" class="darkinput inline-input" placeholder="Cargando..."
+                                id="tutoriaInput">
+                        </div>
+
+                        <div class="item-line">
+                            <span class="bullet">•</span>
+                            <span class="label">Asesor de Estadía</span>
+                            <input type="text" class="darkinput inline-input" placeholder="Tutoría del docente">
+                        </div>
+
+                        <div class="item-line">
+                            <span class="bullet">•</span>
+                            <span class="label">Líder de Proyecto</span>
+                            <input type="text" class="darkinput inline-input" placeholder="Ingrese el nombre"
+                                id="liderProyecto">
+                        </div>
+
+                        <div class="item-line">
+                            <span class="bullet">•</span>
+                            <span class="label">PRODEP</span>
+                            <input type="text" class="darkinput inline-input" placeholder="Ingrese información">
+                        </div>
+
+                        <div class="item-line">
+                            <span class="bullet">•</span>
+                            <span class="label">Cuerpos Académicos</span>
+                            <input type="text" class="darkinput inline-input" placeholder="Ingrese información">
+                        </div>
+                    </div>
+
+                    <!-- Despedida -->
+                    <div class="despedida">
+                        <p>Sin más por el momento, aprovecho la ocasión para enviarle un saludo cordial.</p>
+                    </div>
+
+                    <!-- Firma -->
+                    <div class="firma-section">
+                        <div class="firma-line"></div>
+                        <p class="firma-nombre">M.R.H. Armando de León Ramírez</p>
+                        <p class="firma-cargo">Subdirector Académico</p>
+                    </div>
+
+                    <!-- Detalles de control -->
+                    <div class="control-detalles">
+                        <span><strong>Clave:</strong> <input type="text" class="darkinput-small"
+                                value="R-02-8.5.1-FA"></span>
+                        <span><strong>Fecha Elab:</strong> <input type="text" class="darkinput-small"
+                                value="14/02/2013"></span>
+                        <span><strong>Revisión:</strong> <input type="text" class="darkinput-small" value="5"></span>
+                        <span><strong>Fecha Rev:</strong> <input type="text" class="darkinput-small"
+                                value="29/04/2024"></span>
+                        <span class="sgc-text">UT CADEREYTA SGC</span>
+                    </div>
+
+                    <!-- Pie de página del documento -->
+                    <div class="doc-footer">
+                        <p class="footer-disclaimer">La presente publicación se plantea de manera incluyente y libre de
+                            estereotipos de género, por lo que al referirse a una persona como "él" significa "él o
+                            ella".</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie de Página -->
+        <div class="footer-text">
+            <p>La presente publicación se plantea de manera incluyente y libre de estereotipos de género,
+                por lo que al referirse a una persona como "él" significa "él o ella".</p>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../../fonts/js/all.min.js"></script>
+    <script src="../../js/js/sweetalert2.all.min.js"></script>
+    <script src="../../js/session_check.js"></script>
+    <script src="../../js/periodo_manager.js"></script>
+    <script src="../../js/cartaAsignacion/menuLateral.js"></script>
+    <script src="../../js/cartaAsignacion/dateasign.js"></script>
+    <script src="../../js/cartaAsignacion/imprasign.js"></script>
+    <script src="../../js/cartaAsignacion/inputsjs.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar estilos para mantener dimensiones de tabla constantes
+            agregarEstilosTabla();
+
+            const docenteSelect = document.getElementById('docente');
+
+            function actualizarNombreDocente() {
+                const docenteTexto = docenteSelect.options[docenteSelect.selectedIndex].text;
+                document.getElementById('docenteNombre').textContent = docenteTexto;
+            }
+
+            function agregarEstilosTabla() {
+                if (!document.getElementById('tabla-estilos-constantes')) {
+                    const estilo = document.createElement('style');
+                    estilo.id = 'tabla-estilos-constantes';
+                    estilo.innerHTML = `
+                        #classTable tbody tr.fila-oculta {
+                            display: none !important;
+                        }
+                        #classTable tbody tr.fila-vacia {
+                            visibility: hidden;
+                            height: 42px;
+                        }
+                        #classTable tbody tr.fila-vacia td {
+                            border-color: transparent;
+                        }
+                        #classTable tbody tr.fila-vacia input {
+                            visibility: hidden;
+                        }
+                    `;
+                    document.head.appendChild(estilo);
+                }
+            }
+
+            function esFilaVacia(fila) {
+                const inputs = fila.querySelectorAll('input');
+                for (let input of inputs) {
+                    if (input.value.trim() !== '') {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function llenarTablaDocente() {
+                const docenteSeleccionado = docenteSelect.value;
+                const datosDelDocente = datosDocentes && datosDocentes[docenteSeleccionado] ? datosDocentes[docenteSeleccionado] : [];
+
+                const tabla = document.querySelector('#classTable tbody');
+                const filas = tabla.querySelectorAll('tr');
+
+                filas.forEach(fila => {
+                    fila.classList.remove('fila-oculta', 'fila-vacia');
+                    const inputs = fila.querySelectorAll('input');
+                    inputs.forEach(input => {
+                        input.value = '';
+                    });
+                });
+
+                for (let i = 0; i < filas.length; i++) {
+                    const fila = filas[i];
+
+                    if (i < datosDelDocente.length) {
+                        const dato = datosDelDocente[i];
+                        const inputs = fila.querySelectorAll('input');
+
+                        if (inputs.length >= 3) {
+                            inputs[0].value = dato.asignatura || '';
+                            inputs[1].value = dato.horas || '';
+                            inputs[2].value = dato.grupo || '';
+                        }
+
+                        fila.classList.remove('fila-oculta', 'fila-vacia');
+                    } else {
+                        fila.classList.add('fila-oculta');
+                    }
+                }
+            }
+
+            const grupoSelect = document.getElementById('grupo');
+            const liderProyectoInput = document.getElementById('liderProyecto');
+
+            grupoSelect.addEventListener('change', function () {
+                liderProyectoInput.value = grupoSelect.options[grupoSelect.selectedIndex].text;
+            });
+
+            docenteSelect.addEventListener('change', function () {
+                actualizarNombreDocente();
+                llenarTablaDocente();
+            });
+
+            document.querySelector('#classTable tbody').addEventListener('input', function (e) {
+                if (e.target.tagName === 'INPUT') {
+                    const fila = e.target.closest('tr');
+
+                    if (esFilaVacia(fila)) {
+                        fila.classList.add('fila-vacia');
+                    } else {
+                        fila.classList.remove('fila-vacia');
+                    }
+                }
+            });
+
+            actualizarNombreDocente();
+            llenarTablaDocente();
+        });
+    </script>
+</body>
+
+</html>

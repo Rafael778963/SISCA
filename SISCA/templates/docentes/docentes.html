@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../../img/SISCA I C.png" type="image/x-icon">
+    <link rel="stylesheet" href="../../css/docentes/docentes.css">
+    <link rel="stylesheet" href="../../css/docentes/menuLateral.css">
+    <link rel="stylesheet" href="../../css/periodo_indicator.css">
+    <title>SISCA - Docentes</title>
+</head>
+
+<body>
+    <script>
+        (function () {
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.sidebar{width:70px!important}.sidebar .logo-full{display:none!important}.sidebar .logo-collapsed{display:block!important}.sidebar .nav-item{justify-content:center;padding:12px;margin:8px auto;width:46px;gap:0!important}.sidebar .nav-item span{display:none!important}.toggle-btn{left:55px!important}.main-content{margin-left:70px!important}.header{left:70px!important;width:calc(100% - 70px)!important}';
+                document.head.appendChild(style);
+            } else {
+                var style = document.createElement('style');
+                style.id = 'sidebar-preload';
+                style.textContent = '.main-content{margin-left:240px!important}.header{left:240px!important;width:calc(100% - 240px)!important}';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+
+    <!-- Barra lateral -->
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" id="toggleBtn">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="logo-container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../img/SISCA C.png" alt="Logo completo" class="logo-full">
+                    <img src="../../img/SISCA I C.png" alt="Logo icono" class="logo-collapsed">
+                </a>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="../../index.html" class="nav-item">
+                <i class="fa-solid fa-home"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="../periodos/periodos.html" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Períodos</span>
+            </a>
+            <a href="../planEstudios/planEstudios.html" class="nav-item">
+                <i class="fa-solid fa-book"></i>
+                <span>Plan de Estudios</span>
+            </a>
+            <a href="../cartaAsignacion/cartaAsignacion.html" class="nav-item">
+                <i class="fa-solid fa-envelopes-bulk"></i>
+                <span>Carta Asignación</span>
+            </a>
+            <a href="../grupos/grupos.html" class="nav-item">
+                <i class="fa-solid fa-border-all"></i>
+                <span>Grupos</span>
+            </a>
+            <a href="../docentes/docentes.html" class="nav-item active">
+                <i class="fa-solid fa-user-tie"></i>
+                <span>Docentes</span>
+            </a>
+            <a href="../carga/carga.html" class="nav-item">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Carga</span>
+            </a>
+            <a href="../tutoria/tutoria.html" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Tutoría</span>
+            </a>
+            <a href="../reportes/reportes.html" class="nav-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Reportes</span>
+            </a>
+            <a href="../horarios/horarios.html" class="nav-item">
+                <i class="fa-solid fa-clock"></i>
+                <span>Horarios</span>
+            </a>
+            <a href="../prefectura/prefectura.html" class="nav-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Prefectura</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Pagina principal -->
+    <main class="main-content">
+        <!-- Encabezado -->
+        <header class="header">
+            <h1 class="page-title">
+                Bienvenido <span class="username"><a id="user-name"></a></span>
+            </h1>
+            <div class="user-menu">
+                <div class="user-dropdown">
+                    <button class="user-btn" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket fa-xl"></i>
+                    </button>
+                </div>
+                <button class="user-btn">
+                    <i class="fa-solid fa-circle-user fa-2xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenedor de Docentes -->
+        <div class="docentes-container">
+            <!-- Formulario de Agregar Docente -->
+            <div class="asignar-docentes-panel">
+                <h2 class="panel-title">Agregar Docente</h2>
+
+                <form class="docentes-form">
+                    <div class="form-group">
+                        <label for="nombreDocente">
+                            Nombre del Docente:
+                        </label>
+                        <input type="text" id="nombreDocente" name="nombreDocente" class="form-input"
+                            placeholder="Escribe el nombre completo..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="turno">
+                            Turno:
+                        </label>
+                        <select id="turno" name="turno" class="form-select" required>
+                            <option value disabled selected>-- Selecciona un turno --</option>
+                            <option value="Matutino">Matutino</option>
+                            <option value="Nocturno">Nocturno</option>
+                            <option value="Matutino/Nocturno">Matutino/Nocturno</option>
+                        </select>
+                    </div>
+
+                    <!-- Reemplaza el div del régimen en el formulario con este código -->
+                    <div class="form-group">
+                        <label>
+                            Régimen:
+                        </label>
+                        <div class="regimen-options">
+                            <label class="regimen-checkbox">
+                                <input type="checkbox" name="regimen" value="PA" id="regimen-pa">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-label">PA</span>
+                            </label>
+                            <label class="regimen-checkbox">
+                                <input type="checkbox" name="regimen" value="PH" id="regimen-ph">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-label">PH</span>
+                            </label>
+                            <label class="regimen-checkbox">
+                                <input type="checkbox" name="regimen" value="PTC" id="regimen-ptc">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-label">PTC</span>
+                            </label>
+                        </div>
+                        <small class="regimen-hint">Puedes seleccionar 1 o 2
+                            regímenes</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-save"></i>
+                            Guardar/Actualizar
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">
+                            <i class="fa-solid fa-broom"></i> Limpiar
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Sección de Filtros y Ver Inactivos -->
+                <div class="filtros-section">
+                    <div class="filtros-header-section">
+                        <h3 class="filtros-title">
+                            <i class="fa-solid fa-filter"></i> Filtrar Tabla
+                        </h3>
+                        <button type="button" class="btn-ver-inactivos" id="btnVerInactivos"
+                            onclick="filtrosDocentes.verInactivos()">
+                            <i class="fa-solid fa-user-slash"></i> Ver
+                            Inactivos
+                        </button>
+                    </div>
+                    <div class="filtros-botones">
+                        <button type="button" class="btn-filtro"
+                            onclick="filtrosDocentes.agregarFiltro('nombre_docente')">
+                            <i class="fa-solid fa-user"></i> Nombre
+                        </button>
+                        <button type="button" class="btn-filtro" onclick="filtrosDocentes.agregarFiltro('turno')">
+                            <i class="fa-solid fa-clock"></i> Turno
+                        </button>
+                        <button type="button" class="btn-filtro" onclick="filtrosDocentes.agregarFiltro('regimen')">
+                            <i class="fa-solid fa-briefcase"></i> Régimen
+                        </button>
+                    </div>
+
+                    <!-- Filtros Activos -->
+                    <div id="filtros-activos" class="filtros-activos-container"></div>
+                </div>
+            </div>
+
+            <!-- Tabla de Docentes -->
+            <div class="docentes-table-panel">
+                <div class="panel-header">
+                    <div class="header-content">
+                        <div class="logo-section">
+                            <img id="logoImage" class="logo-img" src="../../img/SISCA C.png" alt="Logo">
+                            <h5 class="subtitle">Universidad Tecnológica Cadereyta</h5>
+                        </div>
+
+                        <div class="title-section">
+                            <h1 class="main-title">Gestión de Docentes</h1>
+                        </div>
+
+                        <div class="pagination-section">
+                            <!-- Paginación -->
+                            <div id="paginacion"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="docentes-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre del Docente</th>
+                                <th style="text-align: center !important">Turno</th>
+                                <th style="text-align: center !important">Régimen</th>
+                                <th style="text-align: center !important">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="empty-message">
+                                    <i class="fa-solid fa-inbox"></i> No hay
+                                    docentes registrados
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Pie de Página -->
+        <div class="footer-text">
+            <p>La presente publicación se plantea de manera
+                incluyente y libre de estereotipos de género, por lo
+                que al referirse a una persona como "él" significa
+                "él o ella".</p>
+        </div>
+    </main>
+
+    <script src="../../fonts/js/all.min.js"></script>
+    <script src="../../js/js/sweetalert2.all.min.js"></script>
+    <script src="../../js/session_check.js"></script>
+    <script src="../../js/periodo_manager.js"></script>
+    <script src="../../js/docentes/docentes_api.js"></script>
+    <script src="../../js/docentes/docentes.js"></script>
+    <script src="../../js/docentes/docentes_filtros.js"></script>
+    <script src="../../js/docentes/menuLateral.js"></script>
+</body>
+
+</html>
