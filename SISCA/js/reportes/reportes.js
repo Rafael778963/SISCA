@@ -645,11 +645,15 @@ async function cargarPeriodos() {
         const response = await fetch('../../php/periodos/get_periodos.php');
         const periodos = await response.json();
 
+        console.log('Períodos cargados:', periodos);
+
         periodoSelect.innerHTML = '<option value="" disabled selected>-- Selecciona un período --</option>';
 
         if (periodos && periodos.length > 0) {
             periodos.forEach(periodo => {
-                const option = new Option(periodo.texto, periodo.id);
+                // Formatear el texto del periodo: "periodo año" (ej: "Enero - Abril 2025")
+                const textoCompleto = `${periodo.periodo} ${periodo.año}`;
+                const option = new Option(textoCompleto, periodo.id);
                 periodoSelect.add(option);
             });
         } else {
@@ -681,8 +685,8 @@ async function cargarAnios() {
         const response = await fetch('../../php/periodos/get_periodos.php');
         const periodos = await response.json();
 
-        // Extraer años únicos de los periodos
-        const aniosUnicos = [...new Set(periodos.map(p => p.anio))].sort((a, b) => b - a);
+        // Extraer años únicos de los periodos (usar 'año' en lugar de 'anio')
+        const aniosUnicos = [...new Set(periodos.map(p => p.año))].sort((a, b) => b - a);
 
         anio1Select.innerHTML = '<option value="" disabled selected>-- Selecciona un año --</option>';
         anio2Select.innerHTML = '<option value="" disabled selected>-- Selecciona un año --</option>';
@@ -717,14 +721,16 @@ async function cargarPeriodosPorAnio(anio, targetSelectId) {
         const response = await fetch('../../php/periodos/get_periodos.php');
         const periodos = await response.json();
 
-        // Filtrar periodos por el año seleccionado
-        const periodosDelAnio = periodos.filter(p => p.anio == anio);
+        // Filtrar periodos por el año seleccionado (usar 'año' en lugar de 'anio')
+        const periodosDelAnio = periodos.filter(p => p.año == anio);
 
         targetSelect.innerHTML = '<option value="" disabled selected>-- Selecciona período --</option>';
 
         if (periodosDelAnio.length > 0) {
             periodosDelAnio.forEach(periodo => {
-                const option = new Option(periodo.texto, periodo.id);
+                // Formatear el texto del periodo: "periodo año" (ej: "Enero - Abril 2025")
+                const textoCompleto = `${periodo.periodo} ${periodo.año}`;
+                const option = new Option(textoCompleto, periodo.id);
                 targetSelect.add(option);
             });
         } else {
