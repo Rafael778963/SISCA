@@ -637,7 +637,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // Cargar períodos (esto se conectaría a tu API)
-    cargarPeriodos();
+    await cargarPeriodos();
 
     // Deshabilitar botones de exportación al inicio
     deshabilitarBotonesExportacion();
@@ -650,9 +650,24 @@ async function cargarPeriodos() {
     const periodoSelect = document.getElementById('periodo');
 
     try {
+        console.log('Cargando períodos...');
+
         // Obtener períodos de la base de datos
         const response = await fetch('../../php/periodos/get_periodos.php');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const periodos = await response.json();
+        console.log('Períodos recibidos:', periodos);
+
+        // Validar que hay períodos
+        if (!periodos || periodos.length === 0) {
+            console.warn('No hay períodos disponibles');
+            periodoSelect.innerHTML = '<option value="" disabled selected>No hay períodos disponibles</option>';
+            return;
+        }
 
         // Limpiar select
         periodoSelect.innerHTML = '<option value="" disabled>-- Selecciona un período --</option>';
@@ -663,10 +678,15 @@ async function cargarPeriodos() {
             periodoSelect.add(option);
         });
 
+        console.log(`${periodos.length} períodos cargados`);
+
         // Pre-seleccionar el periodo activo si existe
         const periodoActivo = obtenerPeriodoActivo();
+        console.log('Periodo activo:', periodoActivo);
+
         if (periodoActivo && periodoActivo.id) {
             periodoSelect.value = periodoActivo.id;
+            console.log('Periodo pre-seleccionado:', periodoActivo.id);
         } else {
             // Si no hay periodo activo, seleccionar la primera opción deshabilitada
             periodoSelect.selectedIndex = 0;
@@ -675,6 +695,13 @@ async function cargarPeriodos() {
     } catch (error) {
         console.error('Error al cargar períodos:', error);
         periodoSelect.innerHTML = '<option value="" disabled selected>Error al cargar períodos</option>';
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al cargar períodos',
+            text: 'No se pudieron cargar los períodos. Por favor, recarga la página.',
+            confirmButtonColor: '#78B543'
+        });
     }
 }
 
